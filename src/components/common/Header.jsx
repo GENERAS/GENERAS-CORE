@@ -1,10 +1,10 @@
 ﻿import { Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FaCrown, FaHome, FaGraduationCap, FaCode, FaChartLine, FaUsers, FaCoffee, FaBriefcase, FaUser, FaStar, FaBars, FaTimes } from 'react-icons/fa'
 import { useAuth } from '../../context/AuthContext'
 import SupporterPaymentModal from '../supporters/SupporterPaymentModal'
 import LanguageSwitcher from './LanguageSwitcher'
+import { Menu, X } from 'lucide-react'
 
 export default function Header() {
   const { t } = useTranslation()
@@ -14,43 +14,39 @@ export default function Header() {
   const location = useLocation()
 
   const navLinks = [
-    { path: '/', label: t('nav.home'), icon: FaHome },
-    { path: '/academic', label: t('nav.academic'), icon: FaGraduationCap },
-    { path: '/projects', label: t('nav.projects'), icon: FaCode },
-    { path: '/trading', label: t('nav.trading'), icon: FaChartLine },
-    { path: '/community', label: t('nav.community'), icon: FaUsers },
-    { path: '/testimonials', label: t('nav.testimonials'), icon: FaStar },
-    { path: '/service', label: t('nav.mentorship'), icon: FaBriefcase },
+    { path: '/', label: t('nav.home') },
+    { path: '/academic', label: t('nav.academic') },
+    { path: '/projects', label: t('nav.projects') },
+    { path: '/trading', label: t('nav.trading') },
+    { path: '/community', label: t('nav.community') },
+    { path: '/testimonials', label: t('nav.testimonials') },
+    { path: '/service', label: t('nav.mentorship') },
   ]
 
   return (
     <>
-      <header className='bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 sticky top-0 z-50'>
-        <div className='container mx-auto px-4'>
+      <header className='bg-white border-b border-gray-200 sticky top-0 z-50'>
+        <div className='max-w-7xl mx-auto px-6'>
           <div className='flex justify-between items-center h-16'>
             <Link to='/' className='flex items-center gap-3'>
-              <img src='/logo.png' alt='GENERAS CORE Logo' className='h-14 w-auto' />
+              <img src='/logo.png' alt='GENERAS CORE Logo' className='h-10 w-auto' style={{ background: 'transparent' }} />
+              <span className='text-xl font-bold text-gray-900'>GENERAS CORE</span>
             </Link>
 
-            <nav className='hidden md:flex gap-1'>
+            <nav className='hidden lg:flex items-center gap-8'>
               {navLinks.map((link) => {
-                const Icon = link.icon
                 const isActive = location.pathname === link.path
                 return (
                   <Link
                     key={link.path}
                     to={link.path}
-                    className={`relative px-4 py-2 rounded-xl transition-all duration-300 flex items-center gap-2 ${
+                    className={`text-sm font-medium transition-colors duration-200 ${
                       isActive 
-                        ? 'bg-amber-500/20 text-amber-400 shadow-lg shadow-amber-500/20 border border-amber-500/30' 
-                        : 'hover:bg-slate-800 text-slate-300 hover:text-white'
+                        ? 'text-[#714B67]' 
+                        : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-amber-400' : ''}`} style={{ width: '16px', height: '16px' }} />
-                    <span className='font-medium'>{link.label}</span>
-                    {isActive && (
-                      <span className='absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse'></span>
-                    )}
+                    {link.label}
                   </Link>
                 )
               })}
@@ -61,37 +57,32 @@ export default function Header() {
 
               <button
                 onClick={() => setShowPaymentModal(true)}
-                className='bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-lg flex items-center gap-2 transition'
+                className='text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 font-medium'
               >
-                <FaCoffee className='w-4 h-4' style={{ width: '16px', height: '16px' }} />
-                <span className='hidden sm:inline'>{t('common.buyMeCoffee')}</span>
+                {t('common.buyMeCoffee')}
               </button>
 
-              {/* Mobile Menu Button */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className='md:hidden p-2 bg-slate-800 rounded-lg'
+                className='lg:hidden text-gray-600 hover:text-gray-900 transition-colors duration-200'
               >
-                {mobileMenuOpen ? <FaTimes className='w-5 h-5' style={{ width: '20px', height: '20px' }} /> : <FaBars className='w-5 h-5' style={{ width: '20px', height: '20px' }} />}
+                {mobileMenuOpen ? <X className='w-5 h-5' /> : <Menu className='w-5 h-5' />}
               </button>
 
               {user && (
                 <div className='relative group'>
-                  <button className='flex items-center gap-2 bg-slate-800 px-3 py-2 rounded-lg'>
-                    <FaUser className='w-4 h-4' style={{ width: '16px', height: '16px' }} />
-                    <span className='hidden sm:inline'>
-                      {profile?.full_name || user.email?.split('@')[0]}
-                    </span>
+                  <button className='text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 font-medium'>
+                    {profile?.full_name || user.email?.split('@')[0]}
                   </button>
-                  <div className='absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg shadow-lg overflow-hidden hidden group-hover:block'>
+                  <div className='absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg overflow-hidden hidden group-hover:block rounded-lg'>
                     {profile?.role === 'admin' && (
-                      <Link to='/admin' className='block px-4 py-2 hover:bg-slate-700'>
+                      <Link to='/admin' className='block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200'>
                         {t('nav.admin')}
                       </Link>
                     )}
                     <button
                       onClick={signOut}
-                      className='block w-full text-left px-4 py-2 hover:bg-slate-700'
+                      className='block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200'
                     >
                       {t('nav.signOut')}
                     </button>
@@ -103,26 +94,23 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className='md:hidden bg-slate-900 border-b border-slate-800'>
-          <nav className='container mx-auto px-4 py-4'>
+        <div className='lg:hidden bg-white border-b border-gray-200'>
+          <nav className='max-w-7xl mx-auto px-6 py-6'>
             {navLinks.map((link) => {
-              const Icon = link.icon
               const isActive = location.pathname === link.path
               return (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl mb-2 ${
+                  className={`block py-3 text-lg font-medium transition-colors duration-200 ${
                     isActive
-                      ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                      : 'hover:bg-slate-800 text-slate-300'
+                      ? 'text-[#714B67]'
+                      : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
-                  <Icon className='w-5 h-5' style={{ width: '20px', height: '20px' }} />
-                  <span className='font-medium'>{link.label}</span>
+                  {link.label}
                 </Link>
               )
             })}
@@ -133,4 +121,5 @@ export default function Header() {
       <SupporterPaymentModal isOpen={showPaymentModal} onClose={() => setShowPaymentModal(false)} />
     </>
   )
+}
 }

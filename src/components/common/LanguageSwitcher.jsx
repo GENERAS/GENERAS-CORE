@@ -14,11 +14,10 @@ export default function LanguageSwitcher() {
   return (
     <button
       onClick={toggleLanguage}
-      className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 hover:text-white transition-all duration-200 border border-slate-700"
+      className="px-3 py-1.5 bg-white border border-gray-300 text-base text-gray-700 hover:text-gray-900 hover:border-gray-400 rounded-lg transition-colors duration-200 font-medium"
       title={isKinyarwanda ? 'Switch to English' : 'Hindura mu Kinyarwanda'}
     >
-      <span className="text-sm">{isKinyarwanda ? '🇷🇼' : '🇬🇧'}</span>
-      <span className="hidden sm:inline">{isKinyarwanda ? 'RW' : 'EN'}</span>
+      {isKinyarwanda ? 'RW' : 'EN'}
     </button>
   )
 }
