@@ -29,10 +29,7 @@ export default function Header() {
         <div className='container mx-auto px-4'>
           <div className='flex justify-between items-center h-16'>
             <Link to='/' className='flex items-center gap-3'>
-              <FaCrown className='w-6 h-6 text-amber-500' />
-              <h1 className='text-l font-bold bg-gradient-to-r from-amber-500 to-purple-600 bg-clip-text text-transparent'>
-                GENERASLegacy
-              </h1>
+              <img src='/logo.png' alt='GENERAS CORE Logo' className='h-14 w-auto' />
             </Link>
 
             <nav className='hidden md:flex gap-1'>

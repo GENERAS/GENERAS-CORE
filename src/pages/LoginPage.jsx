@@ -32,7 +32,7 @@ export default function LoginPage() {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <FaCrown className="text-5xl text-amber-500 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold"> GENERAS Legacy</h1>
+          <h1 className="text-3xl font-bold"> GENERAS CORE</h1>
           <p className="text-gray-400 mt-2">Admin Access Only</p>
         </div>
 

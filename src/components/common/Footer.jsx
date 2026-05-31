@@ -58,11 +58,9 @@ export default function Footer() {
         {/* Footer Logo */}
         <div className="text-center mb-6">
           <div className="flex justify-center mb-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-              <CrownIcon className="w-6 h-6 text-white" />
-            </div>
+            <img src="/logo.png" alt="GENERAS CORE Logo" className="h-24 w-auto" />
           </div>
-          <h2 className="text-xl font-bold text-white">GENERAS Legacy</h2>
+          <h2 className="text-xl font-bold text-white">GENERAS CORE</h2>
           <p className="text-gray-400 mt-1 text-sm max-w-xl mx-auto">
             Developer | Trader | Entrepreneur
           </p>
