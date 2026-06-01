@@ -19,7 +19,7 @@
   }
   
   .btn-primary {
-    @apply bg-[#714B67] text-white px-6 py-3 text-lg font-medium rounded-lg hover:bg-[#5a3a52] transition-colors duration-200;
+    @apply bg-[yellow-600] text-white px-6 py-3 text-lg font-medium rounded-lg hover:bg-[#5a3a52] transition-colors duration-200;
   }
   
   .btn-secondary {
@@ -27,7 +27,7 @@
   }
   
   .btn-coffee {
-    @apply bg-[#714B67] text-white px-6 py-3 text-lg font-medium rounded-lg hover:bg-[#5a3a52] transition-colors duration-200;
+    @apply bg-[yellow-600] text-white px-6 py-3 text-lg font-medium rounded-lg hover:bg-[#5a3a52] transition-colors duration-200;
   }
   
   .stat-card {
@@ -35,7 +35,7 @@
   }
   
   .timeline-dot {
-    @apply absolute -left-2 top-2 w-2 h-2 bg-[#714B67];
+    @apply absolute -left-2 top-2 w-2 h-2 bg-[yellow-600];
   }
 }
 /* stylelint-enable */

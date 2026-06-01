@@ -145,57 +145,57 @@ export default function TestimonialsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-slate-950">
+      <div className="flex items-center justify-center h-screen bg-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading success stories...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[yellow-600] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading success stories...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-gray-100">
       {/* TOP NAVIGATION BAR */}
-      <div className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800">
+      <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo/Brand */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-[yellow-600] rounded-xl flex items-center justify-center">
                 <Trophy className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="font-bold text-lg bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                <h1 className="font-bold text-lg text-gray-900">
                   Success Stories
                 </h1>
-                <p className="text-xs text-gray-500">{testimonials.length} happy clients</p>
+                <p className="text-xs text-gray-600">{testimonials.length} happy clients</p>
               </div>
             </div>
 
             {/* Quick Stats Row */}
             <div className="hidden md:flex items-center gap-6">
               <div className="flex items-center gap-2 text-sm">
-                <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-                <span className="text-gray-400">Rating:</span>
-                <span className="font-bold text-white">{avgRating}/5</span>
+                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                <span className="text-gray-600">Rating:</span>
+                <span className="font-bold text-gray-800">{avgRating}/5</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <TrendingUp className="w-4 h-4 text-green-500" />
-                <span className="text-gray-400">Growth:</span>
-                <span className="font-bold text-white">{growthCount}</span>
+                <TrendingUp className="w-4 h-4 text-green-600" />
+                <span className="text-gray-600">Growth:</span>
+                <span className="font-bold text-gray-800">{growthCount}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Crown className="w-4 h-4 text-purple-500" />
-                <span className="text-gray-400">Featured:</span>
-                <span className="font-bold text-white">{featuredCount}</span>
+                <Crown className="w-4 h-4 text-yellow-600" />
+                <span className="text-gray-600">Featured:</span>
+                <span className="font-bold text-gray-800">{featuredCount}</span>
               </div>
             </div>
 
             {/* Submit Button */}
             <button
               onClick={() => setShowSubmissionForm(true)}
-              className="px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center gap-2 text-sm font-medium hover:from-blue-700 hover:to-purple-700 transition"
+              className="px-4 py-2 bg-[yellow-600] hover:bg-[#8a5c7f] rounded-lg flex items-center gap-2 text-sm font-medium transition-colors duration-200 text-white"
             >
               <Plus className="w-4 h-4" />
               Share Your Story
@@ -211,7 +211,7 @@ export default function TestimonialsPage() {
           <div className="hidden lg:block lg:col-span-2">
             <div className="sticky top-24 space-y-4">
               {/* Project Type Filter */}
-              <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
                   <Filter className="w-3 h-3" /> Categories
                 </h3>
@@ -222,17 +222,17 @@ export default function TestimonialsPage() {
                       <button
                         key={type.id}
                         onClick={() => setFilter(type.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition ${
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors duration-200 ${
                           filter === type.id
-                            ? 'bg-blue-600/20 text-blue-400 border border-blue-600/30'
-                            : 'hover:bg-slate-800 text-gray-400'
+                            ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+                            : 'hover:bg-gray-100 text-gray-600'
                         }`}
                       >
                         <span className="flex items-center gap-2">
                           <Icon className="w-4 h-4" />
                           {type.label}
                         </span>
-                        <span className="text-xs bg-slate-800 px-2 py-0.5 rounded-full">{type.count}</span>
+                        <span className="text-xs bg-gray-200 px-2 py-0.5 rounded-full">{type.count}</span>
                       </button>
                     );
                   })}
@@ -240,7 +240,7 @@ export default function TestimonialsPage() {
               </div>
 
               {/* Quick Actions */}
-              <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
                   Quick Actions
                 </h3>
@@ -249,23 +249,31 @@ export default function TestimonialsPage() {
                     <button
                       key={i}
                       onClick={action.onClick}
-                      className="p-3 bg-slate-800/50 rounded-xl hover:bg-slate-800 transition group"
+                      className={`p-3 rounded-xl border transition-colors duration-200 group ${
+                        action.color === 'blue' ? 'bg-yellow-100 border-yellow-200 hover:bg-yellow-200' :
+                        action.color === 'purple' ? 'bg-yellow-100 border-yellow-200 hover:bg-yellow-200' :
+                        'bg-green-100 border-green-200 hover:bg-green-200'
+                      }`}
                     >
-                      <action.icon className={`mx-auto mb-1 text-${action.color}-400 group-hover:scale-110 transition`} />
-                      <span className="text-xs text-gray-300">{action.label}</span>
+                      <action.icon className={`mx-auto mb-1 ${
+                        action.color === 'blue' ? 'text-yellow-600' :
+                        action.color === 'purple' ? 'text-yellow-600' :
+                        'text-green-600'
+                      }`} />
+                      <span className="text-xs text-gray-700">{action.label}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Trending Tags */}
-              <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4" /> Trending
+                  <TrendingUp className="w-4 h-4 text-gray-600" /> Trending
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {['Growth', 'Success', 'Trading', 'Website', 'App', 'Revenue'].map(tag => (
-                    <span key={tag} className="px-2 py-1 bg-slate-800 rounded-lg text-xs text-gray-400 hover:bg-slate-700 hover:text-white cursor-pointer transition">
+                    <span key={tag} className="px-2 py-1 bg-gray-100 rounded-lg text-xs text-gray-600 hover:bg-gray-200 cursor-pointer transition-colors duration-200">
                       #{tag}
                     </span>
                   ))}
@@ -279,9 +287,9 @@ export default function TestimonialsPage() {
 
             {/* FEATURED TESTIMONIAL CAROUSEL */}
             {currentFeatured && (
-              <div className="relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-6 border border-slate-700 overflow-hidden">
+              <div className="relative bg-white rounded-3xl p-6 border border-gray-300 overflow-hidden">
                 <div className="absolute top-4 right-4 flex items-center gap-2">
-                  <span className="px-3 py-1 bg-amber-500/20 text-amber-400 rounded-full text-xs font-medium flex items-center gap-1">
+                  <span className="px-3 py-1 bg-yellow-500 text-white rounded-full text-xs font-medium flex items-center gap-1">
                     <Sparkles className="w-3 h-3" /> Featured Story
                   </span>
                 </div>
@@ -306,48 +314,48 @@ export default function TestimonialsPage() {
                       </button>
                     </div>
                   ) : (
-                    <div className="rounded-2xl aspect-video bg-gradient-to-br from-blue-900/30 to-purple-900/30 flex items-center justify-center">
-                      <Quote className="w-16 h-16 text-blue-500/30" />
+                    <div className="rounded-2xl aspect-video bg-gradient-to-br from-yellow-100 tyelrowle-100 flex items-center justify-center">
+                      <Quote className="w-16 h-16 text-yellow-400" />
                     </div>
                   )}
                   
                   {/* Content */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-purple-500 rounded-full flex items-center justify-center text-xl font-bold">
+                      <div className="w-14 h-14 bg-[yellow-600] rounded-full flex items-center justify-center text-xl font-bold text-white">
                         {currentFeatured.client_name.charAt(0).toUpperCase()}
                       </div>
                       <div>
                         <h3 className="font-bold text-lg">{currentFeatured.client_name}</h3>
                         {currentFeatured.client_company && (
-                          <p className="text-sm text-gray-400">{currentFeatured.client_company}</p>
+                          <p className="text-sm text-gray-600">{currentFeatured.client_company}</p>
                         )}
                         <div className="flex items-center gap-1 mt-1">
                           {[...Array(currentFeatured.rating || 5)].map((_, i) => (
-                            <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                            <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                           ))}
                         </div>
                       </div>
                     </div>
                     
                     <div>
-                      <h4 className="text-xl font-bold text-blue-400 mb-2">{currentFeatured.project_title}</h4>
-                      <p className="text-gray-300 line-clamp-4">"{currentFeatured.testimonial_text}"</p>
+                      <h4 className="text-xl font-bold text-yellow-600 mb-2">{currentFeatured.project_title}</h4>
+                      <p className="text-gray-700 line-clamp-4">"{currentFeatured.testimonial_text}"</p>
                     </div>
                     
                     {/* Impact Stats */}
                     {(currentFeatured.clients_before !== null || currentFeatured.revenue_before !== null) && (
                       <div className="flex gap-4">
                         {currentFeatured.clients_before !== null && (
-                          <div className="bg-green-500/20 px-4 py-2 rounded-lg">
-                            <span className="text-green-400 font-bold text-lg">+{calculateGrowth(currentFeatured.clients_before, currentFeatured.clients_after)}%</span>
-                            <p className="text-xs text-green-300">Client Growth</p>
+                          <div className="bg-green-100 px-4 py-2 rounded-lg">
+                            <span className="text-green-600 font-bold text-lg">+{calculateGrowth(currentFeatured.clients_before, currentFeatured.clients_after)}%</span>
+                            <p className="text-xs text-green-700">Client Growth</p>
                           </div>
                         )}
                         {currentFeatured.revenue_before !== null && (
-                          <div className="bg-blue-500/20 px-4 py-2 rounded-lg">
-                            <span className="text-blue-400 font-bold text-lg">+{calculateGrowth(currentFeatured.revenue_before, currentFeatured.revenue_after)}%</span>
-                            <p className="text-xs text-blue-300">Revenue Impact</p>
+                          <div className="bg-yellow-100 px-4 py-2 rounded-lg">
+                            <span className="text-yellow-600 font-bold text-lg">+{calculateGrowth(currentFeatured.revenue_before, currentFeatured.revenue_after)}%</span>
+                            <p className="text-xs text-yellow-700">Revenue Impact</p>
                           </div>
                         )}
                       </div>
@@ -358,7 +366,7 @@ export default function TestimonialsPage() {
                       <div className="flex items-center gap-2">
                         <button 
                           onClick={() => setFeaturedIndex(prev => prev === 0 ? featuredTestimonials.length - 1 : prev - 1)}
-                          className="p-2 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition"
+                          className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors duration-200"
                         >
                           <ChevronLeft className="w-4 h-4" />
                         </button>
@@ -367,15 +375,15 @@ export default function TestimonialsPage() {
                             <button
                               key={idx}
                               onClick={() => setFeaturedIndex(idx)}
-                              className={`w-2 h-2 rounded-full transition ${
-                                idx === featuredIndex ? 'bg-blue-500' : 'bg-slate-700'
+                              className={`w-2 h-2 rounded-full transition-colors duration-200 ${
+                                idx === featuredIndex ? 'bg-yellow-600' : 'bg-gray-300'
                               }`}
                             />
                           ))}
                         </div>
                         <button 
                           onClick={() => setFeaturedIndex(prev => (prev + 1) % featuredTestimonials.length)}
-                          className="p-2 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition"
+                          className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors duration-200"
                         >
                           <ChevronRight className="w-4 h-4" />
                         </button>
@@ -388,7 +396,7 @@ export default function TestimonialsPage() {
 
             {/* Search Bar */}
             <div className="sticky top-20 z-40">
-              <div className="bg-slate-900/95 backdrop-blur-sm rounded-2xl p-4 border border-slate-800">
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <div className="flex gap-4">
                   <div className="flex-1 relative">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
@@ -397,12 +405,12 @@ export default function TestimonialsPage() {
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder="Search testimonials by client, project, or keyword..."
-                      className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:border-blue-500 text-white placeholder:text-gray-600"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:border-yellow-500 text-gray-900 placeholder:text-gray-500"
                     />
                   </div>
                   <button 
                     onClick={() => setShowFilters(!showFilters)}
-                    className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-xl hover:bg-slate-700 transition flex items-center gap-2"
+                    className="px-4 py-2 bg-gray-100 border border-gray-200 rounded-xl hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2"
                   >
                     <Filter className="w-4 h-4" />
                     <span className="hidden sm:inline">Filters</span>
@@ -411,8 +419,8 @@ export default function TestimonialsPage() {
                 
                 {/* Expandable Filters */}
                 {showFilters && (
-                  <div className="mt-4 pt-4 border-t border-slate-800">
-                    <p className="text-sm text-gray-500 mb-3">Filter by project type:</p>
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <p className="text-sm text-gray-600 mb-3">Filter by project type:</p>
                     <div className="flex flex-wrap gap-2">
                       {projectTypes.map((type) => {
                         const Icon = type.icon;
@@ -420,10 +428,10 @@ export default function TestimonialsPage() {
                           <button
                             key={type.id}
                             onClick={() => setFilter(type.id)}
-                            className={`px-3 py-1.5 rounded-lg text-sm transition flex items-center gap-2 ${
+                            className={`px-3 py-1.5 rounded-lg text-sm transition-colors duration-200 flex items-center gap-2 ${
                               filter === type.id
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-slate-800 text-gray-400 hover:bg-slate-700'
+                                ? 'bg-yellow-600 text-white'
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                             }`}
                           >
                             <Icon className="w-4 h-4" />
@@ -439,13 +447,13 @@ export default function TestimonialsPage() {
 
             {/* Results Count */}
             <div className="flex items-center justify-between">
-              <p className="text-gray-400">
-                Showing <span className="text-white font-semibold">{filteredTestimonials.length}</span> of {testimonials.length} testimonials
+              <p className="text-gray-600">
+                Showing <span className="text-gray-900 font-semibold">{filteredTestimonials.length}</span> of {testimonials.length} testimonials
               </p>
               {filter !== 'all' && (
                 <button 
                   onClick={() => setFilter('all')}
-                  className="text-sm text-blue-400 hover:text-blue-300"
+                  className="text-sm text-yellow-600 hover:text-yellow-700 transition-colors duration-200"
                 >
                   Clear filter
                 </button>
@@ -459,16 +467,16 @@ export default function TestimonialsPage() {
                   key={testimonial.id}
                   onMouseEnter={() => setHoveredCard(testimonial.id)}
                   onMouseLeave={() => setHoveredCard(null)}
-                  className={`bg-slate-900/50 rounded-2xl p-5 border transition-all duration-300 ${
+                  className={`bg-white rounded-2xl p-5 border transition-colors duration-200 ${
                     hoveredCard === testimonial.id 
-                      ? 'border-blue-500/50 shadow-lg shadow-blue-500/10' 
-                      : 'border-slate-800'
-                  } ${testimonial.is_featured ? 'ring-1 ring-amber-500/30' : ''}`}
+                      ? 'border-yellow-400' 
+                      : 'border-gray-300'
+                  } ${testimonial.is_featured ? 'ring-1 ring-yellow-400' : ''}`}
                 >
                   <div className="flex gap-4">
                     {/* Avatar */}
                     <div className="flex-shrink-0">
-                      <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center text-xl font-bold">
+                      <div className="w-14 h-14 bg-[yellow-600] rounded-2xl flex items-center justify-center text-xl font-bold text-white">
                         {testimonial.client_name.charAt(0).toUpperCase()}
                       </div>
                     </div>
@@ -480,30 +488,30 @@ export default function TestimonialsPage() {
                           <div className="flex items-center gap-2">
                             <h3 className="font-bold text-lg">{testimonial.client_name}</h3>
                             {testimonial.is_featured && (
-                              <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 rounded-full text-xs flex items-center gap-1">
+                              <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded-full text-xs flex items-center gap-1">
                                 <Sparkles className="w-3 h-3" /> Featured
                               </span>
                             )}
                           </div>
                           {testimonial.client_company && (
-                            <p className="text-sm text-gray-400">{testimonial.client_company}</p>
+                            <p className="text-sm text-gray-600">{testimonial.client_company}</p>
                           )}
                         </div>
                         <div className="flex items-center gap-1">
                           {[...Array(testimonial.rating || 5)].map((_, i) => (
-                            <Star key={i} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                            <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
                           ))}
                         </div>
                       </div>
                       
                       {/* Project Info */}
                       <div className="mb-3">
-                        <span className="text-blue-400 font-medium">{testimonial.project_title}</span>
-                        <p className="text-sm text-gray-400">{testimonial.project_description}</p>
+                        <span className="text-yellow-600 font-medium">{testimonial.project_title}</span>
+                        <p className="text-sm text-gray-600">{testimonial.project_description}</p>
                       </div>
                       
                       {/* Testimonial Text */}
-                      <p className="text-gray-300 mb-4">"{testimonial.testimonial_text}"</p>
+                      <p className="text-gray-700 mb-4">"{testimonial.testimonial_text}"</p>
                       
                       {/* Screenshot & Actions Row */}
                       <div className="flex items-start gap-4">
@@ -530,10 +538,10 @@ export default function TestimonialsPage() {
                               {testimonial.voice_message_en && (
                                 <button
                                   onClick={() => toggleAudio(testimonial.voice_message_en, 'en')}
-                                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition ${
+                                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-colors duration-200 ${
                                     playingAudio?.url === testimonial.voice_message_en
-                                      ? 'bg-red-500/20 text-red-400'
-                                      : 'bg-blue-500/20 text-blue-400 hover:bg-blue-500/30'
+                                      ? 'bg-red-100 text-red-600'
+                                      : 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
                                   }`}
                                 >
                                   {playingAudio?.url === testimonial.voice_message_en ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
@@ -543,10 +551,10 @@ export default function TestimonialsPage() {
                               {testimonial.voice_message_rw && (
                                 <button
                                   onClick={() => toggleAudio(testimonial.voice_message_rw, 'rw')}
-                                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition ${
+                                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-colors duration-200 ${
                                     playingAudio?.url === testimonial.voice_message_rw
-                                      ? 'bg-red-500/20 text-red-400'
-                                      : 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
+                                      ? 'bg-red-100 text-red-600'
+                                      : 'bg-green-100 text-green-600 hover:bg-green-200'
                                   }`}
                                 >
                                   {playingAudio?.url === testimonial.voice_message_rw ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
@@ -558,12 +566,12 @@ export default function TestimonialsPage() {
                           
                           {/* Impact Stats */}
                           {testimonial.clients_before !== null && (
-                            <span className="px-2 py-1 bg-green-500/20 text-green-400 rounded-lg text-xs flex items-center gap-1">
+                            <span className="px-2 py-1 bg-green-100 text-green-600 rounded-lg text-xs flex items-center gap-1">
                               <TrendingUp className="w-3 h-3" /> +{calculateGrowth(testimonial.clients_before, testimonial.clients_after)}% Clients
                             </span>
                           )}
                           {testimonial.revenue_before !== null && (
-                            <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-xs flex items-center gap-1">
+                            <span className="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-lg text-xs flex items-center gap-1">
                               <TrendingUp className="w-3 h-3" /> +{calculateGrowth(testimonial.revenue_before, testimonial.revenue_after)}% Revenue
                             </span>
                           )}
@@ -574,7 +582,7 @@ export default function TestimonialsPage() {
                               href={testimonial.project_link}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 transition"
+                              className="flex items-center gap-1 text-xs text-yellow-600 hover:text-yellow-700 transition-colors duration-200"
                             >
                               <Globe className="w-3 h-3" /> Live Site
                             </a>
@@ -590,14 +598,14 @@ export default function TestimonialsPage() {
             {/* Empty State */}
             {filteredTestimonials.length === 0 && (
               <div className="text-center py-16">
-                <div className="w-20 h-20 bg-slate-800 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Search className="w-8 h-8 text-gray-500" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">No testimonials found</h3>
-                <p className="text-gray-400">Try adjusting your search or filter criteria</p>
+                <h3 className="text-xl font-bold mb-2 text-gray-800">No testimonials found</h3>
+                <p className="text-gray-600">Try adjusting your search or filter criteria</p>
                 <button 
                   onClick={() => {setSearchQuery(''); setFilter('all');}}
-                  className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition"
+                  className="mt-4 px-6 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg transition-colors duration-200"
                 >
                   Clear Filters
                 </button>
@@ -609,7 +617,7 @@ export default function TestimonialsPage() {
           <div className="hidden lg:block lg:col-span-3">
             <div className="sticky top-24 space-y-4">
               {/* Live Activity Feed */}
-              <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -620,11 +628,11 @@ export default function TestimonialsPage() {
                 <div className="space-y-3">
                   {recentSubmissions.map((sub, idx) => (
                     <div key={idx} className="flex items-center gap-3 text-sm">
-                      <div className="w-8 h-8 bg-slate-800 rounded-full flex items-center justify-center text-xs font-bold">
+                      <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-xs font-bold text-gray-700">
                         {sub.client_name.charAt(0)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-gray-300 truncate">{sub.client_name} shared a story</p>
+                        <p className="text-gray-700 truncate">{sub.client_name} shared a story</p>
                         <p className="text-xs text-gray-500">{sub.project_type}</p>
                       </div>
                     </div>
@@ -633,49 +641,49 @@ export default function TestimonialsPage() {
               </div>
 
               {/* Quick Stats */}
-              <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
                   Impact Overview
                 </h3>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-400">Avg Rating</span>
-                    <span className="font-bold text-amber-400">{avgRating}/5</span>
+                    <span className="text-sm text-gray-600">Avg Rating</span>
+                    <span className="font-bold text-yellow-600">{avgRating}/5</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-400">Growth Stories</span>
-                    <span className="font-bold text-green-400">{growthCount}</span>
+                    <span className="text-sm text-gray-600">Growth Stories</span>
+                    <span className="font-bold text-green-600">{growthCount}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-400">Voice Reviews</span>
-                    <span className="font-bold text-purple-400">{voiceCount}</span>
+                    <span className="text-sm text-gray-600">Voice Reviews</span>
+                    <span className="font-bold text-yellow-600">{voiceCount}</span>
                   </div>
                 </div>
               </div>
 
               {/* Submit CTA */}
-              <div className="bg-gradient-to-br from-blue-600/20 to-purple-600/20 rounded-2xl p-4 border border-blue-500/30">
-                <h3 className="font-bold mb-2 flex items-center gap-2">
-                  <Plus className="w-4 h-4 text-blue-400" />
+              <div className="bg-yellow-50 rounded-2xl p-4 border border-yellow-200">
+                <h3 className="font-bold mb-2 flex items-center gap-2 text-gray-800">
+                  <Plus className="w-4 h-4 text-yellow-600" />
                   Share Your Story
                 </h3>
-                <p className="text-sm text-gray-400 mb-3">Have you worked with me? Share your experience!</p>
+                <p className="text-sm text-gray-600 mb-3">Have you worked with me? Share your experience!</p>
                 <button
                   onClick={() => setShowSubmissionForm(true)}
-                  className="w-full py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition"
+                  className="w-full py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg text-sm font-medium transition-colors duration-200"
                 >
                   Submit Testimonial
                 </button>
               </div>
 
               {/* Top Industries */}
-              <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
                   Top Industries
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {['Website', 'Trading', 'Mobile App', 'Web App'].map((industry) => (
-                    <span key={industry} className="px-2 py-1 bg-slate-800 rounded-lg text-xs text-gray-400">
+                    <span key={industry} className="px-2 py-1 bg-gray-100 rounded-lg text-xs text-gray-600 hover:bg-gray-200 cursor-pointer transition-colors duration-200">
                       {industry}
                     </span>
                   ))}
@@ -689,7 +697,7 @@ export default function TestimonialsPage() {
       {/* Mobile FAB for Submit */}
       <button
         onClick={() => setShowSubmissionForm(true)}
-        className="lg:hidden fixed bottom-6 right-6 z-40 w-14 h-14 bg-blue-600 hover:bg-blue-700 rounded-full shadow-lg flex items-center justify-center transition hover:scale-110"
+        className="lg:hidden fixed bottom-6 right-6 z-40 w-14 h-14 bg-yellow-600 hover:bg-yellow-700 rounded-full shadow-lg flex items-center justify-center transition hover:scale-110"
       >
         <Plus className="w-6 h-6" />
       </button>

@@ -69,17 +69,17 @@ const IconLayer = () => (
 const getTechColor = (tech) => {
   const techLower = tech.toLowerCase()
   const colors = [
-    { match: ['react', 'tailwind'], style: 'bg-cyan-500/20 text-cyan-400 border-cyan-500/30' },
-    { match: ['next'], style: 'bg-white/10 text-white border-white/20' },
-    { match: ['node', 'mongo'], style: 'bg-green-500/20 text-green-400 border-green-500/30' },
-    { match: ['python', 'sql', 'database'], style: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
-    { match: ['javascript', 'ts'], style: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
-    { match: ['aws'], style: 'bg-amber-500/20 text-amber-400 border-amber-500/30' },
-    { match: ['docker'], style: 'bg-blue-500/20 text-blue-400 border-blue-500/30' },
+    { match: ['react', 'tailwind'], style: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
+    { match: ['next'], style: 'bg-gray-100 text-gray-700 border-gray-200' },
+    { match: ['node', 'mongo'], style: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
+    { match: ['python', 'sql', 'database'], style: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
+    { match: ['javascript', 'ts'], style: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
+    { match: ['aws'], style: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
+    { match: ['docker'], style: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
   ]
   
   const match = colors.find(c => c.match.some(m => techLower.includes(m)))
-  return match ? match.style : 'bg-slate-700/50 text-gray-300 border-slate-600'
+  return match ? match.style : 'bg-gray-100 text-gray-700 border-gray-200'
 }
 
 // Force scroll to top
@@ -157,9 +157,9 @@ export default function ProjectsPage() {
 
   const getStatusBadge = (status) => {
     const badges = {
-      completed: { bg: 'bg-green-500/20 text-green-400 border-green-500/30', text: 'Completed', icon: <IconCheck /> },
-      building: { bg: 'bg-amber-500/20 text-amber-400 border-amber-500/30', text: 'In Progress', icon: <IconRocket /> },
-      planned: { bg: 'bg-blue-500/20 text-blue-400 border-blue-500/30', text: 'Planned', icon: <IconLayer /> }
+      completed: { bg: 'bg-yellow-100 text-yellow-700 border-yellow-200', text: 'Completed', icon: <IconCheck /> },
+      building: { bg: 'bg-yellow-100 text-yellow-700 border-yellow-200', text: 'In Progress', icon: <IconRocket /> },
+      planned: { bg: 'bg-yellow-100 text-yellow-700 border-yellow-200', text: 'Planned', icon: <IconLayer /> }
     }
     const s = badges[status] || badges.planned
     return (
@@ -172,272 +172,385 @@ export default function ProjectsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[yellow-600]"></div>
       </div>
     )
   }
 
   return (
-    <div className="space-y-8">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 text-white overflow-hidden rounded-2xl">
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-        
-        <div className="relative px-6 py-12 md:py-16">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4">
-              Project <span className="text-amber-400">Portfolio</span>
-            </h1>
-            <p className="text-lg md:text-xl text-gray-200 mb-6 max-w-2xl mx-auto">
-              Explore my work in web development, mobile apps, trading systems, and blockchain solutions
-            </p>
-            
-            {/* Stats */}
-            <div className="flex flex-wrap justify-center gap-4 mb-6">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2">
-                <div className="text-2xl font-bold">{stats.total}</div>
-                <div className="text-xs text-gray-300">Projects</div>
+    <div className="min-h-screen bg-gray-100">
+      {/* TOP NAVIGATION BAR */}
+      <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            {/* Logo/Brand */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-[yellow-600] rounded-xl flex items-center justify-center">
+                <IconCode className="text-white" />
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2">
-                <div className="text-2xl font-bold text-green-400">{stats.completed}</div>
-                <div className="text-xs text-gray-300">Completed</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2">
-                <div className="text-2xl font-bold text-blue-400">{stats.live}</div>
-                <div className="text-xs text-gray-300">Live Demos</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2">
-                <div className="text-2xl font-bold text-purple-400">{stats.techs}+</div>
-                <div className="text-xs text-gray-300">Technologies</div>
+              <div>
+                <h1 className="font-bold text-lg text-gray-900">
+                  Project Portfolio
+                </h1>
+                <p className="text-xs text-gray-600">{projects.length} projects</p>
               </div>
             </div>
 
-            {/* CTA */}
-            <Link 
-              to="/hire-me"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-xl font-semibold transition"
-            >
-              Start Your Project <IconArrowRight />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Projects - Horizontal Scroll */}
-      {featuredProjects.length > 0 && (
-        <section>
-          <div className="flex items-center gap-2 mb-4">
-            <IconStar className="text-amber-400" />
-            <h2 className="text-2xl font-bold">Featured Projects</h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-4">
-            {featuredProjects.map(project => (
-              <div 
-                key={project.id}
-                className="group relative bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl overflow-hidden border border-slate-700 hover:border-amber-500/50 transition-all duration-300 hover:-translate-y-1"
-              >
-                <div className="relative h-40 overflow-hidden">
-                  {project.image_url ? (
-                    <img src={project.image_url} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-blue-600/30 to-purple-600/30 flex items-center justify-center">
-                      <IconCode className="text-4xl text-gray-600" />
-                    </div>
-                  )}
-                  <div className="absolute top-2 right-2">
-                    {getStatusBadge(project.status)}
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-bold text-lg mb-1 group-hover:text-amber-400 transition-colors">{project.title}</h3>
-                  <p className="text-gray-400 text-sm line-clamp-2">{project.description}</p>
-                </div>
+            {/* Quick Stats Row */}
+            <div className="hidden md:flex items-center gap-6">
+              <div className="flex items-center gap-2 text-sm">
+                <IconCheck className="text-yellow-600" />
+                <span className="text-gray-600">Completed:</span>
+                <span className="font-semibold text-gray-800">{stats.completed}</span>
               </div>
-            ))}
+              <div className="flex items-center gap-2 text-sm">
+                <IconRocket className="text-yellow-600" />
+                <span className="text-gray-600">Live:</span>
+                <span className="font-semibold text-gray-800">{stats.live}</span>
+              </div>
+            </div>
           </div>
-        </section>
-      )}
-
-      {/* Filters & Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        {/* Category Filter */}
-        <div className="flex flex-wrap gap-2">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                selectedCategory === cat
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
-                  : 'bg-slate-800 hover:bg-slate-700 text-gray-300'
-              }`}
-            >
-              {cat === 'all' ? 'All Projects' : cat.charAt(0).toUpperCase() + cat.slice(1)}
-            </button>
-          ))}
-        </div>
-
-        {/* View Toggle */}
-        <div className="flex items-center gap-2 bg-slate-800 rounded-full p-1">
-          <button 
-            onClick={() => setViewMode('grid')}
-            className={`px-3 py-1.5 rounded-full text-sm transition ${viewMode === 'grid' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
-          >
-            Grid
-          </button>
-          <button 
-            onClick={() => setViewMode('list')}
-            className={`px-3 py-1.5 rounded-full text-sm transition ${viewMode === 'list' ? 'bg-blue-600 text-white' : 'text-gray-400'}`}
-          >
-            List
-          </button>
         </div>
       </div>
 
-      {/* Projects Grid/List */}
-      <div className={viewMode === 'grid' 
-        ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        : "space-y-4"
-      }>
-        {filteredProjects.map(project => (
-          <div 
-            key={project.id} 
-            className={`group bg-gradient-to-br from-slate-800/90 to-slate-900/90 rounded-2xl overflow-hidden border border-slate-700 hover:border-blue-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-blue-500/10 ${viewMode === 'grid' ? 'hover:-translate-y-2' : 'flex flex-col md:flex-row'}`}
-          >
-            {/* Image */}
-            <div className={`relative overflow-hidden ${viewMode === 'list' ? 'md:w-72 h-48 md:h-auto shrink-0' : ''}`}>
-              {project.image_url ? (
-                <img
-                  src={project.image_url}
-                  alt={project.title}
-                  className={`w-full object-cover transition-transform duration-700 group-hover:scale-110 ${viewMode === 'grid' ? 'h-48' : 'h-full'}`}
-                />
-              ) : (
-                <div className={`bg-gradient-to-br from-blue-600/20 to-purple-600/20 flex items-center justify-center ${viewMode === 'grid' ? 'h-48' : 'h-full min-h-[200px]'}`}>
-                  <IconCode className="text-5xl text-gray-600 group-hover:text-blue-500 transition-colors" />
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="grid lg:grid-cols-12 gap-6">
+          
+          {/* LEFT SIDEBAR - Sticky Navigation */}
+          <div className="hidden lg:block lg:col-span-3">
+            <div className="sticky top-24 space-y-4">
+              {/* Main Navigation */}
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                  Filter
+                </h3>
+                <nav className="space-y-1">
+                  {categories.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors duration-200 ${
+                        selectedCategory === cat 
+                          ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                          : 'text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      <span className="flex-1 text-left">{cat === 'all' ? 'All Projects' : cat.charAt(0).toUpperCase() + cat.slice(1)}</span>
+                      <span className="text-xs bg-gray-200 px-2 py-0.5 rounded-full">
+                        {cat === 'all' ? projects.length : projects.filter(p => p.category === cat).length}
+                      </span>
+                    </button>
+                  ))}
+                </nav>
+              </div>
+
+              {/* View Toggle */}
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                  View Mode
+                </h3>
+                <div className="flex gap-2">
+                  <button 
+                    onClick={() => setViewMode('grid')}
+                    className={`flex-1 px-3 py-2 rounded-xl text-sm transition-colors duration-200 ${viewMode === 'grid' ? 'bg-yellow-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+                  >
+                    Grid
+                  </button>
+                  <button 
+                    onClick={() => setViewMode('list')}
+                    className={`flex-1 px-3 py-2 rounded-xl text-sm transition-colors duration-200 ${viewMode === 'list' ? 'bg-yellow-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+                  >
+                    List
+                  </button>
                 </div>
-              )}
-              
-              {/* Favorite Button */}
-              <button
-                onClick={() => toggleFavorite(project.id)}
-                className={`absolute top-3 left-3 p-2 rounded-full transition-colors ${favorites.includes(project.id) ? 'text-red-500 bg-red-500/20' : 'text-white bg-black/50 hover:bg-black/70'}`}
-              >
-                <IconHeart filled={favorites.includes(project.id)} />
-              </button>
-              
-              {/* Status */}
-              <div className="absolute top-3 right-3">
-                {getStatusBadge(project.status)}
+              </div>
+
+              {/* Quick Stats */}
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                  Overview
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Total Projects</span>
+                    <span className="font-semibold text-gray-800">{stats.total}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Technologies</span>
+                    <span className="font-semibold text-gray-800">{stats.techs}+</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* MAIN CONTENT AREA */}
+          <div className="lg:col-span-6 space-y-6">
+            
+            {/* HERO SECTION */}
+            <div className="bg-white rounded-3xl p-6 border border-gray-300">
+              <div className="flex flex-col md:flex-row gap-6 items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-2 border-gray-200 shadow-lg">
+                    <img 
+                      src="/owner-photo.jpg" 
+                      alt="Generas Kagiraneza" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Crect fill='%23fbbf24' width='160' height='160'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%231f2937'%3EPhoto%3C/text%3E%3C/svg%3E";
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-3xl font-bold mb-2 text-gray-800">Project Portfolio</h2>
+                  <p className="text-gray-600">
+                    Explore my work in web development, mobile apps, trading systems, and blockchain solutions
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Content */}
-            <div className="p-5 flex-1">
-              <h3 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors">
-                {project.title}
-              </h3>
-              
-              <p className="text-gray-400 text-sm mb-4 line-clamp-2">
-                {project.description}
-              </p>
-              
-              {/* Tech Stack */}
-              {project.tech_stack && project.tech_stack.length > 0 && (
-                <div className="mb-4">
-                  <div className="flex flex-wrap gap-1.5">
-                    {project.tech_stack.slice(0, viewMode === 'grid' ? 4 : 6).map((tech, i) => {
-                      const colorClass = getTechColor(tech)
-                      return (
-                        <span
-                          key={i}
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs border ${colorClass}`}
-                        >
-                          {tech}
-                        </span>
-                      )
-                    })}
-                    {project.tech_stack.length > (viewMode === 'grid' ? 4 : 6) && (
-                      <span className="text-xs text-gray-500 px-2 py-0.5">+{project.tech_stack.length - (viewMode === 'grid' ? 4 : 6)}</span>
+            {/* Featured Projects */}
+            {featuredProjects.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <IconStar className="text-yellow-500" />
+                  <h2 className="text-xl font-bold text-gray-800">Featured Projects</h2>
+                </div>
+                <div className="grid md:grid-cols-3 gap-4">
+                  {featuredProjects.map(project => (
+                    <div 
+                      key={project.id}
+                      className="group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+                    >
+                      <div className="relative h-40 overflow-hidden">
+                        {project.image_url ? (
+                          <img src={project.image_url} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-yellow-100 to-yellow-100 flex items-center justify-center">
+                            <IconCode className="text-4xl text-yellow-600" />
+                          </div>
+                        )}
+                        <div className="absolute top-2 right-2">
+                          {getStatusBadge(project.status)}
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <h3 className="font-bold text-lg mb-1 group-hover:text-yellow-600 transition-colors duration-200 text-gray-800">{project.title}</h3>
+                        <p className="text-gray-600 text-sm line-clamp-2">{project.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Projects Grid/List */}
+            <div className={viewMode === 'grid' 
+              ? "grid grid-cols-1 md:grid-cols-2 gap-6"
+              : "space-y-4"
+            }>
+              {filteredProjects.map(project => (
+                <div 
+                  key={project.id} 
+                  className={`group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 ${viewMode === 'grid' ? '' : 'flex flex-col md:flex-row'}`}
+                >
+                  {/* Image */}
+                  <div className={`relative overflow-hidden ${viewMode === 'list' ? 'md:w-72 h-48 md:h-auto shrink-0' : ''}`}>
+                    {project.image_url ? (
+                      <img
+                        src={project.image_url}
+                        alt={project.title}
+                        className={`w-full object-cover transition-transform duration-700 group-hover:scale-110 ${viewMode === 'grid' ? 'h-48' : 'h-full'}`}
+                      />
+                    ) : (
+                      <div className={`bg-gradient-to-br from-yellow-100 to-yellow-100 flex items-center justify-center ${viewMode === 'grid' ? 'h-48' : 'h-full min-h-[200px]'}`}>
+                        <IconCode className="text-5xl text-yellow-600 group-hover:text-yellow-700 transition-colors duration-200" />
+                      </div>
+                    )}
+                    
+                    {/* Favorite Button */}
+                    <button
+                      onClick={() => toggleFavorite(project.id)}
+                      className={`absolute top-3 left-3 p-2 rounded-full transition-colors duration-200 ${favorites.includes(project.id) ? 'text-yellow-600 bg-yellow-100' : 'text-gray-600 bg-white hover:bg-gray-100'}`}
+                    >
+                      <IconHeart filled={favorites.includes(project.id)} />
+                    </button>
+                    
+                    {/* Status */}
+                    <div className="absolute top-3 right-3">
+                      {getStatusBadge(project.status)}
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-5 flex-1">
+                    <h3 className="text-xl font-bold mb-2 group-hover:text-yellow-600 transition-colors duration-200 text-gray-800">
+                      {project.title}
+                    </h3>
+                    
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                      {project.description}
+                    </p>
+                    
+                    {/* Tech Stack */}
+                    {project.tech_stack && project.tech_stack.length > 0 && (
+                      <div className="mb-4">
+                        <div className="flex flex-wrap gap-1.5">
+                          {project.tech_stack.slice(0, viewMode === 'grid' ? 4 : 6).map((tech, i) => {
+                            const colorClass = getTechColor(tech)
+                            return (
+                              <span
+                                key={i}
+                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs border ${colorClass}`}
+                              >
+                                {tech}
+                              </span>
+                            )
+                          })}
+                          {project.tech_stack.length > (viewMode === 'grid' ? 4 : 6) && (
+                            <span className="text-xs text-gray-600 px-2 py-0.5">+{project.tech_stack.length - (viewMode === 'grid' ? 4 : 6)}</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Actions */}
+                    <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                      <div className="flex gap-3">
+                        {project.github_url && (
+                          <a
+                            href={project.github_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                          >
+                            <IconGithub />
+                            <span className="hidden sm:inline">Code</span>
+                          </a>
+                        )}
+                        {project.live_demo_url && (
+                          <a
+                            href={project.live_demo_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 text-sm text-yellow-600 hover:text-yellow-700 transition-colors duration-200"
+                          >
+                            <IconExternal />
+                            <span className="hidden sm:inline">Live</span>
+                          </a>
+                        )}
+                      </div>
+                      
+                      {/* Views */}
+                      <div className="flex items-center gap-1 text-xs text-gray-600">
+                        <IconEye />
+                        <span>{Math.floor(Math.random() * 500) + 100}</span>
+                      </div>
+                    </div>
+                    
+                    {/* Comments - Only in grid mode */}
+                    {viewMode === 'grid' && (
+                      <div className="mt-4 pt-3 border-t border-gray-200">
+                        <CommentsSection contentType="project" contentId={project.id} compact />
+                      </div>
                     )}
                   </div>
                 </div>
-              )}
-              
-              {/* Actions */}
-              <div className="flex items-center justify-between pt-3 border-t border-slate-700/50">
-                <div className="flex gap-3">
-                  {project.github_url && (
-                    <a
-                      href={project.github_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-white transition-colors"
-                    >
-                      <IconGithub />
-                      <span className="hidden sm:inline">Code</span>
-                    </a>
-                  )}
-                  {project.live_demo_url && (
-                    <a
-                      href={project.live_demo_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm text-blue-400 hover:text-blue-300 transition-colors"
-                    >
-                      <IconExternal />
-                      <span className="hidden sm:inline">Live</span>
-                    </a>
-                  )}
+              ))}
+            </div>
+
+            {/* Empty State */}
+            {filteredProjects.length === 0 && (
+              <div className="text-center py-16">
+                <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center text-3xl text-gray-600">
+                  &lt;/&gt;
                 </div>
-                
-                {/* Views */}
-                <div className="flex items-center gap-1 text-xs text-gray-500">
-                  <IconEye />
-                  <span>{Math.floor(Math.random() * 500) + 100}</span>
-                </div>
+                <p className="text-lg text-gray-700 mb-2">No projects found</p>
+                <p className="text-sm text-gray-600 mb-4">Try selecting a different category</p>
+                <button
+                  onClick={() => setSelectedCategory('all')}
+                  className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors duration-200"
+                >
+                  View All Projects
+                </button>
               </div>
-              
-              {/* Comments - Only in grid mode */}
-              {viewMode === 'grid' && (
-                <div className="mt-4 pt-3 border-t border-slate-700/50">
-                  <CommentsSection contentType="project" contentId={project.id} compact />
-                </div>
-              )}
+            )}
+
+            {/* Bottom CTA */}
+            <div className="bg-white rounded-2xl p-6 text-center border border-gray-300">
+              <h2 className="text-xl font-bold mb-2 text-gray-800">Have a project in mind?</h2>
+              <p className="text-gray-600 mb-4">Let's build something amazing together</p>
+              <Link 
+                to="/hire-me"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl font-semibold transition-colors duration-200"
+              >
+                Hire Me <IconArrowRight />
+              </Link>
             </div>
           </div>
-        ))}
-      </div>
 
-      {/* Empty State */}
-      {filteredProjects.length === 0 && (
-        <div className="text-center py-16">
-          <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-slate-800 flex items-center justify-center text-3xl text-gray-600">
-            &lt;/&gt;
+          {/* RIGHT SIDEBAR - Stats */}
+          <div className="hidden lg:block lg:col-span-3">
+            <div className="sticky top-24 space-y-4">
+              
+              {/* Stats Cards */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 bg-yellow-100">
+                    <IconCheck className="text-yellow-600" />
+                  </div>
+                  <p className="text-2xl font-bold text-gray-800">{stats.completed}</p>
+                  <p className="text-xs text-gray-600">Completed</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 bg-yellow-100">
+                    <IconRocket className="text-yellow-600" />
+                  </div>
+                  <p className="text-2xl font-bold text-gray-800">{stats.live}</p>
+                  <p className="text-xs text-gray-600">Live Demos</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 bg-yellow-100">
+                    <IconCode className="text-yellow-600" />
+                  </div>
+                  <p className="text-2xl font-bold text-gray-800">{stats.techs}+</p>
+                  <p className="text-xs text-gray-600">Technologies</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 bg-yellow-100">
+                    <IconStar className="text-yellow-600" />
+                  </div>
+                  <p className="text-2xl font-bold text-gray-800">{featuredProjects.length}</p>
+                  <p className="text-xs text-gray-600">Featured</p>
+                </div>
+              </div>
+
+              {/* Progress Overview */}
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                  Completion Rate
+                </h3>
+                <div className="space-y-3">
+                  <div>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="text-gray-600">Completed</span>
+                      <span className="font-semibold text-gray-800">{stats.completed}/{stats.total}</span>
+                    </div>
+                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-yellow-600 transition-all duration-300"
+                        style={{ width: `${(stats.completed / stats.total) * 100}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <p className="text-lg text-gray-400 mb-2">No projects found</p>
-          <p className="text-sm text-gray-500 mb-4">Try selecting a different category</p>
-          <button
-            onClick={() => setSelectedCategory('all')}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
-          >
-            View All Projects
-          </button>
         </div>
-      )}
-
-      {/* Bottom CTA */}
-      <section className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-8 text-center border border-slate-700">
-        <h2 className="text-2xl font-bold mb-2">Have a project in mind?</h2>
-        <p className="text-gray-400 mb-4">Let's build something amazing together</p>
-        <Link 
-          to="/hire-me"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition"
-        >
-          Hire Me <IconArrowRight />
-        </Link>
-      </section>
+      </div>
     </div>
   )
 }

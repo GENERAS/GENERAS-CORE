@@ -30,7 +30,7 @@ const AboutSection = () => {
           </div>
 
           <div className="order-1 md:order-2">
-            <p className="text-lg text-[#714B67] mb-3 font-medium">
+            <p className="text-lg text-[yellow-600] mb-3 font-medium">
               About Me
             </p>
             <h2 className="text-5xl md:text-6xl font-semibold text-gray-900 mb-4 leading-tight">
@@ -46,7 +46,7 @@ const AboutSection = () => {
             <div className="space-y-4 mb-8">
               {skills.map((skill, idx) => (
                 <div key={idx} className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-[#714B67] rounded-lg flex items-center justify-center shrink-0 text-white text-lg font-medium">
+                  <div className="w-8 h-8 bg-[yellow-600] rounded-lg flex items-center justify-center shrink-0 text-white text-lg font-medium">
                     {idx + 1}
                   </div>
                   <div>
@@ -59,7 +59,7 @@ const AboutSection = () => {
 
             <Link
               to="/academic"
-              className="inline-flex items-center gap-2 text-[#714B67] hover:text-[#5a3a52] text-lg font-medium transition-colors duration-200"
+              className="inline-flex items-center gap-2 text-[yellow-600] hover:text-[#5a3a52] text-lg font-medium transition-colors duration-200"
             >
               See My Full Journey →
             </Link>

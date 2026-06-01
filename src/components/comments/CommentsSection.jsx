@@ -210,7 +210,7 @@ export default function CommentsSection({ contentType, contentId }) {
   }
 
   if (loading) {
-    return <div className="text-center py-4 text-gray-400">Loading comments...</div>
+    return <div className="text-center py-4 text-gray-600">Loading comments...</div>
   }
 
   const visibleCommentsList = comments.slice(0, visibleComments)
@@ -223,7 +223,7 @@ export default function CommentsSection({ contentType, contentId }) {
           setReplyTo(null)
           setShowForm(!showForm)
         }}
-        className="text-sm text-gray-400 hover:text-blue-400 transition"
+        className="text-sm text-gray-600 hover:text-yellow-600 transition-colors duration-200"
       >
         {showForm ? 'Cancel' : 'Add a comment...'}
       </button>
@@ -231,9 +231,9 @@ export default function CommentsSection({ contentType, contentId }) {
       {showForm && (
         <div className="mt-3 mb-4">
           {replyTo && (
-            <div className="mb-2 text-xs text-gray-500">
-              Replying to <span className="text-blue-400">{replyTo.visitor_name}</span>
-              <button onClick={cancelReply} className="ml-2 text-red-400 hover:text-red-300">Cancel</button>
+            <div className="mb-2 text-xs text-gray-600">
+              Replying to <span className="text-yellow-600">{replyTo.visitor_name}</span>
+              <button onClick={cancelReply} className="ml-2 text-yellow-600 hover:text-yellow-700 transition-colors duration-200">Cancel</button>
             </div>
           )}
           
@@ -244,7 +244,7 @@ export default function CommentsSection({ contentType, contentId }) {
                 placeholder="Your name *"
                 value={visitorName}
                 onChange={(e) => setVisitorName(e.target.value)}
-                className="bg-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-yellow-500 text-gray-900"
                 required
               />
               <input
@@ -252,7 +252,7 @@ export default function CommentsSection({ contentType, contentId }) {
                 placeholder="Your email (optional)"
                 value={visitorEmail}
                 onChange={(e) => setVisitorEmail(e.target.value)}
-                className="bg-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-yellow-500 text-gray-900"
               />
             </div>
             
@@ -260,7 +260,7 @@ export default function CommentsSection({ contentType, contentId }) {
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
               placeholder={replyTo ? `Reply to ${replyTo.visitor_name}...` : "Add a comment..."}
-              className="w-full bg-slate-700 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="w-full bg-gray-100 border border-gray-200 rounded-lg px-3 py-2 text-sm resize-none focus:outline-none focus:ring-1 focus:ring-yellow-500 text-gray-900"
               rows="2"
             />
             
@@ -271,7 +271,7 @@ export default function CommentsSection({ contentType, contentId }) {
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-1.5 rounded-lg text-sm font-semibold disabled:opacity-50"
+                className="bg-yellow-600 hover:bg-yellow-700 px-4 py-1.5 rounded-lg text-sm font-semibold disabled:opacity-50 transition-colors duration-200"
               >
                 {submitting ? 'Posting...' : 'Post'}
               </button>
@@ -282,7 +282,7 @@ export default function CommentsSection({ contentType, contentId }) {
 
       <div className="space-y-3 mt-3 max-h-[400px] overflow-y-auto pr-2">
         {visibleCommentsList.length === 0 ? (
-          <p className="text-gray-500 text-sm text-center py-4">No comments yet. Be the first!</p>
+          <p className="text-gray-600 text-sm text-center py-4">No comments yet. Be the first!</p>
         ) : (
           visibleCommentsList.map(comment => {
             const isOwner = comment.visitor_id === visitorId
@@ -294,16 +294,16 @@ export default function CommentsSection({ contentType, contentId }) {
             const hasMoreReplies = replyCount > visibleRepliesCount
 
             return (
-              <div key={comment.id} className="bg-slate-800/30 rounded-lg p-3">
+              <div key={comment.id} className="bg-white rounded-lg p-3 border border-gray-200">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center text-sm font-bold">
+                    <div className="w-8 h-8 bg-[yellow-600] rounded-full flex items-center justify-center text-sm font-bold text-white">
                       {comment.visitor_name?.charAt(0) || '?'}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm">{comment.visitor_name || 'Anonymous'}</span>
-                        <span className="text-xs text-gray-500">{formatTimeAgo(comment.created_at)}</span>
+                        <span className="font-semibold text-sm text-gray-800">{comment.visitor_name || 'Anonymous'}</span>
+                        <span className="text-xs text-gray-600">{formatTimeAgo(comment.created_at)}</span>
                       </div>
                       {comment.rating > 0 && (
                         <StarRating rating={comment.rating} readonly size="text-xs" />
@@ -314,9 +314,9 @@ export default function CommentsSection({ contentType, contentId }) {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleLike(comment.id)}
-                      className="text-gray-500 hover:text-red-500 transition"
+                      className="text-gray-600 hover:text-yellow-600 transition-colors duration-200"
                     >
-                      {likedComments[comment.id] ? <FaHeart className="text-red-500" /> : <FaRegHeart />}
+                      {likedComments[comment.id] ? <FaHeart className="text-yellow-600" /> : <FaRegHeart />}
                     </button>
                     {canDelete && (
                       <button
@@ -326,7 +326,7 @@ export default function CommentsSection({ contentType, contentId }) {
                             loadComments()
                           }
                         }}
-                        className="text-gray-500 hover:text-red-500 transition text-xs"
+                        className="text-gray-600 hover:text-yellow-600 transition-colors duration-200 text-xs"
                       >
                         <FaTrash />
                       </button>
@@ -334,45 +334,45 @@ export default function CommentsSection({ contentType, contentId }) {
                   </div>
                 </div>
 
-                <p className="text-gray-300 text-sm mt-1 ml-10">{comment.comment_text}</p>
+                <p className="text-gray-700 text-sm mt-1 ml-10">{comment.comment_text}</p>
 
                 <div className="flex items-center gap-3 mt-1 ml-10">
                   <button
                     onClick={() => startReply(comment)}
-                    className="text-xs text-gray-500 hover:text-blue-400 transition"
+                    className="text-xs text-gray-600 hover:text-yellow-600 transition-colors duration-200"
                   >
                     Reply
                   </button>
                   {replyCount > 0 && (
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-600">
                       {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
                     </span>
                   )}
                 </div>
 
                 {replyCount > 0 && (
-                  <div className="ml-8 mt-2 pl-3 border-l-2 border-slate-700 space-y-2">
+                  <div className="ml-8 mt-2 pl-3 border-l-2 border-gray-200 space-y-2">
                     {visibleRepliesList.map(reply => (
-                      <div key={reply.id} className="bg-slate-700/20 rounded-lg p-2">
+                      <div key={reply.id} className="bg-gray-50 rounded-lg p-2">
                         <div className="flex justify-between items-start">
                           <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 bg-slate-600 rounded-full flex items-center justify-center text-xs font-bold">
+                            <div className="w-6 h-6 bg-gray-200 rounded-full flex items-center justify-center text-xs font-bold text-gray-700">
                               {reply.visitor_name?.charAt(0) || '?'}
                             </div>
                             <div>
-                              <span className="font-semibold text-xs">{reply.visitor_name || 'Anonymous'}</span>
-                              <span className="text-xs text-gray-500 ml-2">{formatTimeAgo(reply.created_at)}</span>
+                              <span className="font-semibold text-xs text-gray-800">{reply.visitor_name || 'Anonymous'}</span>
+                              <span className="text-xs text-gray-600 ml-2">{formatTimeAgo(reply.created_at)}</span>
                             </div>
                           </div>
                         </div>
-                        <p className="text-gray-400 text-xs mt-1 ml-8">{reply.comment_text}</p>
+                        <p className="text-gray-700 text-xs mt-1 ml-8">{reply.comment_text}</p>
                       </div>
                     ))}
                     
                     {hasMoreReplies && (
                       <button
                         onClick={() => loadMoreReplies(comment.id)}
-                        className="text-xs text-blue-400 hover:text-blue-300 transition mt-1"
+                        className="text-xs text-yellow-600 hover:text-yellow-700 transition-colors duration-200 mt-1"
                       >
                         View more replies ({replyCount - visibleRepliesCount} left)
                       </button>
@@ -387,7 +387,7 @@ export default function CommentsSection({ contentType, contentId }) {
         {hasMoreComments && (
           <button
             onClick={loadMoreComments}
-            className="w-full text-center text-sm text-blue-400 hover:text-blue-300 py-2 transition"
+            className="w-full text-center text-sm text-yellow-600 hover:text-yellow-700 py-2 transition-colors duration-200"
           >
             View more comments ({comments.length - visibleComments} left)
           </button>

@@ -51,27 +51,27 @@ export default function SkillsMatrix() {
   }
 
   const categories = [
-    { id: 'development', label: 'Development', icon: 'development', color: 'text-blue-500' },
-    { id: 'trading', label: 'Trading', icon: 'trading', color: 'text-green-500' },
-    { id: 'entrepreneurial', label: 'Entrepreneurial', icon: 'entrepreneurial', color: 'text-purple-500' }
+    { id: 'development', label: 'Development', icon: 'development', color: 'text-yellow-600' },
+    { id: 'trading', label: 'Trading', icon: 'trading', color: 'text-yellow-600' },
+    { id: 'entrepreneurial', label: 'Entrepreneurial', icon: 'entrepreneurial', color: 'text-yellow-600' }
   ]
 
   const filteredSkills = skills.filter(skill => skill.category === activeCategory)
 
   if (loading) {
     return (
-      <div className="bg-slate-800/50 rounded-xl p-6">
+      <div className="bg-white rounded-xl p-6 border border-gray-200">
         <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-600"></div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="bg-slate-800/50 rounded-xl p-6">
-      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-        🧠 Skills Matrix
+    <div className="bg-white rounded-xl p-6 border border-gray-200">
+      <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-gray-800">
+        Skills Matrix
       </h2>
 
       {/* Category Tabs */}
@@ -84,8 +84,8 @@ export default function SkillsMatrix() {
               onClick={() => setActiveCategory(cat.id)}
               className={`px-4 py-2 rounded-lg flex items-center gap-2 transition ${
                 activeCategory === cat.id
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-slate-700 hover:bg-slate-600'
+                  ? 'bg-yellow-600 text-white shadow-lg transform scale-105'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
               }`}
             >
               <IconComponent />
@@ -97,20 +97,20 @@ export default function SkillsMatrix() {
 
       {/* Skills List */}
       {filteredSkills.length === 0 ? (
-        <p className="text-center text-gray-400 py-8">
+        <p className="text-center text-gray-600 py-8">
           No skills added yet. Go to Admin Panel → Skills to add your skills.
         </p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredSkills.map(skill => (
-            <div key={skill.id} className="bg-slate-700/30 rounded-lg p-4">
+            <div key={skill.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
               <div className="flex justify-between items-center mb-2">
-                <span className="font-medium">{skill.skill_name}</span>
-                <span className="text-sm text-gray-400">{skill.progress}%</span>
+                <span className="font-medium text-gray-800">{skill.skill_name}</span>
+                <span className="text-sm text-gray-600">{skill.progress}%</span>
               </div>
-              <div className="h-2 bg-slate-600 rounded-full overflow-hidden">
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                  className="h-full bg-yellow-600 rounded-full transition-all duration-500"
                   style={{ width: `${skill.progress}%` }}
                 />
               </div>

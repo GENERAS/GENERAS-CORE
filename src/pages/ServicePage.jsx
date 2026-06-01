@@ -265,11 +265,11 @@ const ServicePage = () => {
   };
 
   const getStatusIcon = (status, paymentStatus) => {
-    if (paymentStatus === 'verified') return <CheckCircle className="w-5 h-5 text-green-500" />;
+    if (paymentStatus === 'verified') return <CheckCircle className="w-5 h-5 text-yellow-500" />;
     if (paymentStatus === 'awaiting_verification') return <Clock className="w-5 h-5 text-yellow-500" />;
-    if (status === 'completed') return <CheckCircle className="w-5 h-5 text-green-500" />;
-    if (status === 'rejected') return <XCircle className="w-5 h-5 text-red-500" />;
-    return <Clock className="w-5 h-5 text-blue-500" />;
+    if (status === 'completed') return <CheckCircle className="w-5 h-5 text-yellow-500" />;
+    if (status === 'rejected') return <XCircle className="w-5 h-5 text-yellow-500" />;
+    return <Clock className="w-5 h-5 text-buue00" />;
   };
 
   const getStatusText = (app) => {
@@ -313,10 +313,10 @@ const ServicePage = () => {
 
   const getCategoryColor = (category) => {
     switch(category) {
-      case 'trading': return 'from-green-500 to-emerald-600';
-      case 'development': return 'from-blue-500 to-indigo-600';
-      case 'business': return 'from-purple-500 to-pink-600';
-      case 'blog': return 'from-orange-500 to-red-600';
+      case 'trading': return 'from-yellow-500 to-yellow-600';
+      case 'development': return 'from-gray-700 to-gray-800';
+      case 'business': return 'from-gray-600 to-gray-700';
+      case 'blog': return 'from-gray-500 to-gray-600';
       default: return 'from-gray-500 to-gray-600';
     }
   };
@@ -335,7 +335,7 @@ const ServicePage = () => {
 
   // Render Functions
   const renderHero = () => (
-    <section className="relative bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 text-white overflow-hidden">
+    <section className="relative bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
       <div className="absolute inset-0 bg-black opacity-50"></div>
       <div className="absolute inset-0 bg-grid-white/[0.05] bg-[length:20px_20px]"></div>
       <div className="relative container mx-auto px-4 py-16 lg:py-24">
@@ -348,11 +348,11 @@ const ServicePage = () => {
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-              <Shield className="w-5 h-5 text-green-400" />
+              <Shield className="w-5 h-5 text-yellow-400" />
               <span>100% Guaranteed</span>
             </div>
             <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-              <Users className="w-5 h-5 text-blue-400" />
+              <Users className="w-5 h-5 text-yellow-400" />
               <span>100+ Students</span>
             </div>
             <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
@@ -380,7 +380,7 @@ const ServicePage = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-4 md:px-8 py-4 font-semibold transition-all ${
                 activeTab === tab.id
-                  ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
+                  ? 'text-yellow-600 border-b-2 border-yellow-600 bg-yellow-50'
                   : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
               }`}
             >
@@ -398,7 +398,7 @@ const ServicePage = () => {
     if (loadingServices) {
       return (
         <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-buue00"></div>
         </div>
       );
     }
@@ -414,7 +414,7 @@ const ServicePage = () => {
                 onClick={() => setSelectedCategory(cat.id)}
                 className={`flex items-center gap-2 px-5 py-2 rounded-full font-medium transition-all duration-300 ${
                   selectedCategory === cat.id
-                    ? 'bg-blue-600 text-white shadow-lg transform scale-105'
+                    ? 'bg-yellow-600 text-white shadow-lg transform scale-105'
                     : 'bg-white text-gray-700 hover:bg-gray-100 shadow-md'
                 }`}
               >
@@ -469,13 +469,13 @@ const ServicePage = () => {
 
                     <div className="mb-6">
                       <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-green-500" />
+                        <CheckCircle className="w-5 h-5 text-yellow-500" />
                         What's Included
                       </h3>
                       <div className="grid grid-cols-2 gap-2">
                         {service.features?.slice(0, 4).map((feature, idx) => (
                           <div key={idx} className="flex items-center gap-2 text-sm text-gray-600">
-                            <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                            <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full"></div>
                             {feature}
                           </div>
                         ))}
@@ -492,13 +492,13 @@ const ServicePage = () => {
                     <div className="flex flex-col sm:flex-row gap-3">
                       <button
                         onClick={() => handleServiceSelect(service)}
-                        className="flex-1 text-center bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                        className="flex-1 text-center bg-gradient-to-r from-buue00 to-yellow-600 text-white py-3 rounded-xl font-semibold hover:from-blb-ue hover:to-yellow-700 transition-all duration-300 shadow-lg hover:shadow-xl"
                       >
                         Apply Now
                       </button>
                       <button
                         onClick={() => navigate(`/services/${service.slug}`)}
-                        className="flex-1 text-center border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:border-blue-600 hover:text-blue-600 transition-all duration-300"
+                        className="flex-1 text-center border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:border-buue00 hover:text-blb-ue transition-all duration-300"
                       >
                         Learn More
                         <ChevronRight className="w-4 h-4 inline ml-1" />
@@ -513,7 +513,7 @@ const ServicePage = () => {
 
         {/* Testimonials */}
         {testimonials.length > 0 && (
-          <section className="bg-gradient-to-r from-blue-50 to-indigo-50 py-16">
+          <section className="bg-gradient-to-r from-buue0 to-yellow-50 py-16">
             <div className="container mx-auto px-4">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold text-gray-800 mb-4">What Students Say</h2>
@@ -531,8 +531,8 @@ const ServicePage = () => {
                     </div>
                     <p className="text-gray-600 mb-4">"{testimonial.content}"</p>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                        <User className="w-5 h-5 text-blue-600" />
+                      <div className="w-10 h-10 bg-buue00 rounded-full flex items-center justify-center">
+                        <User className="w-5 h-5 text-buue00" />
                       </div>
                       <div>
                         <p className="font-semibold text-gray-800">{testimonial.author_name}</p>
@@ -547,7 +547,7 @@ const ServicePage = () => {
         )}
 
         {/* Trust Indicators */}
-        <section className="bg-gradient-to-r from-blue-50 to-indigo-50 py-16">
+        <section className="bg-gradient-to-r from-buue0 to-yellow-50 py-16">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-800 mb-4">Why Choose Me?</h2>
@@ -557,29 +557,29 @@ const ServicePage = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="text-center">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-8 h-8 text-blue-600" />
+                <div className="w-16 h-16 bg-buue00 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Shield className="w-8 h-8 text-buue00" />
                 </div>
                 <h3 className="font-semibold text-gray-800 mb-2">Satisfaction Guaranteed</h3>
                 <p className="text-sm text-gray-600">Full refund if not satisfied after first session</p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Clock className="w-8 h-8 text-green-600" />
+                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Clock className="w-8 h-8 text-yellow-600" />
                 </div>
                 <h3 className="font-semibold text-gray-800 mb-2">Quick Response</h3>
                 <p className="text-sm text-gray-600">Payment verification within 24 hours</p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Globe className="w-8 h-8 text-purple-600" />
+                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Globe className="w-8 h-8 text-yellow-600" />
                 </div>
                 <h3 className="font-semibold text-gray-800 mb-2">Remote Sessions</h3>
                 <p className="text-sm text-gray-600">Available worldwide via video call</p>
               </div>
               <div className="text-center">
-                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-8 h-8 text-orange-600" />
+                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-8 h-8 text-yellow-600" />
                 </div>
                 <h3 className="font-semibold text-gray-800 mb-2">Proven Track Record</h3>
                 <p className="text-sm text-gray-600">100+ successful students and projects</p>
@@ -596,8 +596,8 @@ const ServicePage = () => {
       return (
         <div className="max-w-2xl mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Check className="w-10 h-10 text-green-600" />
+            <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Check className="w-10 h-10 text-yellow-600" />
             </div>
             <h1 className="text-3xl font-bold text-gray-800 mb-4">Application Submitted!</h1>
             <p className="text-gray-600 mb-6">
@@ -636,7 +636,7 @@ const ServicePage = () => {
                   });
                   setActiveTab('track');
                 }}
-                className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
+                className="flex-1 px-6 py-3 bg-buue00 text-white rounded-lg hover:bg-blb-ue font-semibold"
               >
                 Track Your Application
               </button>
@@ -646,7 +646,7 @@ const ServicePage = () => {
                   setApplyStep(1);
                   setActiveTab('browse');
                 }}
-                className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-blue-600 hover:text-blue-600 font-semibold"
+                className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-buue00 hover:text-blb-ue font-semibold"
               >
                 Browse More Services
               </button>
@@ -663,7 +663,7 @@ const ServicePage = () => {
             <p className="text-gray-600 text-lg mb-4">Please select a service first to apply</p>
             <button
               onClick={() => setActiveTab('browse')}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
+              className="px-6 py-3 bg-buue00 text-white rounded-lg hover:bg-blb-ue font-semibold"
             >
               Browse Services
             </button>
@@ -677,7 +677,7 @@ const ServicePage = () => {
                   <div
                     key={s}
                     className={`flex-1 text-center text-sm ${
-                      applyStep >= s ? 'text-blue-600' : 'text-gray-400'
+                      applyStep >= s ? 'text-buue00' : 'text-gray-400'
                     }`}
                   >
                     Step {s}
@@ -686,7 +686,7 @@ const ServicePage = () => {
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-buue00 to-yellow-600 transition-all duration-300"
                   style={{ width: `${(applyStep / 3) * 100}%` }}
                 ></div>
               </div>
@@ -710,10 +710,10 @@ const ServicePage = () => {
             <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
               <div className="p-6 md:p-8">
                 {applyError && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
                     <div className="flex items-center gap-2">
-                      <AlertCircle className="w-5 h-5 text-red-500" />
-                      <p className="text-red-700">{applyError}</p>
+                      <AlertCircle className="w-5 h-5 text-yellow-500" />
+                      <p className="text-yellow-700">{applyError}</p>
                     </div>
                   </div>
                 )}
@@ -731,7 +731,7 @@ const ServicePage = () => {
                         name="full_name"
                         value={formData.full_name}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buue00"
                         placeholder="John Doe"
                         required
                       />
@@ -746,7 +746,7 @@ const ServicePage = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buue00"
                         placeholder="john@example.com"
                         required
                       />
@@ -761,7 +761,7 @@ const ServicePage = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buue00"
                         placeholder="0788 123 456"
                         required
                       />
@@ -775,7 +775,7 @@ const ServicePage = () => {
                         name="country"
                         value={formData.country}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buue00"
                       >
                         <option value="Rwanda">Rwanda</option>
                         <option value="Uganda">Uganda</option>
@@ -808,7 +808,7 @@ const ServicePage = () => {
                             onClick={() => setFormData(prev => ({ ...prev, skill_level: level }))}
                             className={`py-3 px-3 rounded-lg border font-medium capitalize transition-all ${
                               formData.skill_level === level
-                                ? 'bg-blue-600 text-white border-blue-600'
+                                ? 'bg-buue00 text-white border-blb-ue'
                                 : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                             }`}
                           >
@@ -830,7 +830,7 @@ const ServicePage = () => {
                             onClick={() => setFormData(prev => ({ ...prev, weekly_hours: hours }))}
                             className={`py-3 px-3 rounded-lg border font-medium transition-all ${
                               formData.weekly_hours === hours
-                                ? 'bg-blue-600 text-white border-blue-600'
+                                ? 'bg-buue00 text-white border-blb-ue'
                                 : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                             }`}
                           >
@@ -849,7 +849,7 @@ const ServicePage = () => {
                         value={formData.goals}
                         onChange={handleInputChange}
                         rows="4"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buue00"
                         placeholder="What do you want to achieve through this mentorship?"
                         required
                       />
@@ -864,7 +864,7 @@ const ServicePage = () => {
                         value={formData.current_challenges}
                         onChange={handleInputChange}
                         rows="3"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blul00"
                         placeholder="What challenges are you currently facing?"
                       />
                     </div>
@@ -875,13 +875,13 @@ const ServicePage = () => {
                 {applyStep === 3 && (
                   <div className="space-y-6">
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Payment</h2>
-                    <div className="bg-blue-50 rounded-xl p-6">
+                    <div className="bg-blul0 rounded-xl p-6">
                       <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                         <DollarSign className="w-5 h-5" />
                         Payment Instructions
                       </h3>
                       <p className="text-gray-600 mb-4">
-                        Send <strong className="text-blue-600 text-lg">${selectedService?.price_hourly}</strong> <span className="text-sm text-gray-600">({usdToRwf(selectedService?.price_hourly).toLocaleString()} RWF)</span> to:
+                        Send <strong className="text-blul00 text-lg">${selectedService?.price_hourly}</strong> <span className="text-sm text-gray-600">({usdToRwf(selectedService?.price_hourly).toLocaleString()} RWF)</span> to:
                       </p>
                       <div className="space-y-3 text-sm bg-white rounded-lg p-4">
                         <div className="flex items-center gap-3">
@@ -894,8 +894,8 @@ const ServicePage = () => {
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                            <span className="font-bold text-red-700">A</span>
+                          <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <span className="font-bold text-yellow-700">A</span>
                           </div>
                           <div>
                             <p className="font-medium">Airtel Money</p>
@@ -925,7 +925,7 @@ const ServicePage = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Upload Payment Screenshot *
                       </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-500 transition-colors">
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blul00 transition-colors">
                         <input
                           type="file"
                           accept="image/*"
@@ -937,7 +937,7 @@ const ServicePage = () => {
                         </p>
                       </div>
                       {formData.payment_screenshot && (
-                        <p className="text-sm text-green-600 mt-2 flex items-center gap-1">
+                        <p className="text-sm text-yellow-600 mt-2 flex items-center gap-1">
                           <CheckCircle className="w-4 h-4" />
                           File selected: {formData.payment_screenshot.name}
                         </p>
@@ -968,7 +968,7 @@ const ServicePage = () => {
                   {applyStep < 3 ? (
                     <button
                       onClick={() => setApplyStep(applyStep + 1)}
-                      className="ml-auto px-8 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+                      className="ml-auto px-8 py-2 bg-blul00 text-white rounded-lg hover:bg-blblue font-medium"
                     >
                       Continue
                       <ChevronRight className="w-4 h-4 inline ml-1" />
@@ -977,7 +977,7 @@ const ServicePage = () => {
                     <button
                       onClick={handleSubmit}
                       disabled={applyLoading || !formData.payment_screenshot}
-                      className="ml-auto px-8 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                      className="ml-auto px-8 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                     >
                       {applyLoading ? 'Submitting...' : 'Submit Application'}
                     </button>
@@ -996,8 +996,8 @@ const ServicePage = () => {
       return (
         <div className="max-w-md mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-            <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Search className="w-10 h-10 text-blue-600" />
+            <div className="w-20 h-20 bg-blul00 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Search className="w-10 h-10 text-blul00" />
             </div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">Track Your Application</h1>
             <p className="text-gray-600 mb-6">
@@ -1010,14 +1010,14 @@ const ServicePage = () => {
                 value={searchEmail}
                 onChange={(e) => setSearchEmail(e.target.value)}
                 placeholder="Enter your email address"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blul00"
                 onKeyPress={(e) => e.key === 'Enter' && searchApplications()}
               />
 
               <button
                 onClick={searchApplications}
                 disabled={loadingTrack}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-blul00 to-yellow-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50"
               >
                 {loadingTrack ? 'Searching...' : 'Track My Application'}
               </button>
@@ -1028,14 +1028,14 @@ const ServicePage = () => {
                 Don't have an application yet?
                 <button
                   onClick={() => setActiveTab('browse')}
-                  className="text-blue-600 ml-1 hover:underline font-medium"
+                  className="text-blul00 ml-1 hover:underline font-medium"
                 >
                   Apply for Mentorship
                 </button>
                 {' '}or{' '}
                 <button
                   onClick={() => navigate('/hire')}
-                  className="text-blue-600 hover:underline font-medium"
+                  className="text-blul00 hover:underline font-medium"
                 >
                   Hire for a Project
                 </button>
@@ -1052,7 +1052,7 @@ const ServicePage = () => {
         <div className="mb-8">
           <button
             onClick={() => setSearched(false)}
-            className="text-blue-600 hover:underline mb-4 inline-flex items-center gap-1"
+            className="text-blul00 hover:underline mb-4 inline-flex items-center gap-1"
           >
             <ChevronLeft className="w-4 h-4" />
             New Search
@@ -1067,7 +1067,7 @@ const ServicePage = () => {
             onClick={() => setTrackTab('mentorship')}
             className={`px-6 py-3 font-medium transition-all ${
               trackTab === 'mentorship'
-                ? 'text-blue-600 border-b-2 border-blue-600'
+                ? 'text-blul00 border-b-2 border-blblue'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -1078,7 +1078,7 @@ const ServicePage = () => {
             onClick={() => setTrackTab('projects')}
             className={`px-6 py-3 font-medium transition-all ${
               trackTab === 'projects'
-                ? 'text-blue-600 border-b-2 border-blue-600'
+                ? 'text-blul00 border-b-2 border-blblue'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -1089,7 +1089,7 @@ const ServicePage = () => {
 
         {loadingTrack ? (
           <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blul00"></div>
           </div>
         ) : trackTab === 'mentorship' && applications.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm p-12 text-center">
@@ -1097,7 +1097,7 @@ const ServicePage = () => {
             <p className="text-gray-500">No mentorship applications found for this email</p>
             <button
               onClick={() => setActiveTab('browse')}
-              className="mt-4 text-blue-600 hover:underline font-medium"
+              className="mt-4 text-blul00 hover:underline font-medium"
             >
               Apply for Mentorship →
             </button>
@@ -1108,7 +1108,7 @@ const ServicePage = () => {
             <p className="text-gray-500">No project inquiries found for this email</p>
             <button
               onClick={() => navigate('/hire')}
-              className="mt-4 text-blue-600 hover:underline font-medium"
+              className="mt-4 text-blul00 hover:underline font-medium"
             >
               Hire for a Project →
             </button>
@@ -1122,11 +1122,11 @@ const ServicePage = () => {
               return (
                 <div key={app.id} className="bg-white rounded-xl shadow-md overflow-hidden">
                   {/* Header */}
-                  <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white">
+                  <div className="bg-gradient-to-r from-blul00 to-yellow-600 p-4 text-white">
                     <div className="flex justify-between items-start flex-wrap gap-2">
                       <div>
                         <h2 className="text-xl font-semibold">{app.service_title || 'Mentorship Application'}</h2>
-                        <p className="text-blue-100 text-sm mt-1">Applied on {new Date(app.submitted_at).toLocaleDateString()}</p>
+                        <p className="text-blul00 text-sm mt-1">Applied on {new Date(app.submitted_at).toLocaleDateString()}</p>
                       </div>
                       <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
                         {getStatusIcon(app.status, app.payment_status)}
@@ -1145,7 +1145,7 @@ const ServicePage = () => {
                       </div>
                       <button
                         onClick={() => copyReference(app.application_id)}
-                        className="text-blue-600 text-sm hover:underline flex items-center gap-1"
+                        className="text-blul00 text-sm hover:underline flex items-center gap-1"
                       >
                         <Copy className="w-4 h-4" />
                         Copy
@@ -1161,9 +1161,9 @@ const ServicePage = () => {
                             <div key={idx} className="text-center flex-1">
                               <div className={`w-8 h-8 rounded-full mx-auto mb-2 flex items-center justify-center ${
                                 step.completed
-                                  ? 'bg-green-500 text-white'
+                                  ? 'bg-yellow-500 text-white'
                                   : idx < currentStep
-                                    ? 'bg-green-500 text-white'
+                                    ? 'bg-yellow-500 text-white'
                                     : 'bg-gray-200 text-gray-400'
                               }`}>
                                 {step.completed || idx < currentStep ? (
@@ -1178,7 +1178,7 @@ const ServicePage = () => {
                         </div>
                         <div className="absolute top-4 left-0 right-0 h-0.5 bg-gray-200 -z-10">
                           <div
-                            className="h-full bg-green-500 transition-all"
+                            className="h-full bg-yellow-500 transition-all"
                             style={{ width: `${(currentStep / steps.length) * 100}%` }}
                           ></div>
                         </div>
@@ -1195,7 +1195,7 @@ const ServicePage = () => {
                         <p className="text-sm text-gray-900">Amount: <strong className="text-gray-900">${app.payment_amount} ({usdToRwf(app.payment_amount).toLocaleString()} RWF)</strong></p>
                         <p className="text-sm text-gray-900">Method: <strong className="text-gray-900">{app.selected_payment_method?.toUpperCase()}</strong></p>
                         <p className="text-sm text-gray-900">Status: <strong className={
-                          app.payment_status === 'verified' ? 'text-green-600' : 'text-yellow-600'
+                          app.payment_status === 'verified' ? 'text-yellow-600' : 'text-yellow-600'
                         }>{app.payment_status}</strong></p>
                       </div>
 
@@ -1212,9 +1212,9 @@ const ServicePage = () => {
 
                     {/* Goals & Challenges */}
                     {app.goals && (
-                      <div className="bg-blue-50 rounded-lg p-3 mb-4">
+                      <div className="bg-blul0 rounded-lg p-3 mb-4">
                         <p className="text-sm text-gray-900">
-                          <strong className="text-blue-800">Your Goals:</strong> {app.goals}
+                          <strong className="text-blul00">Your Goals:</strong> {app.goals}
                         </p>
                       </div>
                     )}
@@ -1228,11 +1228,11 @@ const ServicePage = () => {
 
                     {/* What's Next */}
                     {app.payment_status === 'verified' && app.status !== 'completed' && (
-                      <div className="bg-green-50 rounded-lg p-3 flex items-start gap-3">
-                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <div className="bg-yellow-50 rounded-lg p-3 flex items-start gap-3">
+                        <CheckCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="font-semibold text-green-800">Payment Verified!</p>
-                          <p className="text-sm text-green-700 mt-1">
+                          <p className="font-semibold text-yellow-800">Payment Verified!</p>
+                          <p className="text-sm text-yellow-700 mt-1">
                             I will contact you within 24 hours to schedule your first session.
                             If you haven't heard from me, please reach out via WhatsApp or email.
                           </p>
@@ -1254,16 +1254,16 @@ const ServicePage = () => {
                     )}
 
                     {app.payment_status === 'pending_payment' && (
-                      <div className="bg-blue-50 rounded-lg p-3 flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                      <div className="bg-blul0 rounded-lg p-3 flex items-start gap-3">
+                        <AlertCircle className="w-5 h-5 text-blul00 flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="font-semibold text-blue-800">Complete Your Payment</p>
-                          <p className="text-sm text-blue-700 mt-1">
+                          <p className="font-semibold text-blul00">Complete Your Payment</p>
+                          <p className="text-sm text-blul00 mt-1">
                             Use reference code <strong>{app.application_id}</strong> to complete your payment.
                           </p>
                           <button
                             onClick={() => handleServiceSelect(services.find(s => s.id === app.service_id))}
-                            className="mt-2 text-sm text-blue-600 font-semibold hover:underline"
+                            className="mt-2 text-sm text-blul00 font-semibold hover:underline"
                           >
                             Complete Payment →
                           </button>
@@ -1275,7 +1275,7 @@ const ServicePage = () => {
                     <div className="border-t pt-4 mt-4 flex flex-wrap gap-3">
                       <a
                         href="mailto:generaskagiraneza@gmail.com"
-                        className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600"
+                        className="flex items-center gap-2 text-sm text-gray-600 hover:text-blul00"
                       >
                         <Mail className="w-4 h-4" />
                         Email Support
@@ -1284,7 +1284,7 @@ const ServicePage = () => {
                         href="https://wa.me/250788123456"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-sm text-gray-600 hover:text-green-600"
+                        className="flex items-center gap-2 text-sm text-gray-600 hover:text-yellow-600"
                       >
                         <MessageCircle className="w-4 h-4" />
                         WhatsApp
@@ -1298,11 +1298,11 @@ const ServicePage = () => {
             {/* Project Inquiries */}
             {trackTab === 'projects' && inquiries.map((inquiry) => (
               <div key={inquiry.id} className="bg-white rounded-xl shadow-md overflow-hidden">
-                <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 text-white">
+                <div className="bg-gradient-to-r from-yellow-600 to-pink-600 p-4 text-white">
                   <div className="flex justify-between items-start flex-wrap gap-2">
                     <div>
                       <h2 className="text-xl font-semibold capitalize">{inquiry.project_type} Project</h2>
-                      <p className="text-purple-100 text-sm mt-1">Submitted on {new Date(inquiry.created_at).toLocaleDateString()}</p>
+                      <p className="text-yellow-100 text-sm mt-1">Submitted on {new Date(inquiry.created_at).toLocaleDateString()}</p>
                     </div>
                     <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
                       {inquiry.status === 'completed' ? (
@@ -1337,7 +1337,7 @@ const ServicePage = () => {
                       <p className="text-sm font-medium text-gray-700 mb-2">Requirements:</p>
                       <div className="flex flex-wrap gap-1">
                         {inquiry.requirements.map((req, i) => (
-                          <span key={i} className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs">
+                          <span key={i} className="bg-blul00 text-blblue px-2 py-0.5 rounded-full text-xs">
                             {req}
                           </span>
                         ))}
@@ -1363,7 +1363,7 @@ const ServicePage = () => {
                   <div className="border-t pt-4 mt-3 flex gap-3">
                     <a
                       href="mailto:generaskagiraneza@gmail.com"
-                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600"
+                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-blul00"
                     >
                       <Mail className="w-4 h-4" />
                       Email Support
@@ -1372,7 +1372,7 @@ const ServicePage = () => {
                       href="https://wa.me/250788123456"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-green-600"
+                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-yellow-600"
                     >
                       <MessageCircle className="w-4 h-4" />
                       WhatsApp

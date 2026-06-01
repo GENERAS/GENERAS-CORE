@@ -256,31 +256,31 @@ export default function CommunityPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen bg-slate-950">
+      <div className="flex items-center justify-center h-screen bg-gray-100">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-500 mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading amazing content...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[yellow-600] mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading amazing content...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-gray-100">
       {/* TOP NAVIGATION BAR */}
-      <div className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur-xl border-b border-slate-800">
+      <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo/Brand */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-[yellow-600] rounded-xl flex items-center justify-center">
                 <FaFire className="text-white" />
               </div>
               <div>
-                <h1 className="font-bold text-lg bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                <h1 className="font-bold text-lg text-gray-900">
                   Community Hub
                 </h1>
-                <p className="text-xs text-gray-500">{followers.length.toLocaleString()} members</p>
+                <p className="text-xs text-gray-600">{followers.length.toLocaleString()} members</p>
               </div>
             </div>
 
@@ -288,9 +288,9 @@ export default function CommunityPage() {
             <div className="hidden md:flex items-center gap-6">
               {stats.slice(0, 3).map((stat, i) => (
                 <div key={i} className="flex items-center gap-2 text-sm">
-                  <stat.icon className={`text-${stat.color}-400`} />
-                  <span className="text-gray-400">{stat.label}:</span>
-                  <span className="font-semibold">{stat.value}</span>
+                  <stat.icon className={stat.color === 'blue' ? 'text-yellow-600' : stat.color === 'red' ? 'text-yellow-600' : stat.color === 'green' ? 'text-yellow-600' : 'text-yellow-600'} />
+                  <span className="text-gray-600">{stat.label}:</span>
+                  <span className="font-semibold text-gray-800">{stat.value}</span>
                 </div>
               ))}
             </div>
@@ -298,9 +298,9 @@ export default function CommunityPage() {
             {/* Mobile Menu Button */}
             <button 
               onClick={() => setShowMobileMenu(!showMobileMenu)}
-              className="md:hidden p-2 bg-slate-800 rounded-lg"
+              className="md:hidden p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors duration-200"
             >
-              <FaHashtag className="text-gray-400" />
+              <FaHashtag className="text-gray-600" />
             </button>
           </div>
         </div>
@@ -313,7 +313,7 @@ export default function CommunityPage() {
           <div className="hidden lg:block lg:col-span-3">
             <div className="sticky top-24 space-y-4">
               {/* Main Navigation */}
-              <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
                   Explore
                 </h3>
@@ -328,16 +328,16 @@ export default function CommunityPage() {
                     <button
                       key={item.id}
                       onClick={() => setActiveTab(item.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors duration-200 ${
                         activeTab === item.id 
-                          ? 'bg-blue-600/20 text-blue-400 border border-blue-600/30' 
-                          : 'text-gray-400 hover:bg-slate-800 hover:text-white'
+                          ? 'bg-blue-100 text-blue-700 border border-blue-200' 
+                          : 'text-gray-600 hover:bg-gray-100'
                       }`}
                     >
-                      <item.icon className={activeTab === item.id ? 'text-blue-400' : ''} />
+                      <item.icon className={activeTab === item.id ? 'text-blue-600' : ''} />
                       <span className="flex-1 text-left">{item.label}</span>
                       {item.count > 0 && (
-                        <span className="text-xs bg-slate-800 px-2 py-0.5 rounded-full">
+                        <span className="text-xs bg-gray-200 px-2 py-0.5 rounded-full">
                           {item.count}
                         </span>
                       )}
@@ -347,7 +347,7 @@ export default function CommunityPage() {
               </div>
 
               {/* Quick Actions */}
-              <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
                   Quick Actions
                 </h3>
@@ -356,23 +356,33 @@ export default function CommunityPage() {
                     <button
                       key={i}
                       onClick={action.onClick}
-                      className={`p-3 rounded-xl bg-gradient-to-br from-${action.color}-600/20 to-${action.color}-600/5 border border-${action.color}-500/20 hover:border-${action.color}-500/40 transition-all group`}
+                      className={`p-3 rounded-xl border transition-colors duration-200 group ${
+                        action.color === 'purple' ? 'bg-purple-100 border-purple-200 hover:bg-purple-200' :
+                        action.color === 'amber' ? 'bg-yellow-100 border-yellow-200 hover:bg-yellow-200' :
+                        action.color === 'blue' ? 'bg-blue-100 border-blue-200 hover:bg-blue-200' :
+                        'bg-green-100 border-green-200 hover:bg-green-200'
+                      }`}
                     >
-                      <action.icon className={`mx-auto mb-1 text-${action.color}-400 group-hover:scale-110 transition`} />
-                      <span className="text-xs text-gray-300">{action.label}</span>
+                      <action.icon className={`mx-auto mb-1 ${
+                        action.color === 'purple' ? 'text-purple-600' :
+                        action.color === 'amber' ? 'text-yellow-600' :
+                        action.color === 'blue' ? 'text-blue-600' :
+                        'text-green-600'
+                      }`} />
+                      <span className="text-xs text-gray-700">{action.label}</span>
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Trending Tags */}
-              <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <BiTrendingUp /> Trending
+                  <BiTrendingUp className="text-gray-600" /> Trending
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {['Trading', 'Bitcoin', 'Tech', 'Academic', 'AI', 'Web3'].map(tag => (
-                    <span key={tag} className="px-2 py-1 bg-slate-800 rounded-lg text-xs text-gray-400 hover:bg-slate-700 hover:text-white cursor-pointer transition">
+                    <span key={tag} className="px-2 py-1 bg-gray-100 rounded-lg text-xs text-gray-600 hover:bg-gray-200 cursor-pointer transition-colors duration-200">
                       #{tag}
                     </span>
                   ))}
@@ -386,9 +396,9 @@ export default function CommunityPage() {
             
             {/* FEATURED HERO CAROUSEL */}
             {featuredItems.length > 0 && (
-              <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700">
+              <div className="relative rounded-3xl overflow-hidden bg-white border border-gray-300">
                 <div className="absolute top-4 left-4 z-10">
-                  <span className="px-3 py-1 bg-red-500/80 rounded-full text-xs font-semibold text-white flex items-center gap-1">
+                  <span className="px-3 py-1 bg-yellow-500 rounded-full text-xs font-semibold text-white flex items-center gap-1">
                     <FaFire /> FEATURED
                   </span>
                 </div>
@@ -407,17 +417,17 @@ export default function CommunityPage() {
                             {item.featured_image ? (
                               <>
                                 <img src={item.featured_image} alt={item.title} className="w-full h-full object-cover" />
-                                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent" />
                               </>
                             ) : (
-                              <div className="h-full bg-gradient-to-br from-blue-900/50 to-purple-900/50" />
+                              <div className="h-full bg-gradient-to-br from-blue-100 to-purple-100" />
                             )}
                             <div className="absolute bottom-0 left-0 right-0 p-6">
                               <span className="px-2 py-1 bg-blue-600 rounded text-xs text-white mb-2 inline-block">
                                 {item.category}
                               </span>
-                              <h2 className="text-2xl md:text-3xl font-bold mb-2">{item.title}</h2>
-                              <p className="text-gray-400 line-clamp-2">{item.excerpt || item.content?.substring(0, 150)}...</p>
+                              <h2 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900">{item.title}</h2>
+                              <p className="text-gray-600 line-clamp-2">{item.excerpt || item.content?.substring(0, 150)}...</p>
                             </div>
                           </div>
                         </Link>
@@ -431,14 +441,14 @@ export default function CommunityPage() {
                         >
                           <div className="relative h-full">
                             <img src={getVideoThumbnail(item)} alt={item.title} className="w-full h-full object-cover" />
-                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent" />
                             <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center shadow-2xl">
+                              <div className="w-16 h-16 bg-yellow-600 rounded-full flex items-center justify-center shadow-2xl">
                                 <FaPlay className="text-white text-xl ml-1" />
                               </div>
                             </div>
                             <div className="absolute bottom-0 left-0 right-0 p-6">
-                              <span className="px-2 py-1 bg-red-600 rounded text-xs text-white mb-2 inline-block">
+                              <span className="px-2 py-1 bg-yellow-600 rounded text-xs text-white mb-2 inline-block">
                                 {item.category}
                               </span>
                               <h2 className="text-2xl md:text-3xl font-bold mb-2">{item.title}</h2>
@@ -452,10 +462,10 @@ export default function CommunityPage() {
                           className="cursor-pointer h-full"
                         >
                           <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
                           <div className="absolute bottom-0 left-0 right-0 p-6">
                             <span className="px-2 py-1 bg-green-600 rounded text-xs text-white mb-2 inline-block">Gallery</span>
-                            <h2 className="text-2xl md:text-3xl font-bold">{item.title || 'Photo Gallery'}</h2>
+                            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">{item.title || 'Photo Gallery'}</h2>
                           </div>
                         </div>
                       )}
@@ -482,17 +492,17 @@ export default function CommunityPage() {
             {(activeTab === 'all' || activeTab === 'blogs') && blogs.length > 0 && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <FaNewspaper className="text-blue-500" /> Latest Articles
+                  <h2 className="text-xl font-bold flex items-center gap-2 text-gray-800">
+                    <FaNewspaper className="text-blue-600" /> Latest Articles
                   </h2>
-                  <Link to="/blog" className="text-sm text-blue-400 hover:underline">View all</Link>
+                  <Link to="/blog" className="text-sm text-blue-600 hover:text-blue-700 transition-colors duration-200">View all</Link>
                 </div>
                 <div className="grid gap-4">
                   {blogs.slice(0, activeTab === 'all' ? 3 : 6).map(blog => (
                     <Link
                       key={blog.id}
                       to={`/blog/${blog.slug}`}
-                      className="group bg-slate-900/50 rounded-2xl p-4 border border-slate-800 hover:border-blue-500/30 transition-all hover:-translate-y-0.5"
+                      className="group bg-white rounded-2xl p-4 border border-gray-300 hover:border-blue-400 transition-colors duration-200"
                     >
                       <div className="flex gap-4">
                         {blog.featured_image && (
@@ -502,12 +512,12 @@ export default function CommunityPage() {
                         )}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="px-2 py-0.5 bg-blue-600/20 text-blue-400 rounded text-xs">{blog.category}</span>
-                            <span className="text-xs text-gray-500">{formatDate(blog.created_at)}</span>
+                            <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs">{blog.category}</span>
+                            <span className="text-xs text-gray-600">{formatDate(blog.created_at)}</span>
                           </div>
-                          <h3 className="font-bold text-lg mb-1 group-hover:text-blue-400 transition line-clamp-2">{blog.title}</h3>
-                          <p className="text-gray-400 text-sm line-clamp-2">{blog.excerpt || blog.content?.substring(0, 120)}...</p>
-                          <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
+                          <h3 className="font-bold text-lg mb-1 group-hover:text-blue-600 transition-colors duration-200 line-clamp-2 text-gray-800">{blog.title}</h3>
+                          <p className="text-gray-600 text-sm line-clamp-2">{blog.excerpt || blog.content?.substring(0, 120)}...</p>
+                          <div className="flex items-center gap-4 mt-3 text-xs text-gray-600">
                             <span className="flex items-center gap-1"><FaEye /> {blog.views || 0}</span>
                             <span className="flex items-center gap-1"><FaHeart /> {blog.likes || 0}</span>
                             <span className="flex items-center gap-1"><FaComment /> {blog.comments_count || 0}</span>
@@ -524,10 +534,10 @@ export default function CommunityPage() {
             {(activeTab === 'all' || activeTab === 'videos') && videos.length > 0 && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <FaVideo className="text-red-500" /> Latest Videos
+                  <h2 className="text-xl font-bold flex items-center gap-2 text-gray-800">
+                    <FaVideo className="text-yellow-600" /> Latest Videos
                   </h2>
-                  <a href="/videos" className="text-sm text-red-400 hover:underline">View all</a>
+                  <a href="/videos" className="text-sm text-yellow-600 hover:text-yellow-700 transition-colors duration-200">View all</a>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {videos.slice(0, activeTab === 'all' ? 4 : 8).map(video => (
@@ -536,13 +546,13 @@ export default function CommunityPage() {
                       href={video.platform === 'youtube' ? `https://youtube.com/watch?v=${video.video_id}` : `https://vimeo.com/${video.video_id}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group bg-slate-900/50 rounded-2xl overflow-hidden border border-slate-800 hover:border-red-500/30 transition-all hover:-translate-y-0.5"
+                      className="group bg-white rounded-2xl overflow-hidden border border-gray-300 hover:border-yellow-400 transition-colors duration-200"
                     >
                       <div className="relative aspect-video">
                         <img src={getVideoThumbnail(video)} alt={video.title} className="w-full h-full object-cover" />
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition" />
+                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-200" />
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                          <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
+                          <div className="w-12 h-12 bg-yellow-600 rounded-full flex items-center justify-center">
                             <FaPlay className="text-white ml-0.5" />
                           </div>
                         </div>
@@ -553,9 +563,9 @@ export default function CommunityPage() {
                         )}
                       </div>
                       <div className="p-4">
-                        <span className="text-xs text-red-400">{video.category}</span>
-                        <h3 className="font-bold mt-1 line-clamp-1">{video.title}</h3>
-                        <p className="text-xs text-gray-500 mt-1 line-clamp-1">{video.description}</p>
+                        <span className="text-xs text-yellow-600">{video.category}</span>
+                        <h3 className="font-bold mt-1 line-clamp-1 text-gray-800">{video.title}</h3>
+                        <p className="text-xs text-gray-600 mt-1 line-clamp-1">{video.description}</p>
                       </div>
                     </a>
                   ))}
@@ -567,10 +577,10 @@ export default function CommunityPage() {
             {(activeTab === 'all' || activeTab === 'photos') && photos.length > 0 && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <FaImages className="text-green-500" /> Photo Gallery
+                  <h2 className="text-xl font-bold flex items-center gap-2 text-gray-800">
+                    <FaImages className="text-green-600" /> Photo Gallery
                   </h2>
-                  <span className="text-sm text-gray-500">{photos.length} photos</span>
+                  <span className="text-sm text-gray-600">{photos.length} photos</span>
                 </div>
                 <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
                   {photos.slice(0, activeTab === 'all' ? 8 : 16).map((photo, index) => (
@@ -582,8 +592,8 @@ export default function CommunityPage() {
                       }`}
                     >
                       <img src={photo.image_url} alt={photo.title} className="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center">
-                        <FaHeart className="text-white opacity-0 group-hover:opacity-100 transition scale-0 group-hover:scale-100" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-200 flex items-center justify-center">
+                        <FaHeart className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 scale-0 group-hover:scale-100 transition-transform duration-200" />
                       </div>
                     </div>
                   ))}
@@ -593,14 +603,14 @@ export default function CommunityPage() {
 
             {/* SUPPORTERS HALL */}
             {(activeTab === 'all' || activeTab === 'supporters') && supporters.length > 0 && (
-              <div className="bg-gradient-to-br from-amber-900/20 to-slate-900 rounded-2xl p-6 border border-amber-500/20">
+              <div className="bg-yellow-50 rounded-2xl p-6 border border-yellow-200">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold flex items-center gap-2">
-                    <FaCrown className="text-amber-500" /> Hall of Fame
+                  <h2 className="text-xl font-bold flex items-center gap-2 text-gray-800">
+                    <FaCrown className="text-yellow-600" /> Hall of Fame
                   </h2>
                   <button 
                     onClick={() => setShowPaymentModal(true)}
-                    className="px-4 py-2 bg-amber-600 hover:bg-amber-700 rounded-lg text-sm font-semibold transition"
+                    className="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg text-sm font-semibold transition-colors duration-200"
                   >
                     Become a Supporter
                   </button>
@@ -608,13 +618,13 @@ export default function CommunityPage() {
                 
                 <div className="flex flex-wrap gap-3">
                   {supporters.slice(0, 8).map((s, i) => (
-                    <div key={s.id} className="flex items-center gap-2 px-3 py-2 bg-slate-800/50 rounded-xl">
-                      <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full flex items-center justify-center text-sm font-bold">
+                    <div key={s.id} className="flex items-center gap-2 px-3 py-2 bg-white rounded-xl border border-yellow-200">
+                      <div className="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center text-sm font-bold text-white">
                         {s.name?.charAt(0) || '?'}
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{s.name}</p>
-                        <p className="text-xs text-amber-400">{s.cups || s.amount || 0} ☕</p>
+                        <p className="text-sm font-medium text-gray-800">{s.name}</p>
+                        <p className="text-xs text-yellow-600">{s.cups || s.amount || 0} ☕</p>
                       </div>
                     </div>
                   ))}
@@ -624,26 +634,26 @@ export default function CommunityPage() {
 
             {/* CALL TO ACTION */}
             <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-gradient-to-r from-purple-900/30 to-pink-900/30 rounded-2xl p-6 border border-purple-500/20">
-                <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
-                  <FaUserPlus className="text-purple-400" /> Join the Community
+              <div className="bg-purple-50 rounded-2xl p-6 border border-purple-200">
+                <h3 className="text-lg font-bold mb-2 flex items-center gap-2 text-gray-800">
+                  <FaUserPlus className="text-purple-600" /> Join the Community
                 </h3>
-                <p className="text-gray-400 text-sm mb-4">Get weekly insights on trading, tech, and academic excellence.</p>
+                <p className="text-gray-600 text-sm mb-4">Get weekly insights on trading, tech, and academic excellence.</p>
                 <button 
                   onClick={() => setShowFollowModal(true)}
-                  className="w-full py-3 bg-purple-600 hover:bg-purple-700 rounded-xl font-semibold transition"
+                  className="w-full py-3 bg-purple-600 hover:bg-purple-700 rounded-xl font-semibold transition-colors duration-200"
                 >
                   Subscribe Now
                 </button>
               </div>
-              <div className="bg-gradient-to-r from-amber-900/30 to-orange-900/30 rounded-2xl p-6 border border-amber-500/20">
-                <h3 className="text-lg font-bold mb-2 flex items-center gap-2">
-                  <FaCrown className="text-amber-400" /> Support the Journey
+              <div className="bg-yellow-50 rounded-2xl p-6 border border-yellow-200">
+                <h3 className="text-lg font-bold mb-2 flex items-center gap-2 text-gray-800">
+                  <FaCrown className="text-yellow-600" /> Support the Journey
                 </h3>
-                <p className="text-gray-400 text-sm mb-4">Get featured in Hall of Fame with your social links.</p>
+                <p className="text-gray-600 text-sm mb-4">Get featured in Hall of Fame with your social links.</p>
                 <button 
                   onClick={() => setShowPaymentModal(true)}
-                  className="w-full py-3 bg-amber-600 hover:bg-amber-700 rounded-xl font-semibold transition"
+                  className="w-full py-3 bg-yellow-600 hover:bg-yellow-700 rounded-xl font-semibold transition-colors duration-200"
                 >
                   Buy Me Coffee
                 </button>
@@ -658,20 +668,30 @@ export default function CommunityPage() {
               {/* Stats Cards */}
               <div className="grid grid-cols-2 gap-3">
                 {stats.map((stat, i) => (
-                  <div key={i} className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
-                    <div className={`w-8 h-8 rounded-lg bg-${stat.color}-600/20 flex items-center justify-center mb-2`}>
-                      <stat.icon className={`text-${stat.color}-400`} />
+                  <div key={i} className="bg-white rounded-xl p-4 border border-gray-200">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center mb-2 ${
+                      stat.color === 'blue' ? 'bg-blue-100' :
+                      stat.color === 'red' ? 'bg-yellow-100' :
+                      stat.color === 'green' ? 'bg-green-100' :
+                      'bg-yellow-100'
+                    }`}>
+                      <stat.icon className={
+                        stat.color === 'blue' ? 'text-blue-600' :
+                        stat.color === 'red' ? 'text-yellow-600' :
+                        stat.color === 'green' ? 'text-green-600' :
+                        'text-yellow-600'
+                      } />
                     </div>
-                    <p className="text-2xl font-bold">{stat.value}</p>
-                    <p className="text-xs text-gray-500">{stat.label}</p>
-                    <span className={`text-xs text-green-400`}>{stat.trend}</span>
+                    <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
+                    <p className="text-xs text-gray-600">{stat.label}</p>
+                    <span className={`text-xs text-green-600`}>{stat.trend}</span>
                   </div>
                 ))}
               </div>
 
               {/* Live Activity Feed */}
-              <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
-                <h3 className="text-sm font-semibold text-gray-400 mb-3 flex items-center gap-2">
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
+                <h3 className="text-sm font-semibold text-gray-600 mb-3 flex items-center gap-2">
                   <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                   Live Activity
                 </h3>
@@ -679,15 +699,15 @@ export default function CommunityPage() {
                   {activityFeed.slice(0, 5).map((activity, i) => (
                     <div key={i} className="flex items-start gap-3 text-sm">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        activity.type === 'blog' ? 'bg-blue-600/20' :
-                        activity.type === 'support' ? 'bg-amber-600/20' : 'bg-purple-600/20'
+                        activity.type === 'blog' ? 'bg-blue-100' :
+                        activity.type === 'support' ? 'bg-yellow-100' : 'bgpurplyw-100'
                       }`}>
-                        {activity.type === 'blog' ? <FaNewspaper className="text-blue-400 text-xs" /> :
-                         activity.type === 'support' ? <FaCrown className="text-amber-400 text-xs" /> :
+                        {activity.type === 'blog' ? <FaNewspaper className="text-blue-600 text-xs" /> :
+                         activity.type === 'support' ? <FaCrown className="text-yellow-600 text-xs" /> :
                          <FaUserPlus className="text-purple-400 text-xs" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-gray-300 truncate">
+                        <p className="text-gray-700 truncate">
                           {activity.type === 'blog' ? `New article: ${activity.data.title?.substring(0, 30)}...` :
                            activity.type === 'support' ? `${activity.data.name} bought ${activity.data.cups || activity.data.amount || 1} coffee${(activity.data.cups || activity.data.amount || 1) > 1 ? 's' : ''}!` :
                            `New follower joined`}
@@ -706,18 +726,18 @@ export default function CommunityPage() {
               {supporters.length > 0 && (
                 <div className="bg-slate-900/50 rounded-2xl p-4 border border-slate-800">
                   <h3 className="text-sm font-semibold text-gray-400 mb-3 flex items-center gap-2">
-                    <FaTrophy className="text-amber-400" /> Top Supporters
+                    <FaTrophy className="text-yellow-400" /> Top Supporters
                   </h3>
                   <div className="space-y-2">
                     {supporters.slice(0, 3).map((s, i) => (
                       <div key={s.id} className="flex items-center gap-3">
                         <span className="text-lg">{i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}</span>
-                        <div className="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full flex items-center justify-center text-xs font-bold">
+                        <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-full flex items-center justify-center text-xs font-bold">
                           {s.name?.charAt(0) || '?'}
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-medium">{s.name}</p>
-                          <p className="text-xs text-amber-400">{s.cups || s.amount || 0} ☕</p>
+                          <p className="text-xs text-yellow-400">{s.cups || s.amount || 0} ☕</p>
                         </div>
                       </div>
                     ))}
@@ -790,11 +810,11 @@ export default function CommunityPage() {
                   />
                 </div>
                 {followError && (
-                  <p className="text-red-400 text-sm">{followError}</p>
+                  <p className="text-yellow-400 text-sm">{followError}</p>
                 )}
                 <button
                   type="submit"
-                  className="w-full py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition"
+                  className="w-full py-3 bg-gradient-to-r from-purple-600 to-yellow-600 rounded-lg font-semibold hover:from-purple-700 hover:to-yellow-700 transition"
                 >
                   Subscribe Now
                 </button>
@@ -827,7 +847,7 @@ export default function CommunityPage() {
           <div className="w-80 bg-slate-900 flex flex-col border-l border-slate-800">
             <div className="p-4 border-b border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-purple-600 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 topurplyw-600 rounded-full flex items-center justify-center">
                   <FaCrown className="text-white text-sm" />
                 </div>
                 <div>
@@ -907,10 +927,10 @@ export default function CommunityPage() {
               </button>
               <button 
                 onClick={() => handleShare('telegram')}
-                className="p-4 bg-cyan-900/30 border border-cyan-600/30 rounded-xl hover:bg-cyan-900/50 transition flex flex-col items-center gap-2"
+                className="p-4 bg-yellow-900/30 border border-yellow-600/30 rounded-xl hover:bg-yellow-900/50 transition flex flex-col items-center gap-2"
               >
                 <span className="text-2xl">✈️</span>
-                <span className="text-xs text-cyan-400">Telegram</span>
+                <span className="text-xs text-yellow-400">Telegram</span>
               </button>
             </div>
             
@@ -930,7 +950,7 @@ export default function CommunityPage() {
           <div className="bg-slate-900 rounded-2xl p-6 max-w-md w-full border border-slate-700">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold flex items-center gap-2">
-                <FaBell className="text-pink-400" /> Notify Admin
+                <FaBell className="text-yellow-400" /> Notify Admin
               </h3>
               <button onClick={() => setShowNotifyModal(false)} className="text-gray-400 hover:text-white">
                 <FaTimes />
@@ -952,14 +972,14 @@ export default function CommunityPage() {
                   <textarea
                     value={notifyMessage}
                     onChange={(e) => setNotifyMessage(e.target.value)}
-                    className="w-full mt-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 h-32 focus:outline-none focus:border-pink-500 resize-none"
+                    className="w-full mt-1 bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 h-32 focus:outline-none focus:border-yellow-500 resize-none"
                     placeholder="Enter your message, suggestion, or notification..."
                     required
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full py-3 bg-gradient-to-r from-pink-600 to-purple-600 rounded-lg font-semibold hover:from-pink-700 hover:to-purple-700 transition flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-gradient-to-r from-yellow-600 to-purple-600 rounded-lg font-semibold hover:from-yellow-700 hover:to-purple-700 transition flex items-center justify-center gap-2"
                 >
                   <FaPaperPlane /> Send Notification
                 </button>

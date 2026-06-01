@@ -96,7 +96,7 @@ export default function BlogPostPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[yellow-600]"></div>
       </div>
     )
   }
@@ -104,17 +104,17 @@ export default function BlogPostPage() {
   if (!post) {
     return (
       <div className="text-center py-12">
-        <h1 className="text-2xl font-bold mb-4">Post Not Found</h1>
-        <Link to="/community" className="text-blue-400 hover:text-blue-300">← Back to Community</Link>
+        <h1 className="text-2xl font-bold mb-4 text-gray-800">Post Not Found</h1>
+        <Link to="/community" className="text-yellow-600 hover:text-yellow-700 transition-colors duration-200">← Back to Community</Link>
       </div>
     )
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4">
+    <div className="max-w-4xl mx-auto px-4 py-8">
       {/* Navigation Bar */}
-      <div className="flex justify-between items-center mb-8 py-4 border-b border-slate-800">
-        <Link to="/community" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition">
+      <div className="flex justify-between items-center mb-8 py-4 border-b border-gray-200">
+        <Link to="/community" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors duration-200">
           <FaArrowLeft /> Back to Community
         </Link>
         
@@ -122,45 +122,45 @@ export default function BlogPostPage() {
           {/* Bookmark Button */}
           <button 
             onClick={handleBookmark}
-            className="text-gray-400 hover:text-yellow-500 transition"
+            className="text-gray-600 hover:text-yellow-600 transition-colors duration-200"
             title={bookmarked ? 'Remove bookmark' : 'Save for later'}
           >
-            {bookmarked ? <FaBookmark className="text-yellow-500" /> : <FaRegBookmark />}
+            {bookmarked ? <FaBookmark className="text-yellow-600" /> : <FaRegBookmark />}
           </button>
           
           {/* Share Button */}
           <div className="relative">
             <button 
               onClick={() => setShowShareMenu(!showShareMenu)}
-              className="text-gray-400 hover:text-white transition"
+              className="text-gray-600 hover:text-gray-900 transition-colors duration-200"
               title="Share"
             >
               <FaShare />
             </button>
             
             {showShareMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg shadow-lg overflow-hidden z-10">
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-10">
                 <button 
                   onClick={() => handleShare('twitter')}
-                  className="w-full px-4 py-2 text-left hover:bg-slate-700 flex items-center gap-2"
+                  className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 transition-colors duration-200"
                 >
-                  <FaTwitter className="text-blue-400" /> Twitter
+                  <FaTwitter className="text-yellow-600" /> Twitter
                 </button>
                 <button 
                   onClick={() => handleShare('facebook')}
-                  className="w-full px-4 py-2 text-left hover:bg-slate-700 flex items-center gap-2"
+                  className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 transition-colors duration-200"
                 >
-                  <FaFacebook className="text-blue-600" /> Facebook
+                  <FaFacebook className="text-yellow-700" /> Facebook
                 </button>
                 <button 
                   onClick={() => handleShare('linkedin')}
-                  className="w-full px-4 py-2 text-left hover:bg-slate-700 flex items-center gap-2"
+                  className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 transition-colors duration-200"
                 >
-                  <FaLinkedin className="text-blue-500" /> LinkedIn
+                  <FaLinkedin className="text-yellow-600" /> LinkedIn
                 </button>
                 <button 
                   onClick={() => handleShare('copy')}
-                  className="w-full px-4 py-2 text-left hover:bg-slate-700 flex items-center gap-2"
+                  className="w-full px-4 py-2 text-left hover:bg-gray-100 flex items-center gap-2 transition-colors duration-200"
                 >
                   <FaLink /> Copy Link
                 </button>
@@ -183,35 +183,35 @@ export default function BlogPostPage() {
       
       {/* Category Badge */}
       <div className="mb-4">
-        <span className="bg-blue-600 text-white text-sm px-3 py-1 rounded-full">
+        <span className="bg-yellow-100 text-yellow-700 text-sm px-3 py-1 rounded-full">
           {post.category}
         </span>
       </div>
       
       {/* Title */}
-      <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
+      <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-gray-800">
         {post.title}
       </h1>
       
       {/* Author and Meta Info */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-800">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-8 pb-6 border-b border-gray-200">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-gray-400">
+          <div className="flex items-center gap-2 text-gray-600">
             <FaUser />
             <span>BTC GUY</span>
           </div>
-          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-          <div className="flex items-center gap-2 text-gray-400">
+          <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+          <div className="flex items-center gap-2 text-gray-600">
             <FaCalendar />
             <span>{formatDate(post.created_at)}</span>
           </div>
-          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-          <div className="flex items-center gap-2 text-gray-400">
+          <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+          <div className="flex items-center gap-2 text-gray-600">
             <FaEye />
             <span>{post.views || 0} views</span>
           </div>
-          <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
-          <div className="text-gray-400">
+          <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
+          <div className="text-gray-600">
             {getReadingTime(post.content)}
           </div>
         </div>
@@ -223,19 +223,19 @@ export default function BlogPostPage() {
       </div>
 
       {/* Content */}
-      <div className="prose prose-invert prose-lg max-w-none mb-12">
+      <div className="prose prose-lg max-w-none mb-12 text-gray-800">
         <div dangerouslySetInnerHTML={{ __html: post.content }} />
       </div>
 
       {/* Tags */}
       {post.tags && post.tags.length > 0 && (
-        <div className="mb-8 pb-8 border-b border-slate-800">
-          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+        <div className="mb-8 pb-8 border-b border-gray-200">
+          <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-800">
             <FaTag /> Tags
           </h3>
           <div className="flex flex-wrap gap-2">
             {post.tags.map(tag => (
-              <span key={tag} className="bg-slate-800 px-3 py-1 rounded-full text-sm hover:bg-slate-700 transition cursor-pointer">
+              <span key={tag} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm hover:bg-gray-200 transition-colors duration-200 cursor-pointer">
                 #{tag}
               </span>
             ))}

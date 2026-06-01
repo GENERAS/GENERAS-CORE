@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaBookOpen, FaCalendar, FaClock, FaArrowRight, FaTimes } from 'react-icons/fa';
+import CommentsSection from '../comments/CommentsSection';
 
 const BlogsSection = () => {
   const [expandedBlog, setExpandedBlog] = useState(null);
@@ -716,10 +717,10 @@ Without structure, effort becomes waste.
     <div className="space-y-6">
       {/* Section Header */}
       <div className="text-center mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent mb-3">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
           Latest Blogs
         </h2>
-        <p className="text-gray-400 max-w-2xl mx-auto">
+        <p className="text-gray-600 max-w-2xl mx-auto">
           Thoughts, lessons, and insights from my journey as a developer, trader, and entrepreneur
         </p>
       </div>
@@ -729,48 +730,50 @@ Without structure, effort becomes waste.
         {blogs.map((blog) => (
           <article 
             key={blog.id}
-            className="group bg-gradient-to-br from-slate-800/50 to-slate-900/50 rounded-xl p-6 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 hover:transform hover:-translate-y-1 hover:shadow-xl cursor-pointer"
+            className="group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer border border-gray-200"
             onClick={() => setExpandedBlog(blog.id)}
           >
-            {/* Category Badge */}
-            <div className="flex items-center justify-between mb-4">
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                blog.category === 'Learning' 
-                  ? 'bg-blue-500/20 text-blue-400' 
-                  : 'bg-gray-500/20 text-gray-400'
-              }`}>
-                {blog.category}
-              </span>
-              <FaBookOpen className="text-gray-500 group-hover:text-blue-400 transition-colors" />
-            </div>
+            <div className="p-6">
+              {/* Category Badge */}
+              <div className="flex items-center justify-between mb-4">
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  blog.category === 'Learning' 
+                    ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' 
+                    : 'bg-gray-100 text-gray-700 border border-gray-200'
+                }`}>
+                  {blog.category}
+                </span>
+                <FaBookOpen className="text-gray-500 group-hover:text-yellow-600 transition-colors" />
+              </div>
 
-            {/* Title */}
-            <h3 className="text-lg font-bold text-white mb-3 line-clamp-2 group-hover:text-blue-400 transition-colors">
-              {blog.title}
-            </h3>
+              {/* Title */}
+              <h3 className="text-lg font-bold text-gray-800 mb-3 line-clamp-2 group-hover:text-yellow-600 transition-colors">
+                {blog.title}
+              </h3>
 
-            {/* Excerpt */}
-            <p className="text-gray-400 text-sm mb-4 line-clamp-3">
-              {blog.excerpt}
-            </p>
+              {/* Excerpt */}
+              <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                {blog.excerpt}
+              </p>
 
-            {/* Meta Info */}
-            <div className="flex items-center gap-4 text-xs text-gray-500">
-              <span className="flex items-center gap-1">
-                <FaCalendar className="text-gray-600" />
-                {blog.date}
-              </span>
-              <span className="flex items-center gap-1">
-                <FaClock className="text-gray-600" />
-                {blog.readTime}
-              </span>
-            </div>
+              {/* Meta Info */}
+              <div className="flex items-center gap-4 text-xs text-gray-500">
+                <span className="flex items-center gap-1">
+                  <FaCalendar className="text-gray-600" />
+                  {blog.date}
+                </span>
+                <span className="flex items-center gap-1">
+                  <FaClock className="text-gray-600" />
+                  {blog.readTime}
+                </span>
+              </div>
 
-            {/* Read More Link */}
-            <div className="mt-4 pt-4 border-t border-slate-700/50">
-              <span className="text-blue-400 text-sm font-medium flex items-center gap-2 group-hover:gap-3 transition-all">
-                Read More <FaArrowRight className="text-xs" />
-              </span>
+              {/* Read More Link */}
+              <div className="mt-4 pt-4 border-t border-gray-200">
+                <span className="text-yellow-600 text-sm font-medium flex items-center gap-2 group-hover:gap-3 transition-all">
+                  Read More <FaArrowRight className="text-xs" />
+                </span>
+              </div>
             </div>
           </article>
         ))}
@@ -779,24 +782,24 @@ Without structure, effort becomes waste.
       {/* Expanded Blog Modal */}
       {expandedBlog && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           onClick={() => setExpandedBlog(null)}
         >
           <div 
-            className="bg-slate-900 rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-slate-700"
+            className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto border border-gray-200 shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="sticky top-0 bg-slate-900/95 backdrop-blur border-b border-slate-700 p-6 flex items-center justify-between">
+            <div className="sticky top-0 bg-white/95 backdrop-blur border-b border-gray-200 p-6 flex items-center justify-between">
               <div>
                 <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                   blogs.find(b => b.id === expandedBlog)?.category === 'Learning'
-                    ? 'bg-blue-500/20 text-blue-400'
-                    : 'bg-gray-500/20 text-gray-400'
+                    ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+                    : 'bg-gray-100 text-gray-700 border border-gray-200'
                 }`}>
                   {blogs.find(b => b.id === expandedBlog)?.category}
                 </span>
-                <h2 className="text-2xl font-bold text-white mt-2">
+                <h2 className="text-2xl font-bold text-gray-800 mt-2">
                   {blogs.find(b => b.id === expandedBlog)?.title}
                 </h2>
                 <div className="flex items-center gap-4 text-sm text-gray-500 mt-2">
@@ -810,36 +813,41 @@ Without structure, effort becomes waste.
               </div>
               <button 
                 onClick={() => setExpandedBlog(null)}
-                className="p-2 hover:bg-slate-800 rounded-lg transition text-gray-400 hover:text-white"
+                className="p-2 hover:bg-gray-100 rounded-lg transition text-gray-400 hover:text-gray-800"
               >
                 <FaTimes />
               </button>
             </div>
 
             {/* Modal Content */}
-            <div className="p-6 prose prose-invert prose-lg max-w-none">
+            <div className="p-6 prose prose-lg max-w-none">
               <div 
-                className="text-gray-300 leading-relaxed whitespace-pre-wrap"
+                className="text-gray-700 leading-relaxed whitespace-pre-wrap"
                 dangerouslySetInnerHTML={{ 
                   __html: blogs.find(b => b.id === expandedBlog)?.content
-                    .replace(/## (.*)/g, '<h2 class="text-2xl font-bold text-white mt-8 mb-4">$1</h2>')
-                    .replace(/### (.*)/g, '<h3 class="text-xl font-bold text-blue-400 mt-6 mb-3">$1</h3>')
-                    .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white">$1</strong>')
-                    .replace(/---/g, '<hr class="border-slate-700 my-6" />')
-                    .replace(/- (.*)/g, '<li class="ml-4 text-gray-400">$1</li>')
-                    .replace(/> (.*)/g, '<blockquote class="border-l-4 border-blue-500 pl-4 italic text-gray-400 my-4">$1</blockquote>')
+                    .replace(/## (.*)/g, '<h2 class="text-2xl font-bold text-gray-800 mt-8 mb-4">$1</h2>')
+                    .replace(/### (.*)/g, '<h3 class="text-xl font-bold text-yellow-600 mt-6 mb-3">$1</h3>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong class="text-gray-900">$1</strong>')
+                    .replace(/---/g, '<hr class="border-gray-200 my-6" />')
+                    .replace(/- (.*)/g, '<li class="ml-4 text-gray-600">$1</li>')
+                    .replace(/> (.*)/g, '<blockquote class="border-l-4 border-yellow-600 pl-4 italic text-gray-600 my-4">$1</blockquote>')
                 }}
               />
+              
+              {/* Comments Section */}
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <CommentsSection contentType="blog" contentId={expandedBlog} />
+              </div>
             </div>
 
             {/* Modal Footer */}
-            <div className="sticky bottom-0 bg-slate-900/95 backdrop-blur border-t border-slate-700 p-6 flex justify-between items-center">
+            <div className="sticky bottom-0 bg-white/95 backdrop-blur border-t border-gray-200 p-6 flex justify-between items-center">
               <span className="text-gray-500 text-sm">
                 Thanks for reading!
               </span>
               <button 
                 onClick={() => setExpandedBlog(null)}
-                className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition"
+                className="px-6 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition"
               >
                 Close
               </button>

@@ -187,7 +187,7 @@ export default function TradingPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[yellow-600]"></div>
       </div>
     )
   }
@@ -195,252 +195,374 @@ export default function TradingPage() {
   const displayTrades = showAllTrades ? trades : trades.slice(0, 5)
 
   return (
-    <div className="space-y-6">
-      {/* Hero Section - Value Proposition */}
-      <section className="relative bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 text-white overflow-hidden rounded-2xl">
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-        
-        <div className="relative px-6 py-10 md:py-12">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-6">
-              <h1 className="text-3xl md:text-4xl font-bold mb-3">
-                Stop Losing. <span className="text-amber-400">Start Winning.</span>
-              </h1>
-              <p className="text-gray-200 text-lg max-w-2xl mx-auto">
-                Real trading results. Real strategies. No fluff. Learn what actually works in the markets.
-              </p>
-            </div>
-            
-            {/* Quick Stats */}
-            <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-6">
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl px-3 py-2 text-center">
-                <div className={`text-xl font-bold ${stats.totalPnL >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  {formatCurrency(stats.totalPnL)}
-                </div>
-                <div className="text-xs text-gray-300">Total P&L</div>
+    <div className="min-h-screen bg-gray-100">
+      {/* TOP NAVIGATION BAR */}
+      <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            {/* Logo/Brand */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-[yellow-600] rounded-xl flex items-center justify-center">
+                <IconTrendingUp className="text-white" />
               </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl px-3 py-2 text-center">
-                <div className="text-xl font-bold text-blue-400">{stats.winRate}%</div>
-                <div className="text-xs text-gray-300">Win Rate</div>
-              </div>
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl px-3 py-2 text-center">
-                <div className="text-xl font-bold text-amber-400">{stats.profitFactor}</div>
-                <div className="text-xs text-gray-300">Profit Factor</div>
+              <div>
+                <h1 className="font-bold text-lg text-gray-900">
+                  Trading Journal
+                </h1>
+                <p className="text-xs text-gray-600">{trades.length} trades</p>
               </div>
             </div>
 
-            {/* CTA */}
-            <div className="flex flex-col sm:flex-row justify-center gap-3">
-              <Link 
-                to="/service"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-slate-900 rounded-xl font-semibold transition"
-              >
-                Get Mentorship <IconArrowRight />
-              </Link>
-              <button 
-                onClick={() => document.getElementById('trades-section').scrollIntoView({ behavior: 'smooth' })}
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white rounded-xl font-semibold transition"
-              >
-                See All Trades
-              </button>
+            {/* Quick Stats Row */}
+            <div className="hidden md:flex items-center gap-6">
+              <div className="flex items-center gap-2 text-sm">
+                <IconDollar className="text-yellow-600" />
+                <span className="text-gray-600">P&L:</span>
+                <span className={`font-semibold ${stats.totalPnL >= 0 ? 'text-green-600' : 'text-red-600'}`}>{formatCurrency(stats.totalPnL)}</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm">
+                <IconPercent className="text-yellow-600" />
+                <span className="text-gray-600">Win Rate:</span>
+                <span className="font-semibold text-gray-800">{stats.winRate}%</span>
+              </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Why Learn From Me */}
-      <section className="grid md:grid-cols-3 gap-4">
-        <div className="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
-          <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center mb-3">
-            <IconTrophy />
-          </div>
-          <h3 className="font-semibold mb-2">Proven Results</h3>
-          <p className="text-sm text-gray-400">
-            Not theory. These are my actual trades with real money. See my win rate, profit factor, and monthly performance.
-          </p>
-        </div>
-        
-        <div className="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
-          <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center mb-3">
-            <IconLightbulb />
-          </div>
-          <h3 className="font-semibold mb-2">Stop Bad Strategies</h3>
-          <p className="text-sm text-gray-400">
-            Tired of courses that don't work? Learn from someone who's been there. Cut your learning curve in half.
-          </p>
-        </div>
-        
-        <div className="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
-          <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center mb-3">
-            <IconBookOpen />
-          </div>
-          <h3 className="font-semibold mb-2">1-on-1 Mentorship</h3>
-          <p className="text-sm text-gray-400">
-            Get personalized guidance. Ask questions. Review your trades. Build a strategy that fits YOUR style.
-          </p>
-        </div>
-      </section>
-
-      {/* Chart */}
-      {chartData.length > 0 && (
-        <div className="bg-slate-800/50 rounded-xl p-5">
-          <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
-            <span className="text-blue-500"><IconTrendingUp /></span>
-            Monthly Performance
-          </h2>
-          <div className="h-64">
-            <Suspense fallback={<div className="h-full flex items-center justify-center text-gray-400">Loading...</div>}>
-              <MonthlyPnLChart data={chartData} formatCurrency={formatCurrency} />
-            </Suspense>
-          </div>
-        </div>
-      )}
-
-      {/* Recent Trades - Compact */}
-      <section id="trades-section" className="bg-slate-800/50 rounded-xl p-5 border border-slate-700">
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h2 className="text-lg font-bold">Recent Trades</h2>
-            <p className="text-xs text-gray-400">
-              {stats.winningTrades} wins / {stats.losingTrades} losses • Click to view comments
-            </p>
-          </div>
-          {trades.length > 5 && (
-            <button
-              onClick={() => setShowAllTrades(!showAllTrades)}
-              className="text-sm text-blue-400 hover:text-blue-300"
-            >
-              {showAllTrades ? 'Show Less' : `View All (${trades.length})`}
-            </button>
-          )}
-        </div>
-        
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="bg-slate-700/50 text-xs">
-              <tr>
-                <th className="px-3 py-2 text-left rounded-tl-lg">Date</th>
-                <th className="px-3 py-2 text-left">Pair</th>
-                <th className="px-3 py-2 text-right">P&L</th>
-                <th className="px-3 py-2 text-left">Strategy</th>
-                <th className="px-3 py-2 text-center rounded-tr-lg"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {displayTrades.map(trade => (
-                <React.Fragment key={trade.id}>
-                  <tr 
-                    className="border-t border-slate-700/50 cursor-pointer hover:bg-slate-700/30 transition-colors text-xs"
-                    onClick={() => toggleExpand(trade.id)}
-                  >
-                    <td className="px-3 py-2 font-mono text-gray-400">
-                      {new Date(trade.trade_date).toLocaleDateString()}
-                    </td>
-                    <td className="px-3 py-2 font-mono font-medium">{trade.pair}</td>
-                    <td className={`px-3 py-2 text-right font-bold ${trade.profit_loss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      {formatCurrency(trade.profit_loss)}
-                    </td>
-                    <td className="px-3 py-2">
-                      {trade.strategy ? (
-                        <span className="px-2 py-0.5 bg-blue-500/20 rounded text-xs">{trade.strategy}</span>
-                      ) : '-'}
-                    </td>
-                    <td className="px-3 py-2 text-center">
-                      {expandedTrade === trade.id ? (
-                        <span className="text-blue-400"><IconChevronUp /></span>
-                      ) : (
-                        <span className="text-gray-500"><IconChevronDown /></span>
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="grid lg:grid-cols-12 gap-6">
+          
+          {/* LEFT SIDEBAR - Sticky Navigation */}
+          <div className="hidden lg:block lg:col-span-3">
+            <div className="sticky top-24 space-y-4">
+              {/* Main Navigation */}
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                  Overview
+                </h3>
+                <nav className="space-y-1">
+                  {[
+                    { id: 'all', icon: IconTrendingUp, label: 'All Trades', count: trades.length },
+                    { id: 'winning', icon: IconTrophy, label: 'Winning', count: stats.winningTrades },
+                    { id: 'losing', icon: IconSkull, label: 'Losing', count: stats.losingTrades },
+                  ].map(item => (
+                    <button
+                      key={item.id}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors duration-200 text-gray-600 hover:bg-gray-100"
+                    >
+                      <item.icon />
+                      <span className="flex-1 text-left">{item.label}</span>
+                      {item.count > 0 && (
+                        <span className="text-xs bg-gray-200 px-2 py-0.5 rounded-full">
+                          {item.count}
+                        </span>
                       )}
-                    </td>
-                  </tr>
-                  {expandedTrade === trade.id && (
-                    <tr className="bg-slate-800/40">
-                      <td colSpan="5" className="px-3 py-3">
-                        <div className="grid grid-cols-2 gap-4 text-xs mb-3">
-                          <div>
-                            <span className="text-gray-500">Entry:</span>
-                            <span className="ml-2 font-mono">{formatCurrency(trade.entry_price)}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">Exit:</span>
-                            <span className="ml-2 font-mono">{formatCurrency(trade.exit_price)}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">Platform:</span>
-                            <span className="ml-2">{trade.platform}</span>
-                          </div>
-                        </div>
-                        <CommentsSection contentType="trade" contentId={trade.id} compact />
-                      </td>
+                    </button>
+                  ))}
+                </nav>
+              </div>
+
+              {/* Quick Stats */}
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                  Performance
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Best Trade</span>
+                    <span className={`font-semibold ${stats.bestTrade >= 0 ? 'text-green-600' : 'text-red-600'}`}>{formatCurrency(stats.bestTrade)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Worst Trade</span>
+                    <span className={`font-semibold ${stats.worstTrade >= 0 ? 'text-green-600' : 'text-red-600'}`}>{formatCurrency(stats.worstTrade)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Avg Win</span>
+                    <span className="font-semibold text-green-600">{formatCurrency(stats.avgWin)}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Avg Loss</span>
+                    <span className="font-semibold text-red-600">{formatCurrency(stats.avgLoss)}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* MAIN CONTENT AREA */}
+          <div className="lg:col-span-6 space-y-6">
+            
+            {/* HERO SECTION */}
+            <div className="bg-white rounded-3xl p-6 border border-gray-300">
+              <div className="flex flex-col md:flex-row gap-6 items-center">
+                <div className="flex-shrink-0">
+                  <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-2 border-gray-200 shadow-lg">
+                    <img 
+                      src="/owner-photo.jpg" 
+                      alt="Generas Kagiraneza" 
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Crect fill='%23fbbf24' width='160' height='160'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%231f2937'%3EPhoto%3C/text%3E%3C/svg%3E";
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h2 className="text-3xl font-bold mb-2 text-gray-800">Stop Losing. Start Winning.</h2>
+                  <p className="text-gray-600">
+                    Real trading results. Real strategies. No fluff. Learn what actually works in the markets.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Why Learn From Me */}
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="bg-white rounded-2xl p-5 border border-gray-200 hover:border-yellow-400 transition-colors duration-200">
+                <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center mb-3">
+                  <IconTrophy className="text-yellow-600" />
+                </div>
+                <h3 className="font-semibold mb-2 text-gray-800">Proven Results</h3>
+                <p className="text-sm text-gray-600">
+                  Not theory. These are my actual trades with real money. See my win rate, profit factor, and monthly performance.
+                </p>
+              </div>
+              
+              <div className="bg-white rounded-2xl p-5 border border-gray-200 hover:border-yellow-400 transition-colors duration-200">
+                <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center mb-3">
+                  <IconLightbulb className="text-yellow-600" />
+                </div>
+                <h3 className="font-semibold mb-2 text-gray-800">Stop Bad Strategies</h3>
+                <p className="text-sm text-gray-600">
+                  Tired of courses that don't work? Learn from someone who's been there. Cut your learning curve in half.
+                </p>
+              </div>
+              
+              <div className="bg-white rounded-2xl p-5 border border-gray-200 hover:border-yellow-400 transition-colors duration-200">
+                <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center mb-3">
+                  <IconBookOpen className="text-yellow-600" />
+                </div>
+                <h3 className="font-semibold mb-2 text-gray-800">1-on-1 Mentorship</h3>
+                <p className="text-sm text-gray-600">
+                  Get personalized guidance. Ask questions. Review your trades. Build a strategy that fits YOUR style.
+                </p>
+              </div>
+            </div>
+
+            {/* Chart */}
+            {chartData.length > 0 && (
+              <div className="bg-white rounded-2xl p-5 border border-gray-300">
+                <h2 className="text-lg font-bold mb-3 flex items-center gap-2 text-gray-800">
+                  <span className="text-yellow-600"><IconTrendingUp /></span>
+                  Monthly Performance
+                </h2>
+                <div className="h-64">
+                  <Suspense fallback={<div className="h-full flex items-center justify-center text-gray-400">Loading...</div>}>
+                    <MonthlyPnLChart data={chartData} formatCurrency={formatCurrency} />
+                  </Suspense>
+                </div>
+              </div>
+            )}
+
+            {/* Recent Trades - Compact */}
+            <section id="trades-section" className="bg-white rounded-2xl shadow-xl p-5 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+              <div className="flex justify-between items-center mb-4">
+                <div>
+                  <h2 className="text-lg font-bold text-gray-800">Recent Trades</h2>
+                  <p className="text-xs text-gray-600">
+                    {stats.winningTrades} wins / {stats.losingTrades} losses • Click to view comments
+                  </p>
+                </div>
+                {trades.length > 5 && (
+                  <button
+                    onClick={() => setShowAllTrades(!showAllTrades)}
+                    className="text-sm text-yellow-600 hover:text-yellow-700 transition-colors duration-200"
+                  >
+                    {showAllTrades ? 'Show Less' : `View All (${trades.length})`}
+                  </button>
+                )}
+              </div>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-gray-100 text-xs">
+                    <tr>
+                      <th className="px-3 py-2 text-left rounded-tl-lg text-gray-700">Date</th>
+                      <th className="px-3 py-2 text-left text-gray-700">Pair</th>
+                      <th className="px-3 py-2 text-right text-gray-700">P&L</th>
+                      <th className="px-3 py-2 text-left text-gray-700">Strategy</th>
+                      <th className="px-3 py-2 text-center rounded-tr-lg text-gray-700"></th>
                     </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        
-        {trades.length === 0 && (
-          <div className="text-center py-8 text-gray-400">
-            <p>No trades recorded yet.</p>
-          </div>
-        )}
-      </section>
+                  </thead>
+                  <tbody>
+                    {displayTrades.map(trade => (
+                      <React.Fragment key={trade.id}>
+                        <tr 
+                          className="border-t border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors text-xs"
+                          onClick={() => toggleExpand(trade.id)}
+                        >
+                          <td className="px-3 py-2 font-mono text-gray-600">
+                            {new Date(trade.trade_date).toLocaleDateString()}
+                          </td>
+                          <td className="px-3 py-2 font-mono font-medium text-gray-800">{trade.pair}</td>
+                          <td className={`px-3 py-2 text-right font-bold ${trade.profit_loss >= 0 ? 'text-yellow-600' : 'text-yellow-600'}`}>
+                            {formatCurrency(trade.profit_loss)}
+                          </td>
+                          <td className="px-3 py-2">
+                            {trade.strategy ? (
+                              <span className="px-2 py-0.5 bg-yellow-100 text-yellow-700 rounded text-xs">{trade.strategy}</span>
+                            ) : '-'}
+                          </td>
+                          <td className="px-3 py-2 text-center">
+                            {expandedTrade === trade.id ? (
+                              <span className="text-yellow-600"><IconChevronUp /></span>
+                            ) : (
+                              <span className="text-gray-500"><IconChevronDown /></span>
+                            )}
+                          </td>
+                        </tr>
+                        {expandedTrade === trade.id && (
+                          <tr className="bg-gray-50">
+                            <td colSpan="5" className="px-3 py-3">
+                              <div className="grid grid-cols-2 gap-4 text-xs mb-3">
+                                <div>
+                                  <span className="text-gray-600">Entry:</span>
+                                  <span className="ml-2 font-mono text-gray-800">{formatCurrency(trade.entry_price)}</span>
+                                </div>
+                                <div>
+                                  <span className="text-gray-600">Exit:</span>
+                                  <span className="ml-2 font-mono text-gray-800">{formatCurrency(trade.exit_price)}</span>
+                                </div>
+                                <div>
+                                  <span className="text-gray-600">Platform:</span>
+                                  <span className="ml-2 text-gray-800">{trade.platform}</span>
+                                </div>
+                              </div>
+                              <CommentsSection contentType="trade" contentId={trade.id} compact />
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              
+              {trades.length === 0 && (
+                <div className="text-center py-8 text-gray-600">
+                  <p>No trades recorded yet.</p>
+                </div>
+              )}
+            </section>
 
-      {/* Key Lessons */}
-      <section className="bg-gradient-to-br from-amber-900/20 to-orange-900/20 rounded-xl p-5 border border-amber-500/20">
-        <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center shrink-0">
-            <IconWarning />
-          </div>
-          <div>
-            <h3 className="font-semibold mb-1">What I've Learned</h3>
-            <ul className="text-sm text-gray-300 space-y-1">
-              <li className="flex items-start gap-2">
-                <span className="text-green-400 mt-0.5"><IconCheck /></span>
-                <span>Risk management is more important than profits</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-400 mt-0.5"><IconCheck /></span>
-                <span>A simple strategy executed well beats complex systems</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-400 mt-0.5"><IconCheck /></span>
-                <span>Psychology matters more than technical analysis</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-green-400 mt-0.5"><IconCheck /></span>
-                <span>Consistency beats occasional big wins</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </section>
+            {/* Key Lessons */}
+            <div className="bg-yellow-50 rounded-2xl p-5 border border-yellow-200">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-yellow-200 flex items-center justify-center shrink-0">
+                  <IconWarning className="text-yellow-600" />
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-1 text-gray-800">What I've Learned</h3>
+                  <ul className="text-sm text-gray-700 space-y-1">
+                    <li className="flex items-start gap-2">
+                      <span className="text-yellow-600 mt-0.5"><IconCheck /></span>
+                      <span>Risk management is more important than profits</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-yellow-600 mt-0.5"><IconCheck /></span>
+                      <span>A simple strategy executed well beats complex systems</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-yellow-600 mt-0.5"><IconCheck /></span>
+                      <span>Psychology matters more than technical analysis</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-yellow-600 mt-0.5"><IconCheck /></span>
+                      <span>Consistency beats occasional big wins</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
 
-      {/* Bottom CTA */}
-      <section className="bg-slate-800 rounded-2xl p-6 text-center border border-slate-700">
-        <h2 className="text-xl font-bold mb-2">Ready to Level Up Your Trading?</h2>
-        <p className="text-gray-400 mb-4 text-sm max-w-md mx-auto">
-          Stop wasting time on strategies that don't work. Get mentored by someone with real market experience.
-        </p>
-        <div className="flex flex-col sm:flex-row justify-center gap-3">
-          <Link 
-            to="/service"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition"
-          >
-            Start Mentorship <IconArrowRight />
-          </Link>
-          <a 
-            href="https://wa.me/250789123456"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-green-600/80 hover:bg-green-600 text-white rounded-xl font-semibold transition"
-          >
-            Chat on WhatsApp
-          </a>
+            {/* Bottom CTA */}
+            <div className="bg-white rounded-2xl p-6 text-center border border-gray-300">
+              <h2 className="text-xl font-bold mb-2 text-gray-800">Ready to Level Up Your Trading?</h2>
+              <p className="text-gray-600 mb-4 text-sm max-w-md mx-auto">
+                Stop wasting time on strategies that don't work. Get mentored by someone with real market experience.
+              </p>
+              <div className="flex flex-col sm:flex-row justify-center gap-3">
+                <Link 
+                  to="/service"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl font-semibold transition-colors duration-200"
+                >
+                  Start Mentorship <IconArrowRight />
+                </Link>
+                <a 
+                  href="https://wa.me/250789123456"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-xl font-semibold transition-colors duration-200"
+                >
+                  Chat on WhatsApp
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT SIDEBAR - Stats */}
+          <div className="hidden lg:block lg:col-span-3">
+            <div className="sticky top-24 space-y-4">
+              
+              {/* Stats Cards */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 bg-yellow-100">
+                    <IconDollar className="text-yellow-600" />
+                  </div>
+                  <p className={`text-lg font-bold ${stats.totalPnL >= 0 ? 'text-green-600' : 'text-red-600'}`}>{formatCurrency(stats.totalPnL)}</p>
+                  <p className="text-xs text-gray-600">Total P&L</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 bg-yellow-100">
+                    <IconPercent className="text-yellow-600" />
+                  </div>
+                  <p className="text-lg font-bold text-gray-800">{stats.winRate}%</p>
+                  <p className="text-xs text-gray-600">Win Rate</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 bg-yellow-100">
+                    <IconTrophy className="text-yellow-600" />
+                  </div>
+                  <p className="text-lg font-bold text-gray-800">{stats.winningTrades}</p>
+                  <p className="text-xs text-gray-600">Wins</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 border border-gray-200">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mb-2 bg-yellow-100">
+                    <IconSkull className="text-yellow-600" />
+                  </div>
+                  <p className="text-lg font-bold text-gray-800">{stats.losingTrades}</p>
+                  <p className="text-xs text-gray-600">Losses</p>
+                </div>
+              </div>
+
+              {/* Profit Factor */}
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
+                  Profit Factor
+                </h3>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-gray-800">{stats.profitFactor}</p>
+                  <p className="text-xs text-gray-600 mt-1">
+                    {stats.profitFactor >= 2 ? 'Excellent' : stats.profitFactor >= 1.5 ? 'Good' : 'Needs Improvement'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
     </div>
   )
 }

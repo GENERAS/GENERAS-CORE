@@ -36,7 +36,7 @@ function MobileBottomNav() {
               key={item.path}
               to={item.path}
               className={`flex flex-col items-center justify-center flex-1 h-full text-lg transition-colors duration-200 ${
-                isActive ? 'text-[#714B67] font-medium' : 'text-gray-600 hover:text-gray-900'
+                isActive ? 'text-[yellow-600] font-medium' : 'text-gray-600 hover:text-gray-900'
               }`}
             >
               <span>{item.label}</span>

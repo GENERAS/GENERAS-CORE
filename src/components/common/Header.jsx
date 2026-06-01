@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../../context/AuthContext'
 import SupporterPaymentModal from '../supporters/SupporterPaymentModal'
 import LanguageSwitcher from './LanguageSwitcher'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Coffee } from 'lucide-react'
 
 export default function Header() {
   const { t } = useTranslation()
@@ -57,8 +57,9 @@ export default function Header() {
 
               <button
                 onClick={() => setShowPaymentModal(true)}
-                className='text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 font-medium'
+                className='text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 font-medium flex items-center gap-2'
               >
+                <Coffee className="w-4 h-4 text-yellow-500" />
                 {t('common.buyMeCoffee')}
               </button>
 
@@ -106,7 +107,7 @@ export default function Header() {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`block py-3 text-lg font-medium transition-colors duration-200 ${
                     isActive
-                      ? 'text-[#714B67]'
+                      ? 'text-yellow-600'
                       : 'text-gray-600 hover:text-gray-900'
                   }`}
                 >
@@ -121,5 +122,4 @@ export default function Header() {
       <SupporterPaymentModal isOpen={showPaymentModal} onClose={() => setShowPaymentModal(false)} />
     </>
   )
-}
 }
