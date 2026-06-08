@@ -10,6 +10,7 @@ import {
   DollarSign, ChevronLeft, Sparkles,
   XCircle, MessageCircle, FileText, Mail
 } from 'lucide-react';
+import Loader from '../components/common/Loader';
 
 const ServicePage = () => {
   const navigate = useNavigate();
@@ -335,35 +336,38 @@ const ServicePage = () => {
 
   // Render Functions
   const renderHero = () => (
-    <section className="relative bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
-      <div className="absolute inset-0 bg-black opacity-50"></div>
-      <div className="absolute inset-0 bg-grid-white/[0.05] bg-[length:20px_20px]"></div>
-      <div className="relative container mx-auto px-4 py-16 lg:py-24">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            Stop Struggling. Start Winning.
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-200 mb-8">
-            Escape bad courses. Ditch the overwhelm. Get real mentorship that actually gets you results.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-              <Shield className="w-5 h-5 text-yellow-400" />
-              <span>100% Guaranteed</span>
+    <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Logo/Brand */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[yellow-600] rounded-xl flex items-center justify-center">
+              <Sparkles className="text-white" />
             </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-              <Users className="w-5 h-5 text-yellow-400" />
-              <span>100+ Students</span>
+            <div>
+              <h1 className="font-bold text-lg text-gray-900">
+                Services
+              </h1>
+              <p className="text-xs text-gray-600">{services.length} services available</p>
             </div>
-            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
-              <Star className="w-5 h-5 text-yellow-400" />
-              <span>4.9/5 Rating</span>
+          </div>
+
+          {/* Quick Stats Row */}
+          <div className="hidden md:flex items-center gap-6">
+            <div className="flex items-center gap-2 text-sm">
+              <Star className="text-yellow-600" />
+              <span className="text-gray-600">Rating:</span>
+              <span className="font-semibold text-gray-800">4.9/5</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <Users className="text-yellow-600" />
+              <span className="text-gray-600">Students:</span>
+              <span className="font-semibold text-gray-800">100+</span>
             </div>
           </div>
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
-    </section>
+    </div>
   );
 
   const renderTabs = () => (
@@ -396,11 +400,7 @@ const ServicePage = () => {
 
   const renderBrowseServices = () => {
     if (loadingServices) {
-      return (
-        <div className="flex justify-center py-20">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-buue00"></div>
-        </div>
-      );
+      return <Loader />;
     }
 
     return (

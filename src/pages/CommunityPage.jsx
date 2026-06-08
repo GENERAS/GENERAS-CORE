@@ -13,6 +13,7 @@ import { BiTrendingUp } from 'react-icons/bi'
 import { Link } from 'react-router-dom'
 import LikeButton from '../components/likes/LikeButton'
 import CommentsSection from '../components/comments/CommentsSection'
+import Loader from '../components/common/Loader'
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState('all')
@@ -255,14 +256,7 @@ export default function CommunityPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[yellow-600] mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading amazing content...</p>
-        </div>
-      </div>
-    )
+    return <Loader />
   }
 
   return (

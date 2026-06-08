@@ -2,6 +2,7 @@ import React, { useEffect, useState, lazy, Suspense } from 'react'
 import { supabase } from '../lib/supabase'
 import { Link } from 'react-router-dom'
 import CommentsSection from '../components/comments/CommentsSection'
+import Loader from '../components/common/Loader'
 
 // Inline SVG icons
 const IconTrendingUp = () => (
@@ -185,11 +186,7 @@ export default function TradingPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[yellow-600]"></div>
-      </div>
-    )
+    return <Loader />
   }
 
   const displayTrades = showAllTrades ? trades : trades.slice(0, 5)

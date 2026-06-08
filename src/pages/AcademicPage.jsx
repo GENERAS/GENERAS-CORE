@@ -6,6 +6,7 @@ import {
 } from 'react-icons/fa'
 import LikeButton from '../components/likes/LikeButton'
 import CommentsSection from '../components/comments/CommentsSection'
+import Loader from '../components/common/Loader'
 
 export default function AcademicPage() {
   const [levels, setLevels] = useState([])
@@ -178,11 +179,7 @@ export default function AcademicPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[yellow-600]"></div>
-      </div>
-    )
+    return <Loader />
   }
 
   return (

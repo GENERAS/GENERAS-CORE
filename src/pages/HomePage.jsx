@@ -2,6 +2,7 @@ import { useEffect, useState, lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { Link } from 'react-router-dom'
+import Loader from '../components/common/Loader'
 
 // Inline SVG icons
 const IconRocket = () => (
@@ -131,11 +132,7 @@ export default function HomePage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[yellow-600]"></div>
-      </div>
-    )
+    return <Loader />
   }
 
   return (

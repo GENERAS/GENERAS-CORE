@@ -234,6 +234,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import Layout from './components/common/Layout'
 import ProtectedRoute from './components/common/ProtectedRoute'
+import Loader from './components/common/Loader'
 import AdminLoginPage from './pages/AdminLoginPage'
 
 // Pages
@@ -250,11 +251,6 @@ const HiringPage = lazy(() => import('./pages/HiringPage'))
 const ServicePage = lazy(() => import('./pages/ServicePage'))
 const TestimonialsPage = lazy(() => import('./pages/TestimonialsPage'))
 
-const PageLoader = () => (
-  <div className="min-h-[50vh] flex items-center justify-center">
-    <div className="animate-pulse text-blue-400 text-sm">Loading...</div>
-  </div>
-)
 
 function ScrollHandler() {
   const { pathname } = useLocation()
@@ -274,27 +270,27 @@ function App() {
       <Routes>
 
         {/* PUBLIC */}
-        <Route path="/" element={<Layout><Suspense fallback={<PageLoader />}><HomePage /></Suspense></Layout>} />
+        <Route path="/" element={<Layout><Suspense fallback={<Loader />}><HomePage /></Suspense></Layout>} />
 
-        <Route path="/academic" element={<Layout><Suspense fallback={<PageLoader />}><AcademicPage /></Suspense></Layout>} />
+        <Route path="/academic" element={<Layout><Suspense fallback={<Loader />}><AcademicPage /></Suspense></Layout>} />
 
-        <Route path="/projects" element={<Layout><Suspense fallback={<PageLoader />}><ProjectsPage /></Suspense></Layout>} />
+        <Route path="/projects" element={<Layout><Suspense fallback={<Loader />}><ProjectsPage /></Suspense></Layout>} />
 
-        <Route path="/trading" element={<Layout><Suspense fallback={<PageLoader />}><TradingPage /></Suspense></Layout>} />
+        <Route path="/trading" element={<Layout><Suspense fallback={<Loader />}><TradingPage /></Suspense></Layout>} />
 
-        <Route path="/community" element={<Layout><Suspense fallback={<PageLoader />}><CommunityPage /></Suspense></Layout>} />
+        <Route path="/community" element={<Layout><Suspense fallback={<Loader />}><CommunityPage /></Suspense></Layout>} />
 
-        <Route path="/blog" element={<Layout><Suspense fallback={<PageLoader />}><BlogPage /></Suspense></Layout>} />
+        <Route path="/blog" element={<Layout><Suspense fallback={<Loader />}><BlogPage /></Suspense></Layout>} />
 
-        <Route path="/blog/:slug" element={<Layout><Suspense fallback={<PageLoader />}><BlogPostPage /></Suspense></Layout>} />
+        <Route path="/blog/:slug" element={<Layout><Suspense fallback={<Loader />}><BlogPostPage /></Suspense></Layout>} />
 
-        <Route path="/service" element={<Layout><Suspense fallback={<PageLoader />}><ServicePage /></Suspense></Layout>} />
+        <Route path="/service" element={<Layout><Suspense fallback={<Loader />}><ServicePage /></Suspense></Layout>} />
 
-        <Route path="/services/:slug" element={<Layout><Suspense fallback={<PageLoader />}><ServiceDetailPage /></Suspense></Layout>} />
+        <Route path="/services/:slug" element={<Layout><Suspense fallback={<Loader />}><ServiceDetailPage /></Suspense></Layout>} />
 
-        <Route path="/hire-me" element={<Layout><Suspense fallback={<PageLoader />}><HiringPage /></Suspense></Layout>} />
+        <Route path="/hire-me" element={<Layout><Suspense fallback={<Loader />}><HiringPage /></Suspense></Layout>} />
 
-        <Route path="/testimonials" element={<Layout><Suspense fallback={<PageLoader />}><TestimonialsPage /></Suspense></Layout>} />
+        <Route path="/testimonials" element={<Layout><Suspense fallback={<Loader />}><TestimonialsPage /></Suspense></Layout>} />
 
         {/* REDIRECTS */}
         <Route path="/mentorship" element={<Navigate to="/service" replace />} />
@@ -305,7 +301,7 @@ function App() {
 
         <Route path="/admin" element={
           <ProtectedRoute>
-            <Suspense fallback={<PageLoader />}><AdminPage /></Suspense>
+            <Suspense fallback={<Loader />}><AdminPage /></Suspense>
           </ProtectedRoute>
         } />
 
