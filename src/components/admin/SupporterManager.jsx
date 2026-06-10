@@ -37,9 +37,14 @@ export default function SupporterManager() {
   }, [])
 
   const loadSupporters = async () => {
-    const { data } = await supabase.from('coffee_supporters').select('*').order('submitted_at', { ascending: false })
-    setSupporters(data || [])
-    setLoading(false)
+    try {
+      const { data } = await supabase.from('coffee_supporters').select('*').order('submitted_at', { ascending: false })
+      setSupporters(data || [])
+    } catch (err) {
+      console.error('Error loading supporters:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const verifySupporter = async (id, currentCups) => {

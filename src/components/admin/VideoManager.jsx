@@ -64,9 +64,14 @@ export default function VideoManager() {
   }, [])
 
   const loadVideos = async () => {
-    const { data } = await supabase.from('videos').select('*').order('created_at', { ascending: false })
-    setVideos(data || [])
-    setLoading(false)
+    try {
+      const { data } = await supabase.from('videos').select('*').order('created_at', { ascending: false })
+      setVideos(data || [])
+    } catch (err) {
+      console.error('Error loading videos:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const extractVideoId = (url, platform) => {

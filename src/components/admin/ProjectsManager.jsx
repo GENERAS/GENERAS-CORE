@@ -22,9 +22,14 @@ export default function ProjectsManager() {
   useEffect(() => { loadProjects() }, [])
 
   const loadProjects = async () => {
-    const { data } = await supabase.from('projects').select('*').order('display_order')
-    setProjects(data || [])
-    setLoading(false)
+    try {
+      const { data } = await supabase.from('projects').select('*').order('display_order')
+      setProjects(data || [])
+    } catch (err) {
+      console.error('Error loading projects:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleSubmit = async (e) => {

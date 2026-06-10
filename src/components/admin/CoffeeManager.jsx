@@ -19,17 +19,18 @@ export default function CoffeeManager() {
   }, [])
 
   const loadSupporters = async () => {
-    const { data, error } = await supabase
-      .from('coffee_supporters')
-      .select('*')
-      .order('created_at', { ascending: false })
-    
-    if (error) {
-      console.error('Error loading supporters:', error)
-    } else {
+    try {
+      const { data, error } = await supabase
+        .from('coffee_supporters')
+        .select('*')
+        .order('created_at', { ascending: false })
+      if (error) throw error
       setSupporters(data || [])
+    } catch (err) {
+      console.error('Error loading supporters:', err)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const handleSubmit = async (e) => {

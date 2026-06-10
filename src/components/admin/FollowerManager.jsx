@@ -12,20 +12,18 @@ export default function FollowerManager() {
   }, [])
 
   const loadFollowers = async () => {
-    console.log('Loading followers...')
-    const { data, error } = await supabase
-      .from('followers')
-      .select('*')
-      .order('subscribed_at', { ascending: false })  // ← FIXED: changed from 'created_at'
-    
-    console.log('Fetched followers:', data)
-    
-    if (error) {
-      console.error('Error loading followers:', error)
-    } else {
+    try {
+      const { data, error } = await supabase
+        .from('followers')
+        .select('*')
+        .order('subscribed_at', { ascending: false })
+      if (error) throw error
       setFollowers(data || [])
+    } catch (err) {
+      console.error('Error loading followers:', err)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const handleDelete = async (id) => {

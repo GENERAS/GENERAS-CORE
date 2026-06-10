@@ -11,9 +11,14 @@ export default function BlogManager() {
   useEffect(() => { loadPosts() }, [])
 
   const loadPosts = async () => {
-    const { data } = await supabase.from('blog_posts').select('*').order('created_at', { ascending: false })
-    setPosts(data || [])
-    setLoading(false)
+    try {
+      const { data } = await supabase.from('blog_posts').select('*').order('created_at', { ascending: false })
+      setPosts(data || [])
+    } catch (err) {
+      console.error('Error loading blog posts:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleSubmit = async (e) => {

@@ -11,9 +11,14 @@ export default function AcademicManager() {
   useEffect(() => { loadLevels() }, [])
 
   const loadLevels = async () => {
-    const { data } = await supabase.from('academic_levels').select('*').order('display_order')
-    setLevels(data || [])
-    setLoading(false)
+    try {
+      const { data } = await supabase.from('academic_levels').select('*').order('display_order')
+      setLevels(data || [])
+    } catch (err) {
+      console.error('Error loading academic levels:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleSubmit = async (e) => {

@@ -57,13 +57,18 @@ export default function PhotoManager() {
   }, [])
 
   const loadData = async () => {
-    const [photosRes, albumsRes] = await Promise.all([
-      supabase.from('photos').select('*').order('created_at', { ascending: false }),
-      supabase.from('photo_albums').select('*')
-    ])
-    setPhotos(photosRes.data || [])
-    setAlbums(albumsRes.data || [])
-    setLoading(false)
+    try {
+      const [photosRes, albumsRes] = await Promise.all([
+        supabase.from('photos').select('*').order('created_at', { ascending: false }),
+        supabase.from('photo_albums').select('*')
+      ])
+      setPhotos(photosRes.data || [])
+      setAlbums(albumsRes.data || [])
+    } catch (err) {
+      console.error('Error loading photos:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleMultipleUpload = async (e) => {
