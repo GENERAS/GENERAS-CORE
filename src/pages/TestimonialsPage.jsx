@@ -320,9 +320,9 @@ export default function TestimonialsPage() {
                         {currentFeatured.client_name.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <h3 className="font-bold text-lg">{currentFeatured.client_name}</h3>
+                        <h3 className="font-bold text-lg break-words">{currentFeatured.client_name}</h3>
                         {currentFeatured.client_company && (
-                          <p className="text-sm text-gray-600">{currentFeatured.client_company}</p>
+                          <p className="text-sm text-gray-600 break-words">{currentFeatured.client_company}</p>
                         )}
                         <div className="flex items-center gap-1 mt-1">
                           {[...Array(currentFeatured.rating || 5)].map((_, i) => (
@@ -334,7 +334,7 @@ export default function TestimonialsPage() {
                     
                     <div>
                       <h4 className="text-xl font-bold text-yellow-600 mb-2">{currentFeatured.project_title}</h4>
-                      <p className="text-gray-700 line-clamp-4">"{currentFeatured.testimonial_text}"</p>
+                      <p className="text-gray-700 line-clamp-4 break-words">"{currentFeatured.testimonial_text}"</p>
                     </div>
                     
                     {/* Impact Stats */}
@@ -480,15 +480,15 @@ export default function TestimonialsPage() {
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-lg">{testimonial.client_name}</h3>
+                            <h3 className="font-bold text-lg break-words">{testimonial.client_name}</h3>
                             {testimonial.is_featured && (
-                              <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded-full text-xs flex items-center gap-1">
+                              <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
                                 <Sparkles className="w-3 h-3" /> Featured
                               </span>
                             )}
                           </div>
                           {testimonial.client_company && (
-                            <p className="text-sm text-gray-600">{testimonial.client_company}</p>
+                            <p className="text-sm text-gray-600 break-words">{testimonial.client_company}</p>
                           )}
                         </div>
                         <div className="flex items-center gap-1">
@@ -500,18 +500,18 @@ export default function TestimonialsPage() {
                       
                       {/* Project Info */}
                       <div className="mb-3">
-                        <span className="text-yellow-600 font-medium">{testimonial.project_title}</span>
-                        <p className="text-sm text-gray-600">{testimonial.project_description}</p>
+                        <span className="text-yellow-600 font-medium break-words">{testimonial.project_title}</span>
+                        <p className="text-sm text-gray-600 break-words">{testimonial.project_description}</p>
                       </div>
                       
                       {/* Testimonial Text */}
-                      <p className="text-gray-700 mb-4">"{testimonial.testimonial_text}"</p>
+                      <p className="text-gray-700 mb-4 break-words whitespace-pre-wrap">"{testimonial.testimonial_text}"</p>
                       
                       {/* Screenshot & Actions Row */}
                       <div className="flex items-start gap-4">
                         {testimonial.project_screenshot && (
                           <div 
-                            className="relative w-32 h-20 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer group"
+                            className="relative w-24 sm:w-32 h-20 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer group"
                             onClick={() => setSelectedTestimonial(testimonial)}
                           >
                             <img
