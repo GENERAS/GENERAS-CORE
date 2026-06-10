@@ -427,13 +427,13 @@ export default function AcademicReportsManager() {
                   <img 
                     src={report.thumbnail_url} 
                     alt={report.title}
-                    className="w-full h-32 object-cover rounded mb-3"
+                    loading="lazy" className="w-full h-32 object-cover rounded mb-3"
                   />
                 ) : report.file_url?.match(/\.(jpg|jpeg|png|webp|gif)$/i) ? (
                   <img 
                     src={report.file_url} 
                     alt={report.title}
-                    className="w-full h-32 object-cover rounded mb-3"
+                    loading="lazy" className="w-full h-32 object-cover rounded mb-3"
                   />
                 ) : (
                   <div className="w-full h-32 bg-slate-700 rounded flex items-center justify-center mb-3">

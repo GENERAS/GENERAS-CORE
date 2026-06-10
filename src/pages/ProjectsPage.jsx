@@ -292,7 +292,7 @@ export default function ProjectsPage() {
                     <img 
                       src="/owner-photo.jpg" 
                       alt="Generas Kagiraneza" 
-                      className="w-full h-full object-cover"
+                      loading="lazy" className="w-full h-full object-cover"
                       onError={(e) => {
                         e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Crect fill='%23fbbf24' width='160' height='160'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%231f2937'%3EPhoto%3C/text%3E%3C/svg%3E";
                       }}
@@ -323,7 +323,7 @@ export default function ProjectsPage() {
                     >
                       <div className="relative h-40 overflow-hidden">
                         {project.image_url ? (
-                          <img src={project.image_url} alt={project.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                          <img src={project.image_url} alt={project.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-yellow-100 to-yellow-100 flex items-center justify-center">
                             <IconCode className="text-4xl text-yellow-600" />
@@ -359,7 +359,7 @@ export default function ProjectsPage() {
                       <img
                         src={project.image_url}
                         alt={project.title}
-                        className={`w-full object-cover transition-transform duration-700 group-hover:scale-110 ${viewMode === 'grid' ? 'h-48' : 'h-full'}`}
+                        loading="lazy" className={`w-full object-cover transition-transform duration-700 group-hover:scale-110 ${viewMode === 'grid' ? 'h-48' : 'h-full'}`}
                       />
                     ) : (
                       <div className={`bg-gradient-to-br from-yellow-100 to-yellow-100 flex items-center justify-center ${viewMode === 'grid' ? 'h-48' : 'h-full min-h-[200px]'}`}>

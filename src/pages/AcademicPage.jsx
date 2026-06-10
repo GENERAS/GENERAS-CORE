@@ -281,7 +281,7 @@ export default function AcademicPage() {
                     <img 
                       src="/owner-photo.jpg" 
                       alt="Generas Kagiraneza" 
-                      className="w-full h-full object-cover"
+                      loading="lazy" className="w-full h-full object-cover"
                       onError={(e) => {
                         e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Crect fill='%23fbbf24' width='160' height='160'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%231f2937'%3EPhoto%3C/text%3E%3C/svg%3E";
                       }}
@@ -651,13 +651,13 @@ export default function AcademicPage() {
                                   <img 
                                     src={report.thumbnail_url} 
                                     alt={report.title}
-                                    className="w-full h-full object-cover"
+                                    loading="lazy" className="w-full h-full object-cover"
                                   />
                                 ) : report.file_url?.match(/\.(jpg|jpeg|png|webp|gif)$/i) ? (
                                   <img 
                                     src={report.file_url} 
                                     alt={report.title}
-                                    className="w-full h-full object-cover"
+                                    loading="lazy" className="w-full h-full object-cover"
                                   />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center">
@@ -726,7 +726,7 @@ export default function AcademicPage() {
               <img 
                 src={viewingFile.file_url} 
                 alt={viewingFile.title}
-                className="max-w-full max-h-[80vh] object-contain mx-auto"
+                loading="lazy" className="max-w-full max-h-[80vh] object-contain mx-auto"
               />
             ) : viewingFile.file_url?.match(/\.pdf$/i) ? (
               <iframe 
@@ -779,7 +779,7 @@ export default function AcademicPage() {
               <img 
                 src={selectedCert.certificate_url} 
                 alt={selectedCert.title}
-                className="max-w-full max-h-[85vh] object-contain mx-auto"
+                loading="lazy" className="max-w-full max-h-[85vh] object-contain mx-auto"
               />
             ) : (
               <iframe 

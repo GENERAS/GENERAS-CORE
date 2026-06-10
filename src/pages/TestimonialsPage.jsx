@@ -298,7 +298,7 @@ export default function TestimonialsPage() {
                       <img 
                         src={currentFeatured.project_screenshot} 
                         alt={currentFeatured.project_title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                        loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
                       <button className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
@@ -517,7 +517,7 @@ export default function TestimonialsPage() {
                             <img
                               src={testimonial.project_screenshot}
                               alt={testimonial.project_title}
-                              className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                              loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
                             />
                             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
                               <ImageIcon className="w-5 h-5" />
@@ -732,7 +732,7 @@ export default function TestimonialsPage() {
             <img
               src={selectedTestimonial.project_screenshot}
               alt={selectedTestimonial.project_title}
-              className="max-w-full max-h-[85vh] rounded-lg"
+              loading="lazy" className="max-w-full max-h-[85vh] rounded-lg"
             />
             <p className="text-center mt-4 text-gray-300">
               {selectedTestimonial.project_title} - {selectedTestimonial.client_name}

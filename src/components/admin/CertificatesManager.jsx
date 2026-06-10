@@ -349,7 +349,7 @@ export default function CertificatesManager() {
                           <img 
                             src={form.hard_copy_image_url} 
                             alt="Hard copy preview"
-                            className="max-h-32 mx-auto rounded-lg"
+                            loading="lazy" className="max-h-32 mx-auto rounded-lg"
                           />
                           <button
                             type="button"
@@ -455,7 +455,7 @@ export default function CertificatesManager() {
                 <img 
                   src={cert.hard_copy_image_url} 
                   alt={cert.title}
-                  className="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-80 transition"
+                  loading="lazy" className="w-full h-32 object-cover rounded-lg cursor-pointer hover:opacity-80 transition"
                   onClick={() => window.open(cert.hard_copy_image_url, '_blank')}
                 />
               </div>

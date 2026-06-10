@@ -428,7 +428,7 @@ export default function CommunityPage() {
                           <div className="relative h-full">
                             {item.featured_image ? (
                               <>
-                                <img src={item.featured_image} alt={item.title} className="w-full h-full object-cover" />
+                                <img src={item.featured_image} alt={item.title} loading="lazy" className="w-full h-full object-cover" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent" />
                               </>
                             ) : (
@@ -452,7 +452,7 @@ export default function CommunityPage() {
                           className="block h-full"
                         >
                           <div className="relative h-full">
-                            <img src={getVideoThumbnail(item)} alt={item.title} className="w-full h-full object-cover" />
+                            <img src={getVideoThumbnail(item)} alt={item.title} loading="lazy" className="w-full h-full object-cover" />
                             <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/60 to-transparent" />
                             <div className="absolute inset-0 flex items-center justify-center">
                               <div className="w-16 h-16 bg-yellow-600 rounded-full flex items-center justify-center shadow-2xl">
@@ -473,7 +473,7 @@ export default function CommunityPage() {
                           onClick={() => openLightbox(item, photos.indexOf(item))}
                           className="cursor-pointer h-full"
                         >
-                          <img src={item.image_url} alt={item.title} className="w-full h-full object-cover" />
+                          <img src={item.image_url} alt={item.title} loading="lazy" className="w-full h-full object-cover" />
                           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/40 to-transparent" />
                           <div className="absolute bottom-0 left-0 right-0 p-6">
                             <span className="px-2 py-1 bg-green-600 rounded text-xs text-white mb-2 inline-block">Gallery</span>
@@ -519,7 +519,7 @@ export default function CommunityPage() {
                       <div className="flex gap-4">
                         {blog.featured_image && (
                           <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0 rounded-xl overflow-hidden">
-                            <img src={blog.featured_image} alt={blog.title} className="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+                            <img src={blog.featured_image} alt={blog.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
@@ -561,7 +561,7 @@ export default function CommunityPage() {
                       className="group bg-white rounded-2xl overflow-hidden border border-gray-300 hover:border-yellow-400 transition-colors duration-200"
                     >
                       <div className="relative aspect-video">
-                        <img src={getVideoThumbnail(video)} alt={video.title} className="w-full h-full object-cover" />
+                        <img src={getVideoThumbnail(video)} alt={video.title} loading="lazy" className="w-full h-full object-cover" />
                         <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-200" />
                         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
                           <div className="w-12 h-12 bg-yellow-600 rounded-full flex items-center justify-center">
@@ -603,7 +603,7 @@ export default function CommunityPage() {
                         index === 0 ? 'col-span-2 row-span-2' : ''
                       }`}
                     >
-                      <img src={photo.image_url} alt={photo.title} className="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
+                      <img src={photo.image_url} alt={photo.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition duration-500" />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-200 flex items-center justify-center">
                         <FaHeart className="text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 scale-0 group-hover:scale-100 transition-transform duration-200" />
                       </div>
@@ -858,7 +858,7 @@ export default function CommunityPage() {
                   <FaChevronLeft />
                 </button>
               )}
-              <img src={currentImage} alt={selectedPhoto.title} className="max-w-full max-h-screen object-contain" />
+              <img src={currentImage} alt={selectedPhoto.title} loading="lazy" className="max-w-full max-h-screen object-contain" />
               {images.length > 1 && (
                 <button onClick={nextGallery} className="absolute right-2 text-white text-2xl hover:text-gray-300 bg-black/60 rounded-full p-2 z-10">
                   <FaChevronRight />

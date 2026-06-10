@@ -176,7 +176,7 @@ export default function BlogPostPage() {
           <img 
             src={post.featured_image} 
             alt={post.title} 
-            className="w-full h-auto object-cover"
+            loading="lazy" className="w-full h-auto object-cover"
           />
         </div>
       )}

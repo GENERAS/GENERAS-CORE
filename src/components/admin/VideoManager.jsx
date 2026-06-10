@@ -233,7 +233,7 @@ export default function VideoManager() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {videos.map(video => (
           <div key={video.id} className="bg-slate-800/50 rounded-lg overflow-hidden">
-            <img src={getThumbnail(video)} alt={video.title} className="w-full h-40 object-cover" />
+            <img src={getThumbnail(video)} alt={video.title} loading="lazy" className="w-full h-40 object-cover" />
             <div className="p-3">
               <h3 className="font-bold truncate">{video.title}</h3>
               <p className="text-xs text-gray-400">{video.category}</p>

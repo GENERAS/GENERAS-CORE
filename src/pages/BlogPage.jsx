@@ -108,7 +108,7 @@ export default function BlogPage() {
                     <img 
                       src={featuredPost.featured_image} 
                       alt={featuredPost.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
+                      loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition duration-700"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-slate-950/50 to-transparent md:bg-gradient-to-l" />
                   </div>
@@ -206,7 +206,7 @@ export default function BlogPage() {
                   <img
                     src={blog.featured_image}
                     alt={blog.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+                    loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
                   <div className="absolute top-3 left-3">

@@ -373,7 +373,7 @@ export default function SettingsManager() {
                 <img 
                   src={profile.avatar_url} 
                   alt="Profile" 
-                  className="w-20 h-20 rounded-full object-cover border-2 border-blue-500"
+                  loading="lazy" className="w-20 h-20 rounded-full object-cover border-2 border-blue-500"
                 />
               ) : (
                 <div className="w-20 h-20 rounded-full bg-slate-700 flex items-center justify-center">

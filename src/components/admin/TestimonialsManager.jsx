@@ -294,7 +294,7 @@ export default function TestimonialsManager() {
                       <img
                         src={url}
                         alt={`Screenshot ${idx + 1}`}
-                        className="w-full h-full object-cover"
+                        loading="lazy" className="w-full h-full object-cover"
                       />
                     </button>
                   ))}
@@ -433,7 +433,7 @@ export default function TestimonialsManager() {
             <img
               src={selectedTestimonial.project_screenshot}
               alt={selectedTestimonial.project_title}
-              className="max-w-full max-h-[85vh] rounded-lg"
+              loading="lazy" className="max-w-full max-h-[85vh] rounded-lg"
             />
             <p className="text-center mt-4 text-gray-300">
               {selectedTestimonial.project_title} - {selectedTestimonial.client_name}

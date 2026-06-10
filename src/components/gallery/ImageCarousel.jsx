@@ -32,7 +32,7 @@ const ImageCarousel = ({ images, className = '' }) => {
           <img
             src={images[currentIndex]?.src || images[currentIndex]}
             alt={images[currentIndex]?.alt || `Image ${currentIndex + 1}`}
-            className="w-full h-full object-cover"
+            loading="lazy" className="w-full h-full object-cover"
             onError={(e) => {
               e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect fill='%23fbbf24' width='800' height='450'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='24' fill='%231f2937'%3EImage Not Found%3C/text%3E%3C/svg%3E";
             }}

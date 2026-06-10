@@ -187,7 +187,7 @@ export default function PhotoManager() {
             <div>
               <label className="block text-sm text-gray-400 mb-2">Main Image</label>
               <div className="relative w-32 h-32">
-                <img src={form.image_url} alt="preview" className="w-full h-full object-cover rounded" />
+                <img src={form.image_url} alt="preview" loading="lazy" className="w-full h-full object-cover rounded" />
                 {form.is_premium && <FaLock className="absolute top-1 right-1 text-amber-500" />}
               </div>
               {(form.gallery_images || []).length > 0 && (
@@ -196,7 +196,7 @@ export default function PhotoManager() {
                   <div className="flex flex-wrap gap-2">
                     {form.gallery_images.map((url, idx) => (
                       <div key={idx} className="relative w-16 h-16 group">
-                        <img src={url} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover rounded" />
+                        <img src={url} alt={`Gallery ${idx + 1}`} loading="lazy" className="w-full h-full object-cover rounded" />
                         <button type="button" onClick={() => removeGalleryImage(idx)} className="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">&times;</button>
                       </div>
                     ))}
@@ -211,7 +211,7 @@ export default function PhotoManager() {
             <div>
               <label className="block text-sm text-gray-400 mb-2">Main Image</label>
               <div className="relative w-32 h-32">
-                <img src={form.image_url} alt="preview" className="w-full h-full object-cover rounded" />
+                <img src={form.image_url} alt="preview" loading="lazy" className="w-full h-full object-cover rounded" />
                 {form.is_premium && <FaLock className="absolute top-1 right-1 text-amber-500" />}
               </div>
               {(form.gallery_images || []).length > 0 && (
@@ -220,7 +220,7 @@ export default function PhotoManager() {
                   <div className="flex flex-wrap gap-2">
                     {form.gallery_images.map((url, idx) => (
                       <div key={idx} className="relative w-16 h-16 group">
-                        <img src={url} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover rounded" />
+                        <img src={url} alt={`Gallery ${idx + 1}`} loading="lazy" className="w-full h-full object-cover rounded" />
                         <button type="button" onClick={() => removeGalleryImage(idx)} className="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">&times;</button>
                       </div>
                     ))}
@@ -276,7 +276,7 @@ export default function PhotoManager() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {photos.map(photo => (
           <div key={photo.id} className="relative group aspect-square bg-slate-800 rounded-lg overflow-hidden">
-            <img src={photo.image_url} alt={photo.title} className="w-full h-full object-cover" />
+            <img src={photo.image_url} alt={photo.title} loading="lazy" className="w-full h-full object-cover" />
             {photo.is_premium && <FaLock className="absolute top-2 right-2 text-amber-500" />}
             {(photo.gallery_images || []).length > 0 && (
               <span className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded-full">+{photo.gallery_images.length}</span>

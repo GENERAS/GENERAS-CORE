@@ -298,7 +298,7 @@ export default function TradingPage() {
                     <img 
                       src="/owner-photo.jpg" 
                       alt="Generas Kagiraneza" 
-                      className="w-full h-full object-cover"
+                      loading="lazy" className="w-full h-full object-cover"
                       onError={(e) => {
                         e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Crect fill='%23fbbf24' width='160' height='160'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='16' fill='%231f2937'%3EPhoto%3C/text%3E%3C/svg%3E";
                       }}

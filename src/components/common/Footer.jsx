@@ -16,7 +16,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <div className="inline-flex items-center justify-center bg-white rounded-xl p-2 mb-4 shadow-sm">
-              <img src="/logo.png" alt="GENERAS CORE Logo" className="h-8 w-auto block" />
+              <img src="/logo.png" alt="GENERAS CORE Logo" loading="lazy" className="h-8 w-auto block" />
             </div>
             <h2 className="text-xl font-bold text-white mb-2">GENERAS CORE</h2>
             <p className="text-gray-400 leading-relaxed mb-4">
