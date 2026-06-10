@@ -57,9 +57,9 @@ export default function Header() {
 
               <button
                 onClick={() => setShowPaymentModal(true)}
-                className='text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 font-medium flex items-center gap-2'
+                className='text-sm font-medium flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 transition-colors duration-200'
               >
-                <Coffee className="w-4 h-4 text-yellow-500" />
+                <Coffee className="w-4 h-4 text-amber-500" />
                 <span className='hidden md:inline'>{t('common.buyMeCoffee')}</span>
               </button>
 

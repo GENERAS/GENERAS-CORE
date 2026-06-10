@@ -193,15 +193,15 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-900 rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-slate-700">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-gray-200 shadow-xl">
         {/* Header */}
-        <div className="p-6 border-b border-slate-800 flex justify-between items-center">
-          <h2 className="text-2xl font-bold flex items-center gap-2">
+        <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+          <h2 className="text-2xl font-bold flex items-center gap-2 text-gray-900">
             <FaCoffee className="text-amber-500" />
             Buy Me a Coffee
           </h2>
-          <button onClick={resetAndClose} className="text-gray-400 hover:text-white">
+          <button onClick={resetAndClose} className="text-gray-400 hover:text-gray-600">
             <FaTimes size={24} />
           </button>
         </div>
@@ -210,7 +210,7 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
         <div className="p-6">
           {step === 1 && (
             <div className="space-y-4">
-              <p className="text-gray-400 text-center">
+              <p className="text-gray-600 text-center">
                 Support my work and get featured in the Supporters Hall!
               </p>
 
@@ -221,15 +221,15 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
                   <button
                     type="button"
                     onClick={() => setFormData(p => ({ ...p, cups: Math.max(1, p.cups - 1) }))}
-                    className="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center"
+                    className="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-700 font-bold"
                   >
                     -
                   </button>
-                  <span className="text-2xl font-bold">{formData.cups} ☕</span>
+                  <span className="text-2xl font-bold text-gray-900">{formData.cups} ☕</span>
                   <button
                     type="button"
                     onClick={() => setFormData(p => ({ ...p, cups: Math.min(50, p.cups + 1) }))}
-                    className="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center"
+                    className="w-10 h-10 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center text-gray-700 font-bold"
                   >
                     +
                   </button>
@@ -253,38 +253,38 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
 
               {/* Personal Info */}
               <div>
-                <label className="block text-sm font-medium mb-1">Your Name *</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700">Your Name *</label>
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-gray-900 placeholder:text-gray-400"
                   placeholder="John Doe"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Your Email *</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700">Your Email *</label>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-gray-900 placeholder:text-gray-400"
                   placeholder="you@example.com"
                 />
               </div>
 
               {/* Social Media Links */}
-              <div className="border-t border-slate-700 pt-4">
-                <p className="text-sm font-medium mb-3 text-gray-300">Your Social Links (Optional - Public)</p>
+              <div className="border-t border-gray-200 pt-4">
+                <p className="text-sm font-medium mb-3 text-gray-700">Your Social Links (Optional - Public)</p>
                 <p className="text-xs text-gray-500 mb-3">These will be visible on your Supporters Hall profile</p>
                 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center gap-2 bg-slate-800 rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 border border-gray-200">
                     <FaInstagram className="text-pink-500" />
                     <input
                       type="text"
@@ -292,10 +292,10 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
                       value={formData.instagram}
                       onChange={handleInputChange}
                       placeholder="@username"
-                      className="bg-transparent flex-1 outline-none text-sm text-white placeholder:text-gray-500"
+                      className="bg-transparent flex-1 outline-none text-sm text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
-                  <div className="flex items-center gap-2 bg-slate-800 rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 border border-gray-200">
                     <FaTwitter className="text-blue-400" />
                     <input
                       type="text"
@@ -303,10 +303,10 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
                       value={formData.twitter}
                       onChange={handleInputChange}
                       placeholder="@username"
-                      className="bg-transparent flex-1 outline-none text-sm text-white placeholder:text-gray-500"
+                      className="bg-transparent flex-1 outline-none text-sm text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
-                  <div className="flex items-center gap-2 bg-slate-800 rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 border border-gray-200">
                     <FaFacebook className="text-blue-600" />
                     <input
                       type="text"
@@ -314,10 +314,10 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
                       value={formData.facebook}
                       onChange={handleInputChange}
                       placeholder="username"
-                      className="bg-transparent flex-1 outline-none text-sm text-white placeholder:text-gray-500"
+                      className="bg-transparent flex-1 outline-none text-sm text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
-                  <div className="flex items-center gap-2 bg-slate-800 rounded-lg px-3 py-2">
+                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 border border-gray-200">
                     <FaLinkedin className="text-blue-500" />
                     <input
                       type="text"
@@ -325,10 +325,10 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
                       value={formData.linkedin}
                       onChange={handleInputChange}
                       placeholder="username"
-                      className="bg-transparent flex-1 outline-none text-sm text-white placeholder:text-gray-500"
+                      className="bg-transparent flex-1 outline-none text-sm text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
-                  <div className="flex items-center gap-2 bg-slate-800 rounded-lg px-3 py-2 col-span-2">
+                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 border border-gray-200 col-span-2">
                     <FaGlobe className="text-green-500" />
                     <input
                       type="url"
@@ -336,15 +336,15 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
                       value={formData.website}
                       onChange={handleInputChange}
                       placeholder="https://yourwebsite.com"
-                      className="bg-transparent flex-1 outline-none text-sm text-white placeholder:text-gray-500"
+                      className="bg-transparent flex-1 outline-none text-sm text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Public Phone (Optional)</label>
-                <div className="flex items-center gap-2 bg-slate-800 rounded-lg px-3 py-2">
+                <label className="block text-sm font-medium mb-1 text-gray-700">Public Phone (Optional)</label>
+                <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 border border-gray-200">
                   <FaPhone className="text-green-500" />
                   <input
                     type="tel"
@@ -352,19 +352,19 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
                     value={formData.phone}
                     onChange={handleInputChange}
                     placeholder="Your public contact number"
-                    className="bg-transparent flex-1 outline-none text-sm text-white placeholder:text-gray-500"
+                    className="bg-transparent flex-1 outline-none text-sm text-gray-900 placeholder:text-gray-400"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Message (Optional)</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700">Message (Optional)</label>
                 <textarea
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
                   rows="3"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-gray-900 placeholder:text-gray-400"
                   placeholder="Leave a public message of support..."
                 />
               </div>
@@ -372,7 +372,7 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
               <button
                 onClick={() => setStep(2)}
                 disabled={!formData.name || !formData.email}
-                className="w-full bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 py-3 rounded-lg font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 py-3 rounded-lg font-semibold text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Continue to Payment
               </button>
@@ -381,43 +381,43 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
 
           {step === 2 && (
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="bg-amber-600/10 border border-amber-600/30 rounded-lg p-4">
-                <p className="text-sm text-amber-400">
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                <p className="text-sm text-amber-700 font-medium">
                   Send ${formData.cups} ({usdToRwf(formData.cups).toLocaleString()} RWF) to MTN Mobile Money:
                 </p>
-                <p className="text-2xl font-bold text-white mt-1">0794144738</p>
-                <p className="text-sm text-gray-400 mt-1">(Generas Kagiraneza)</p>
+                <p className="text-2xl font-bold text-amber-600 mt-1">0794144738</p>
+                <p className="text-sm text-gray-500 mt-1">(Generas Kagiraneza)</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Your MTN Phone Number *</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700">Your MTN Phone Number *</label>
                 <input
                   type="tel"
                   name="sender_phone"
                   value={formData.sender_phone}
                   onChange={handleInputChange}
                   required
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-gray-900 placeholder:text-gray-400"
                   placeholder="079XXXXXXX"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Transaction Reference *</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700">Transaction Reference *</label>
                 <input
                   type="text"
                   name="payment_reference"
                   value={formData.payment_reference}
                   onChange={handleInputChange}
                   required
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
+                  className="w-full bg-white border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-gray-900 placeholder:text-gray-400"
                   placeholder="e.g., 1234567890"
                 />
                 <p className="text-xs text-gray-500 mt-1">Found in your MTN confirmation SMS</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Payment Screenshot (Optional)</label>
+                <label className="block text-sm font-medium mb-1 text-gray-700">Payment Screenshot (Optional)</label>
                 <div className="relative">
                   <input
                     type="file"
@@ -428,10 +428,10 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
                   />
                   <label
                     htmlFor="screenshot-upload"
-                    className="flex items-center gap-2 w-full bg-slate-800 border border-slate-700 border-dashed rounded-lg px-4 py-3 cursor-pointer hover:bg-slate-700 transition"
+                    className="flex items-center gap-2 w-full bg-white border border-gray-300 border-dashed rounded-lg px-4 py-3 cursor-pointer hover:bg-gray-50 transition"
                   >
                     <FaUpload className="text-amber-500" />
-                    <span className="text-gray-400">
+                    <span className="text-gray-500">
                       {formData.payment_screenshot ? formData.payment_screenshot.name : 'Upload payment screenshot'}
                     </span>
                   </label>
@@ -439,7 +439,7 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
               </div>
 
               {error && (
-                <div className="bg-red-600/20 border border-red-600/50 rounded-lg p-3 text-red-400 text-sm">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-600 text-sm">
                   {error}
                 </div>
               )}
@@ -448,14 +448,14 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="flex-1 bg-slate-800 hover:bg-slate-700 py-3 rounded-lg transition"
+                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-lg transition font-medium"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
                   disabled={loading || !formData.sender_phone || !formData.payment_reference}
-                  className="flex-1 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 py-3 rounded-lg font-semibold transition disabled:opacity-50"
+                  className="flex-1 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white py-3 rounded-lg font-semibold transition disabled:opacity-50"
                 >
                   {loading ? 'Submitting...' : 'Submit Payment'}
                 </button>
@@ -466,18 +466,18 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
           {step === 3 && (
             <div className="text-center space-y-4">
               <FaCheckCircle className="text-6xl text-green-500 mx-auto" />
-              <h3 className="text-2xl font-bold">Thank You!</h3>
-              <p className="text-gray-400">
+              <h3 className="text-2xl font-bold text-gray-900">Thank You!</h3>
+              <p className="text-gray-600">
                 Your payment has been submitted and is awaiting verification. 
                 Once confirmed, you'll appear in the Supporters Hall!
               </p>
-              <div className="bg-slate-800 rounded-lg p-4 text-sm">
+              <div className="bg-gray-100 rounded-lg p-4 text-sm border border-gray-200">
                 <p className="text-gray-500">Reference ID:</p>
-                <p className="font-mono text-amber-400">{supporterId}</p>
+                <p className="font-mono text-amber-600">{supporterId}</p>
               </div>
               <button
                 onClick={resetAndClose}
-                className="w-full bg-amber-600 hover:bg-amber-700 py-3 rounded-lg font-semibold transition"
+                className="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 rounded-lg font-semibold transition"
               >
                 Close
               </button>
