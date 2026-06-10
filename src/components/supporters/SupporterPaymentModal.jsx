@@ -193,8 +193,8 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-md w-full max-h-[90vh] overflow-y-auto border border-gray-200 shadow-xl">
+    <div className="fixed inset-0 bg-black/50 flex items-start justify-center z-[100] p-4 pt-20">
+      <div className="bg-white rounded-2xl max-w-md w-full max-h-[80vh] overflow-y-auto border border-gray-200 shadow-xl">
         {/* Header */}
         <div className="p-6 border-b border-gray-200 flex justify-between items-center">
           <h2 className="text-2xl font-bold flex items-center gap-2 text-gray-900">
