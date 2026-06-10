@@ -93,7 +93,7 @@ export default function ProjectsManager() {
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="bg-slate-800 p-4 rounded-lg mb-6 space-y-3">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <input type="text" placeholder="Project Title" value={form.title} onChange={e => setForm({...form, title: e.target.value})} className="bg-slate-700 rounded px-3 py-2" required />
           <select value={form.category} onChange={e => setForm({...form, category: e.target.value})} className="bg-slate-700 rounded px-3 py-2">
             <option value="web">Web Application</option><option value="mobile">Mobile App</option><option value="blockchain">Blockchain</option><option value="other">Other</option>
@@ -102,7 +102,7 @@ export default function ProjectsManager() {
 
         <textarea placeholder="Description" value={form.description} onChange={e => setForm({...form, description: e.target.value})} className="w-full bg-slate-700 rounded px-3 py-2" rows="3" required />
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <input type="url" placeholder="GitHub URL" value={form.github_url} onChange={e => setForm({...form, github_url: e.target.value})} className="bg-slate-700 rounded px-3 py-2" />
           <input type="url" placeholder="Live Demo URL" value={form.live_demo_url} onChange={e => setForm({...form, live_demo_url: e.target.value})} className="bg-slate-700 rounded px-3 py-2" />
         </div>
@@ -125,7 +125,7 @@ export default function ProjectsManager() {
 
         <input type="url" placeholder="Image URL (screenshot)" value={form.image_url} onChange={e => setForm({...form, image_url: e.target.value})} className="w-full bg-slate-700 rounded px-3 py-2" />
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <select value={form.status} onChange={e => setForm({...form, status: e.target.value})} className="bg-slate-700 rounded px-3 py-2">
             <option value="building">🚧 Building</option><option value="completed">✓ Completed</option><option value="planned">📅 Planned</option>
           </select>
@@ -141,12 +141,12 @@ export default function ProjectsManager() {
       {/* Projects List */}
       <div className="space-y-2">
         {projects.map(project => (
-          <div key={project.id} className="bg-slate-800/50 rounded-lg p-3 flex justify-between items-center">
-            <div>
+          <div key={project.id} className="bg-slate-800/50 rounded-lg p-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div className="flex-1 min-w-0">
               <span className="font-bold">{project.title}</span>
               <span className={`ml-2 ${getStatusBadge(project.status)}`}>{project.status}</span>
               <div className="text-xs text-gray-400 mt-1">{project.tech_stack?.join(', ') || 'No tech stack'}</div>
-              <div className="flex gap-3 mt-1">
+              <div className="flex flex-wrap gap-x-3 gap-y-1 mt-1">
                 {project.github_url && <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hover:text-white"><FaGithub className="inline mr-1" /> GitHub</a>}
                 {project.live_demo_url && <a href={project.live_demo_url} target="_blank" rel="noopener noreferrer" className="text-xs text-gray-400 hover:text-white"><FaExternalLinkAlt className="inline mr-1" /> Demo</a>}
               </div>

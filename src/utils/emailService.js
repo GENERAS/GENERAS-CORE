@@ -55,10 +55,10 @@ const templates = {
             
             <p>If you have any questions, reply to this email or WhatsApp me at +250 788 123 456.</p>
             
-            <p>Best regards,<br><strong>BTC GUY</strong></p>
+            <p>Best regards,<br><strong>GENERAS CORE</strong></p>
           </div>
           <div class="footer">
-            <p>You received this email because you applied for a service on BTC GUY's portfolio.</p>
+            <p>You received this email because you applied for a service on GENERAS CORE.</p>
           </div>
         </div>
       </body>
@@ -111,7 +111,7 @@ const templates = {
               <li>Think about your specific goals</li>
             </ul>
             
-            <p>Best regards,<br><strong>BTC GUY</strong></p>
+            <p>Best regards,<br><strong>GENERAS CORE</strong></p>
           </div>
           <div class="footer">
             <p>Payment verified on ${new Date().toLocaleDateString()}</p>
@@ -212,7 +212,7 @@ const templates = {
 
   // Contact form submission - user confirmation
   contactFormReceived: (data) => ({
-    subject: 'Message Received - BTC GUY Portfolio',
+    subject: 'Message Received - GENERAS CORE',
     html: `
       <!DOCTYPE html>
       <html>
@@ -233,10 +233,10 @@ const templates = {
           <div class="content">
             <p>Hi <strong>${data.name}</strong>,</p>
             <p>Thank you for reaching out! I have received your message and will get back to you within <strong>24-48 hours</strong>.</p>
-            <p>Best regards,<br><strong>BTC GUY</strong></p>
+            <p>Best regards,<br><strong>GENERAS CORE</strong></p>
           </div>
           <div class="footer">
-            <p>You received this email because you submitted a contact form on BTC GUY portfolio.</p>
+            <p>You received this email because you submitted a contact form on GENERAS CORE.</p>
           </div>
         </div>
       </body>
@@ -246,7 +246,7 @@ const templates = {
 
   // Contact form submission - admin notification
   contactFormAdminNotification: (data) => ({
-    subject: 'NEW CONTACT FORM: BTC GUY Portfolio',
+    subject: 'NEW CONTACT FORM: GENERAS CORE',
     html: `
       <!DOCTYPE html>
       <html>
@@ -343,7 +343,15 @@ export const sendPaymentReminderEmail = async (userData) => {
 
 // Send project inquiry received email
 export const sendProjectInquiryEmail = async (inquiryData) => {
-  const template = templates.projectInquiryReceived(inquiryData);
+  const template = {
+    subject: `Project Inquiry Received: ${inquiryData.project_type}`,
+    html: `
+      <!DOCTYPE html>
+      <html>
+      <head><style>body{font-family:Arial,sans-serif;line-height:1.6;color:#333}.container{max-width:600px;margin:0 auto;padding:20px}.header{background:linear-gradient(135deg,#2563eb,#1e40af);color:white;padding:30px;text-align:center;border-radius:10px 10px 0 0}.content{background:#f9fafb;padding:30px}</style></head>
+      <body><div class="container"><div class="header"><h1>Inquiry Received!</h1></div><div class="content"><p>Hi <strong>${inquiryData.full_name}</strong>,</p><p>Thank you for your project inquiry regarding <strong>${inquiryData.project_type}</strong>. I'll review your requirements and get back to you within 24-48 hours.</p><p>Best regards,<br><strong>GENERAS CORE</strong></p></div></div></body>
+      </html>`
+  };
   return await sendEmail(inquiryData.email, template.subject, template.html);
 };
 

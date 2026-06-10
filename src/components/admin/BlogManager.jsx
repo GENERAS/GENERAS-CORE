@@ -61,9 +61,9 @@ export default function BlogManager() {
 
       <div className="space-y-2">
         {posts.map(post => (
-          <div key={post.id} className="bg-slate-800/50 rounded-lg p-3 flex justify-between items-center">
-            <div><span className="font-bold">{post.title}</span> – {post.status} <span className="text-xs text-gray-400">{new Date(post.created_at).toLocaleDateString()}</span></div>
-            <div className="flex gap-2">
+          <div key={post.id} className="bg-slate-800/50 rounded-lg p-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0">
+            <div className="min-w-0"><span className="font-bold">{post.title}</span> – {post.status} <span className="text-xs text-gray-400">{new Date(post.created_at).toLocaleDateString()}</span></div>
+            <div className="flex gap-2 flex-shrink-0">
               <button onClick={() => handleEdit(post)} className="text-blue-400"><FaEdit /></button>
               <button onClick={() => handleDelete(post.id)} className="text-red-400"><FaTrash /></button>
             </div>

@@ -194,7 +194,7 @@ export default function TradingPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* TOP NAVIGATION BAR */}
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <div className="sticky top-16 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo/Brand */}

@@ -185,7 +185,7 @@ export default function AcademicPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* TOP NAVIGATION BAR */}
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <div className="sticky top-16 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo/Brand */}
@@ -325,11 +325,11 @@ export default function AcademicPage() {
                             <FaSchool className="text-[yellow-600]" />
                             <span>{level.school_name}</span>
                             <span>•</span>
-                            <FaCalendar className="text-[yellow-600]" />
+                            <FaCalendar className="text-yellow-600" />
                             <span>{level.start_year} - {level.end_year}</span>
                           </div>
                         </div>
-                        <button className="text-[yellow-600] flex items-center gap-1 text-sm mt-2 md:mt-0">
+                        <button className="text-yellow-600 flex items-center gap-1 text-sm mt-2 md:mt-0">
                           <FaEye /> View Details
                         </button>
                       </div>

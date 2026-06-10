@@ -198,7 +198,7 @@ export default function BlogPostPage() {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 text-gray-600">
             <FaUser />
-            <span>BTC GUY</span>
+            <span>GENERAS CORE</span>
           </div>
           <div className="w-1 h-1 bg-gray-400 rounded-full"></div>
           <div className="flex items-center gap-2 text-gray-600">

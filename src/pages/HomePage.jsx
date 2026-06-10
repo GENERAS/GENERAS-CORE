@@ -75,6 +75,8 @@ export default function HomePage() {
   })
   const [loading, setLoading] = useState(true)
   const [showAnnouncement, setShowAnnouncement] = useState(true)
+  const [heroImageIndex, setHeroImageIndex] = useState(0)
+  const heroImages = ['/owner-photo.jpg']
 
   useEffect(() => {
     loadStats()
@@ -104,6 +106,9 @@ export default function HomePage() {
       setLoading(false)
     }
   }
+
+  const prevHero = () => setHeroImageIndex(prev => (prev === 0 ? heroImages.length - 1 : prev - 1))
+  const nextHero = () => setHeroImageIndex(prev => (prev === heroImages.length - 1 ? 0 : prev + 1))
 
   const NewAnnouncement = () => {
     return (
@@ -138,7 +143,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* TOP NAVIGATION BAR */}
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <div className="sticky top-16 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo/Brand */}
@@ -268,15 +273,39 @@ export default function HomePage() {
               <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center">
                 {/* Photo Section */}
                 <div className="flex-shrink-0">
-                  <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden border-4 border-yellow-500/30 shadow-2xl">
-                    <img 
-                      src="/owner-photo.jpg" 
-                      alt="Generas Kagiraneza" 
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23fbbf24' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='20' fill='%231f2937'%3EAdd Your Photo%3C/text%3E%3C/svg%3E";
-                      }}
-                    />
+                  <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden border-4 border-yellow-500/30 shadow-2xl relative">
+                    {heroImages.length > 0 ? (
+                      <>
+                        <img
+                          src={heroImages[heroImageIndex]}
+                          alt={`Hero ${heroImageIndex + 1}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23fbbf24' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='20' fill='%231f2937'%3EImage%3C/text%3E%3C/svg%3E";
+                          }}
+                        />
+                        {heroImages.length > 1 && (
+                          <>
+                            <button onClick={prevHero} className="absolute left-1 top-1/2 -translate-y-1/2 text-white bg-black/50 hover:bg-black/70 rounded-full w-7 h-7 flex items-center justify-center text-sm transition z-10">&lt;</button>
+                            <button onClick={nextHero} className="absolute right-1 top-1/2 -translate-y-1/2 text-white bg-black/50 hover:bg-black/70 rounded-full w-7 h-7 flex items-center justify-center text-sm transition z-10">&gt;</button>
+                            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                              {heroImages.map((_, idx) => (
+                                <button key={idx} onClick={() => setHeroImageIndex(idx)} className={`w-2 h-2 rounded-full transition-all ${idx === heroImageIndex ? 'bg-yellow-400 w-4' : 'bg-white/60 hover:bg-white/80'}`} />
+                              ))}
+                            </div>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <img
+                        src="/owner-photo.jpg"
+                        alt="Generas Kagiraneza"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23fbbf24' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='20' fill='%231f2937'%3EAdd Your Photo%3C/text%3E%3C/svg%3E";
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
 

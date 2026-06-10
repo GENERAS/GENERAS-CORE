@@ -154,7 +154,7 @@ export default function SupporterManager() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
         <div className="bg-slate-800 rounded-lg p-3 text-center">
           <p className="text-2xl font-bold text-gray-900">{supporters.filter(s => s.payment_status === 'verified').length}</p>
           <p className="text-sm text-gray-400">Verified</p>

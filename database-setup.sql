@@ -56,6 +56,7 @@ CREATE TABLE IF NOT EXISTS photos (
   title TEXT,
   description TEXT,
   image_url TEXT NOT NULL,
+  gallery_images TEXT[] DEFAULT '{}'::TEXT[],
   album_id UUID,
   is_premium BOOLEAN DEFAULT false,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

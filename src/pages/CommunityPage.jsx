@@ -27,6 +27,7 @@ export default function CommunityPage() {
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [showFollowModal, setShowFollowModal] = useState(false)
   const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0)
+  const [galleryIndex, setGalleryIndex] = useState(0)
   const [hoveredPost, setHoveredPost] = useState(null)
   const [emailForFollow, setEmailForFollow] = useState('')
   const [nameForFollow, setNameForFollow] = useState('')
@@ -146,15 +147,31 @@ export default function CommunityPage() {
   const openLightbox = (photo, index) => {
     setSelectedPhoto(photo)
     setSelectedPhotoIndex(index)
+    setGalleryIndex(0)
   }
 
-  const closeLightbox = () => setSelectedPhoto(null)
+  const closeLightbox = () => { setSelectedPhoto(null); setGalleryIndex(0) }
   
+  const getPhotoImages = (photo) => [photo.image_url, ...(photo.gallery_images || [])]
+
+  const prevGallery = () => {
+    if (!selectedPhoto) return
+    const images = getPhotoImages(selectedPhoto)
+    setGalleryIndex(prev => (prev === 0 ? images.length - 1 : prev - 1))
+  }
+
+  const nextGallery = () => {
+    if (!selectedPhoto) return
+    const images = getPhotoImages(selectedPhoto)
+    setGalleryIndex(prev => (prev === images.length - 1 ? 0 : prev + 1))
+  }
+
   const nextPhoto = () => {
     if (selectedPhotoIndex < photos.length - 1) {
       const newIndex = selectedPhotoIndex + 1
       setSelectedPhotoIndex(newIndex)
       setSelectedPhoto(photos[newIndex])
+      setGalleryIndex(0)
     }
   }
   
@@ -163,6 +180,7 @@ export default function CommunityPage() {
       const newIndex = selectedPhotoIndex - 1
       setSelectedPhotoIndex(newIndex)
       setSelectedPhoto(photos[newIndex])
+      setGalleryIndex(0)
     }
   }
 
@@ -262,7 +280,7 @@ export default function CommunityPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* TOP NAVIGATION BAR */}
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <div className="sticky top-16 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo/Brand */}
@@ -694,7 +712,7 @@ export default function CommunityPage() {
                     <div key={i} className="flex items-start gap-3 text-sm">
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                         activity.type === 'blog' ? 'bg-blue-100' :
-                        activity.type === 'support' ? 'bg-yellow-100' : 'bgpurplyw-100'
+                        activity.type === 'support' ? 'bg-yellow-100' : 'bg-purple-100'
                       }`}>
                         {activity.type === 'blog' ? <FaNewspaper className="text-blue-600 text-xs" /> :
                          activity.type === 'support' ? <FaCrown className="text-yellow-600 text-xs" /> :
@@ -820,32 +838,54 @@ export default function CommunityPage() {
       )}
 
       {/* PHOTO LIGHTBOX */}
-      {selectedPhoto && (
-        <div className="fixed inset-0 bg-black/95 z-50 flex">
+      {selectedPhoto && (() => {
+        const images = getPhotoImages(selectedPhoto)
+        const currentImage = images[galleryIndex] || selectedPhoto.image_url
+        return (
+        <div className="fixed inset-0 bg-black/95 z-50 flex flex-col md:flex-row">
           <button onClick={closeLightbox} className="absolute top-4 right-4 text-white text-2xl hover:text-gray-300 z-20">
             <FaTimes />
           </button>
-          <div className="flex-1 flex items-center justify-center relative">
+          <div className="flex-1 flex items-center justify-center relative min-h-0">
             {selectedPhotoIndex > 0 && (
               <button onClick={prevPhoto} className="absolute left-4 text-white text-3xl hover:text-gray-300 bg-black/50 rounded-full p-2 z-10">
                 <FaChevronLeft />
               </button>
             )}
-            <img src={selectedPhoto.image_url} alt={selectedPhoto.title} className="max-w-full max-h-screen object-contain" />
+            <div className="relative flex items-center justify-center">
+              {images.length > 1 && (
+                <button onClick={prevGallery} className="absolute left-2 text-white text-2xl hover:text-gray-300 bg-black/60 rounded-full p-2 z-10">
+                  <FaChevronLeft />
+                </button>
+              )}
+              <img src={currentImage} alt={selectedPhoto.title} className="max-w-full max-h-screen object-contain" />
+              {images.length > 1 && (
+                <button onClick={nextGallery} className="absolute right-2 text-white text-2xl hover:text-gray-300 bg-black/60 rounded-full p-2 z-10">
+                  <FaChevronRight />
+                </button>
+              )}
+            </div>
             {selectedPhotoIndex < photos.length - 1 && (
               <button onClick={nextPhoto} className="absolute right-4 text-white text-3xl hover:text-gray-300 bg-black/50 rounded-full p-2 z-10">
                 <FaChevronRight />
               </button>
             )}
           </div>
-          <div className="w-80 bg-slate-900 flex flex-col border-l border-slate-800">
+          {images.length > 1 && (
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+              {images.map((_, idx) => (
+                <button key={idx} onClick={() => setGalleryIndex(idx)} className={`w-2.5 h-2.5 rounded-full transition-all ${idx === galleryIndex ? 'bg-white w-6' : 'bg-white/50 hover:bg-white/80'}`} />
+              ))}
+            </div>
+          )}
+          <div className="w-full md:w-80 bg-slate-900 flex flex-col border-t md:border-l border-slate-800 max-h-[40vh] md:max-h-full overflow-y-auto">
             <div className="p-4 border-b border-slate-800">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 topurplyw-600 rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-yellow-500 to-purple-600 rounded-full flex items-center justify-center">
                   <FaCrown className="text-white text-sm" />
                 </div>
                 <div>
-                  <p className="font-semibold">BTC GUY</p>
+                  <p className="font-semibold">GENERAS CORE</p>
                   <p className="text-xs text-gray-500">{formatDate(selectedPhoto.created_at)}</p>
                 </div>
               </div>
@@ -860,7 +900,7 @@ export default function CommunityPage() {
             </div>
           </div>
         </div>
-      )}
+      )})()}
 
       {/* Supporter Payment Modal */}
       <SupporterPaymentModal 

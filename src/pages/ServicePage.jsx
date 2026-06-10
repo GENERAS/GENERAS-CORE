@@ -336,7 +336,7 @@ const ServicePage = () => {
 
   // Render Functions
   const renderHero = () => (
-    <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+    <div className="sticky top-16 z-50 bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}
@@ -390,7 +390,7 @@ const ServicePage = () => {
             >
               <tab.icon className="w-5 h-5" />
               <span className="hidden md:inline">{tab.label}</span>
-              <span className="md:hidden">{tab.label.split(' ')[0]}</span>
+              <span className="md:hidden">{tab.label.split(' ')[0] === 'Get' ? 'Help' : tab.label.split(' ')[0]}</span>
             </button>
           ))}
         </div>
@@ -472,7 +472,7 @@ const ServicePage = () => {
                         <CheckCircle className="w-5 h-5 text-yellow-500" />
                         What's Included
                       </h3>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {service.features?.slice(0, 4).map((feature, idx) => (
                           <div key={idx} className="flex items-center gap-2 text-sm text-gray-600">
                             <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full"></div>
@@ -800,7 +800,7 @@ const ServicePage = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Your Experience Level *
                       </label>
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {['beginner', 'intermediate', 'advanced'].map(level => (
                           <button
                             key={level}
@@ -822,7 +822,7 @@ const ServicePage = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         How many hours can you commit per week? *
                       </label>
-                      <div className="grid grid-cols-3 gap-3">
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {['1-3', '3-5', '5+'].map(hours => (
                           <button
                             key={hours}

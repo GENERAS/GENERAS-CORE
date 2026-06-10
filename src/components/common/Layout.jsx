@@ -28,18 +28,18 @@ function MobileBottomNav() {
   
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
-      <div className="flex justify-around items-center h-16">
+      <div className="flex justify-around items-center h-16 px-2 gap-1">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path
           return (
             <Link
               key={item.path}
               to={item.path}
-              className={`flex flex-col items-center justify-center flex-1 h-full text-lg transition-colors duration-200 ${
-                isActive ? 'text-[yellow-600] font-medium' : 'text-gray-600 hover:text-gray-900'
+              className={`flex flex-col items-center justify-center flex-1 h-full text-sm md:text-base transition-colors duration-200 ${
+                isActive ? 'text-yellow-600 font-medium' : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              <span>{item.label}</span>
+              <span className="leading-tight">{item.label}</span>
             </Link>
           )
         })}
@@ -61,7 +61,7 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
-      <main className="flex-1 max-w-7xl mx-auto px-6 py-12 w-full relative md:pb-8 pb-20">
+      <main className="flex-1 max-w-7xl mx-auto px-6 py-12 w-full relative pt-20 md:pb-8 pb-20">
         {!isHomePage && (
           <div className="flex justify-end items-center gap-4 mb-8">
             <SimpleCTA />
@@ -75,7 +75,7 @@ export default function Layout({ children }) {
         )}
         {children}
       </main>
-      <Footer className="md:block hidden" />
+      <Footer />
       <MobileBottomNav />
       <WhatsAppButton 
         phoneNumber="0794144738"

@@ -7,7 +7,7 @@ export default function PhotoManager() {
   const [albums, setAlbums] = useState([])
   const [editing, setEditing] = useState(null)
   const [uploading, setUploading] = useState(false)
-  const [form, setForm] = useState({ title: '', description: '', image_url: '', album_id: null, is_premium: false })
+  const [form, setForm] = useState({ title: '', description: '', image_url: '', gallery_images: [], album_id: null, is_premium: false })
   const [albumForm, setAlbumForm] = useState({ name: '', description: '' })
   const [showAlbumForm, setShowAlbumForm] = useState(false)
   const [loading, setLoading] = useState(true)
@@ -66,20 +66,29 @@ export default function PhotoManager() {
     setLoading(false)
   }
 
-  const handleFileUpload = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
+  const handleMultipleUpload = async (e) => {
+    const files = Array.from(e.target.files)
+    if (files.length === 0) return
     setUploading(true)
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`
-    const filePath = `photos/${fileName}`
-
-    const { error } = await supabase.storage.from('photos').upload(filePath, file)
-    if (error) { alert('Upload error: ' + error.message); setUploading(false); return }
-
-    const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(filePath)
-    setForm({ ...form, image_url: publicUrl, title: file.name.split('.')[0] })
+    const urls = []
+    for (const file of files) {
+      const fileExt = file.name.split('.').pop()
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`
+      const filePath = `photos/${fileName}`
+      const { error } = await supabase.storage.from('photos').upload(filePath, file)
+      if (error) { alert('Upload error: ' + error.message); continue }
+      const { data: { publicUrl } } = supabase.storage.from('photos').getPublicUrl(filePath)
+      urls.push(publicUrl)
+    }
+    if (urls.length > 0) {
+      setForm({ ...form, image_url: urls[0], gallery_images: urls.slice(1), title: files[0].name.split('.')[0] })
+    }
     setUploading(false)
+  }
+
+  const removeGalleryImage = (index) => {
+    const updated = form.gallery_images.filter((_, i) => i !== index)
+    setForm({ ...form, gallery_images: updated })
   }
 
   const handleSubmit = async (e) => {
@@ -122,7 +131,7 @@ export default function PhotoManager() {
 
   const handleEdit = (photo) => { setEditing(photo.id); setForm(photo) }
   const handleDelete = async (id) => { if (confirm('Delete photo?')) { await supabase.from('photos').delete().eq('id', id); loadData() } }
-  const resetForm = () => { setEditing(null); setForm({ title: '', description: '', image_url: '', album_id: null, is_premium: false }) }
+  const resetForm = () => { setEditing(null); setForm({ title: '', description: '', image_url: '', gallery_images: [], album_id: null, is_premium: false }) }
 
   if (loading) return <div>Loading photos...</div>
 
@@ -161,17 +170,58 @@ export default function PhotoManager() {
           
           {editing === 'new' && (
             <div className="border-2 border-dashed border-slate-600 rounded-lg p-6 text-center">
-              <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" id="photo-upload" disabled={uploading} />
+              <input type="file" accept="image/*" multiple onChange={handleMultipleUpload} className="hidden" id="photo-upload" disabled={uploading} />
               <label htmlFor="photo-upload" className="cursor-pointer block">
-                {uploading ? <div className="animate-spin h-8 w-8 border-b-2 border-blue-500 mx-auto"></div> : <><FaUpload className="text-2xl mx-auto mb-2" /> Click to upload image</>}
+                {uploading ? <div className="animate-spin h-8 w-8 border-b-2 border-blue-500 mx-auto"></div> : <><FaUpload className="text-2xl mx-auto mb-2" /> Click to upload images (select multiple)</>}
               </label>
             </div>
           )}
 
+          {/* Main image + gallery images strip */}
           {form.image_url && (
-            <div className="relative w-32 h-32">
-              <img src={form.image_url} alt="preview" className="w-full h-full object-cover rounded" />
-              {form.is_premium && <FaLock className="absolute top-1 right-1 text-amber-500" />}
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Main Image</label>
+              <div className="relative w-32 h-32">
+                <img src={form.image_url} alt="preview" className="w-full h-full object-cover rounded" />
+                {form.is_premium && <FaLock className="absolute top-1 right-1 text-amber-500" />}
+              </div>
+              {(form.gallery_images || []).length > 0 && (
+                <div className="mt-3">
+                  <label className="block text-sm text-gray-400 mb-2">Additional Images ({form.gallery_images.length})</label>
+                  <div className="flex flex-wrap gap-2">
+                    {form.gallery_images.map((url, idx) => (
+                      <div key={idx} className="relative w-16 h-16 group">
+                        <img src={url} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover rounded" />
+                        <button type="button" onClick={() => removeGalleryImage(idx)} className="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">&times;</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Existing image in edit mode (no new upload UI) */}
+          {editing && editing !== 'new' && form.image_url && (
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">Main Image</label>
+              <div className="relative w-32 h-32">
+                <img src={form.image_url} alt="preview" className="w-full h-full object-cover rounded" />
+                {form.is_premium && <FaLock className="absolute top-1 right-1 text-amber-500" />}
+              </div>
+              {(form.gallery_images || []).length > 0 && (
+                <div className="mt-3">
+                  <label className="block text-sm text-gray-400 mb-2">Additional Images ({form.gallery_images.length})</label>
+                  <div className="flex flex-wrap gap-2">
+                    {form.gallery_images.map((url, idx) => (
+                      <div key={idx} className="relative w-16 h-16 group">
+                        <img src={url} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover rounded" />
+                        <button type="button" onClick={() => removeGalleryImage(idx)} className="absolute -top-1.5 -right-1.5 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition">&times;</button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -223,6 +273,9 @@ export default function PhotoManager() {
           <div key={photo.id} className="relative group aspect-square bg-slate-800 rounded-lg overflow-hidden">
             <img src={photo.image_url} alt={photo.title} className="w-full h-full object-cover" />
             {photo.is_premium && <FaLock className="absolute top-2 right-2 text-amber-500" />}
+            {(photo.gallery_images || []).length > 0 && (
+              <span className="absolute top-2 left-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded-full">+{photo.gallery_images.length}</span>
+            )}
             <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition flex items-center justify-center gap-2">
               <button onClick={() => handleEdit(photo)} className="bg-blue-600 p-2 rounded"><FaEdit /></button>
               <button onClick={() => handleDelete(photo.id)} className="bg-red-600 p-2 rounded"><FaTrash /></button>

@@ -38,7 +38,7 @@ const serviceContent = {
       'Traders struggling with discipline and psychology'
     ],
     testimonials: [
-      { text: 'BTC GUY helped me go from losing to consistent 5% monthly', author: 'John M.' },
+      { text: 'GENERAS CORE helped me go from losing to consistent 5% monthly', author: 'John M.' },
       { text: 'Finally understand risk management. Game changer!', author: 'Sarah K.' },
       { text: 'Went from breakeven to profitable in 3 months', author: 'Mike R.' }
     ],

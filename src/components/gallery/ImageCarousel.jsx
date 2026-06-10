@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ImageCarousel = ({ images, className = '' }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -54,14 +54,14 @@ const ImageCarousel = ({ images, className = '' }) => {
               className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110"
               aria-label="Previous image"
             >
-              <IconChevronLeft className="text-gray-800" />
+              <ChevronLeft className="text-gray-800" />
             </button>
             <button
               onClick={goToNext}
               className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-200 hover:scale-110"
               aria-label="Next image"
             >
-              <IconChevronRight className="text-gray-800" />
+              <ChevronRight className="text-gray-800" />
             </button>
           </>
         )}

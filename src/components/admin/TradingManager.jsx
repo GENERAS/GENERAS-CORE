@@ -192,7 +192,7 @@ export default function TradingManager() {
       </div>
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         <div className="bg-slate-800/50 rounded-lg p-3 text-center">
           <div className="text-xl font-bold">{trades.length}</div>
           <div className="text-xs text-gray-400">Total Trades</div>
@@ -383,7 +383,7 @@ export default function TradingManager() {
                     <span className="text-sm text-gray-400">{trade.platform}</span>
                     <span className="text-xs text-gray-500">{new Date(trade.trade_date).toLocaleDateString()}</span>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                     <div>Entry: ${trade.entry_price?.toFixed(2)} ({usdToRwf(trade.entry_price).toLocaleString()} RWF)</div>
                     <div>Exit: ${trade.exit_price?.toFixed(2)} ({usdToRwf(trade.exit_price).toLocaleString()} RWF)</div>
                     <div>Qty: {trade.quantity}</div>

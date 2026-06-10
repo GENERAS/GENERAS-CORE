@@ -177,7 +177,7 @@ export default function ProjectsPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* TOP NAVIGATION BAR */}
-      <div className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <div className="sticky top-16 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo/Brand */}
@@ -424,6 +424,7 @@ export default function ProjectsPage() {
                             className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200"
                           >
                             <IconGithub />
+                            <span className="sm:hidden text-[10px]">Code</span>
                             <span className="hidden sm:inline">Code</span>
                           </a>
                         )}
@@ -435,6 +436,7 @@ export default function ProjectsPage() {
                             className="flex items-center gap-1.5 text-sm text-yellow-600 hover:text-yellow-700 transition-colors duration-200"
                           >
                             <IconExternal />
+                            <span className="sm:hidden text-[10px]">Live</span>
                             <span className="hidden sm:inline">Live</span>
                           </a>
                         )}

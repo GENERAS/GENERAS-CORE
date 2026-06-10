@@ -67,7 +67,7 @@ export default function AdminPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4 md:p-6">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Admin Control Center</h1>
         <NotificationCenter />
@@ -81,7 +81,7 @@ export default function AdminPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-lg flex items-center gap-2 transition ${
+              className={`whitespace-nowrap text-sm sm:text-base px-2 sm:px-4 py-1.5 sm:py-2 rounded-lg flex items-center gap-1.5 sm:gap-2 transition ${
                 activeTab === tab.id ? 'bg-blue-600' : 'bg-slate-800 hover:bg-slate-700'
               }`}
             >
