@@ -96,7 +96,7 @@ export default function Header() {
       </header>
 
       {mobileMenuOpen && (
-        <div className='lg:hidden bg-white border-b border-gray-200'>
+        <div className='lg:hidden fixed top-16 left-0 right-0 bottom-0 z-40 bg-white border-t border-gray-200 overflow-y-auto'>
           <nav className='max-w-7xl mx-auto px-6 py-6'>
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path
