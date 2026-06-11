@@ -662,7 +662,7 @@ export default function CommunityPage() {
                 <h3 className="text-lg font-bold mb-2 flex items-center gap-2 text-gray-800">
                   <FaCrown className="text-yellow-600" /> Support the Journey
                 </h3>
-                <p className="text-gray-600 text-sm mb-4">Get featured in Hall of Fame with your social links.</p>
+                <p className="text-gray-600 text-sm mb-4">Get featured in the Hall of Fame.</p>
                 <button 
                   onClick={() => setShowPaymentModal(true)}
                   className="w-full py-3 bg-yellow-600 hover:bg-yellow-700 rounded-xl font-semibold transition-colors duration-200"
