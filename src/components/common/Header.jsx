@@ -21,6 +21,7 @@ export default function Header() {
     { path: '/community', label: t('nav.community') },
     { path: '/testimonials', label: t('nav.testimonials') },
     { path: '/service', label: t('nav.mentorship') },
+    { path: '/business', label: 'Services' },
   ]
 
   return (
@@ -29,7 +30,7 @@ export default function Header() {
         <div className='max-w-7xl mx-auto px-6'>
           <div className='flex justify-between items-center h-16'>
             <Link to='/' className='flex items-center gap-3'>
-              <img src='/logo.png' alt='GENERAS CORE Logo' fetchpriority="high" className='h-10 w-auto' style={{ background: 'transparent' }} />
+              <img src='/logo.png' alt='GENERAS CORE Logo' fetchPriority="high" className='h-10 w-auto' style={{ background: 'transparent' }} />
               <span className='text-xl font-bold text-gray-900'>GENERAS CORE</span>
             </Link>
 

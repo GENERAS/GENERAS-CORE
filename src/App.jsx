@@ -6,9 +6,11 @@ import ProtectedRoute from './components/common/ProtectedRoute'
 import Loader from './components/common/Loader'
 import AdminLoginPage from './pages/AdminLoginPage'
 import ChatWindow from './components/AIAssistant/ChatWindow'
+import LandingPageModal from './components/business/LandingPageModal'
 
 // Pages
 const HomePage = lazy(() => import('./pages/HomePage'))
+const BusinessPage = lazy(() => import('./pages/BusinessPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
 const AcademicPage = lazy(() => import('./pages/AcademicPage'))
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'))
@@ -41,6 +43,8 @@ function App() {
 
         {/* PUBLIC */}
         <Route path="/" element={<Layout><Suspense fallback={<Loader />}><HomePage /></Suspense></Layout>} />
+
+        <Route path="/business" element={<Layout><Suspense fallback={<Loader />}><BusinessPage /></Suspense></Layout>} />
 
         <Route path="/academic" element={<Layout><Suspense fallback={<Loader />}><AcademicPage /></Suspense></Layout>} />
 
@@ -80,6 +84,7 @@ function App() {
 
       </Routes>
       <ChatWindow />
+      <LandingPageModal />
     </AuthProvider>
   )
 }
