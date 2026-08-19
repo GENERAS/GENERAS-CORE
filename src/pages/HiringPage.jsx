@@ -124,12 +124,8 @@ const HiringPage = () => {
   const handleSubmit = async () => {
     setLoading(true);
     
-    console.log('🔍 DEBUG - Starting form submission...');
-    console.log('🔍 DEBUG - FormData:', JSON.stringify(formData, null, 2));
-    
     try {
       const inquiryIdGen = generateInquiryId();
-      console.log('🔍 DEBUG - Generated inquiry ID:', inquiryIdGen);
       
       const insertData = {
         inquiry_id: inquiryIdGen,
@@ -146,17 +142,11 @@ const HiringPage = () => {
         status: 'new',
       };
       
-      console.log('🔍 DEBUG - Insert data:', JSON.stringify(insertData, null, 2));
-      
-      console.log('🔍 DEBUG - Attempting insert to project_inquiries...');
-      
       const { data, error } = await supabase
         .from('project_inquiries')
         .insert([insertData])
         .select()
         .single();
-      
-      console.log('🔍 DEBUG - Supabase response:', { data, error });
       
       if (error) {
         console.error('🔴 SUBMISSION ERROR:', error);
@@ -206,7 +196,7 @@ const HiringPage = () => {
         errorMsg = `Error: ${error.message}`;
       }
       
-      alert(errorMsg + ' (Check console for details)');
+      setStepErrors({ submit: errorMsg });
     } finally {
       setLoading(false);
     }
@@ -242,17 +232,11 @@ const HiringPage = () => {
     if (step === 1 && !validateStep1()) return;
     if (step === 2 && !validateStep2()) return;
     
-    console.log(`🔍 DEBUG - Moving from step ${step} to step ${step + 1}`);
-    console.log('🔍 DEBUG - Current formData:', JSON.stringify(formData, null, 2));
-    
     setStep(step + 1);
     setStepErrors({});
   };
 
   const prevStep = () => {
-    console.log(`🔍 DEBUG - Moving from step ${step} to step ${step - 1}`);
-    console.log('🔍 DEBUG - Current formData:', JSON.stringify(formData, null, 2));
-    
     setStep(step - 1);
     setStepErrors({});
   };
@@ -553,7 +537,7 @@ const HiringPage = () => {
                     value={formData.phone}
                     onChange={handleInputChange}
                     className={`w-full pl-10 pr-4 py-3 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-400 ${stepErrors.phone ? 'border-red-500 bg-red-50' : 'border-gray-300'}`}
-                    placeholder="0788 123 456"
+                    placeholder="0794 144 738"
                     autoComplete="off"
                     data-testid="phone-input"
                     required
@@ -677,6 +661,12 @@ const HiringPage = () => {
                 </div>
               </div>
             </div>
+
+            {stepErrors.submit && (
+              <div className="w-full mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm text-center">
+                {stepErrors.submit}
+              </div>
+            )}
 
             <div className="flex justify-between mt-8 pt-6 border-t">
               <button

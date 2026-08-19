@@ -111,10 +111,13 @@ export default function DemoShowcase() {
                     })}
                   </div>
 
-                  <button className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 group-hover:border-yellow-500 group-hover:text-yellow-600">
+                  <a
+                    href="#free-audit"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 group-hover:border-yellow-500 group-hover:text-yellow-600"
+                  >
                     View Demo
                     <ExternalLink className="w-4 h-4" />
-                  </button>
+                  </a>
                 </div>
               </div>
             )

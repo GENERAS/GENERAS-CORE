@@ -90,7 +90,7 @@ export default function FAQSection() {
             Still have questions?
           </p>
           <a
-            href="#contact"
+            href="#free-audit"
             className="inline-flex items-center gap-2 px-6 py-3 bg-yellow-600 text-white font-medium rounded-lg hover:bg-yellow-700 transition-colors duration-200"
           >
             Contact Us

@@ -136,13 +136,13 @@ export default function PricingSection() {
           <p className="text-gray-600 mb-6">
             Every business is unique. Let's discuss your specific requirements and create a tailored solution.
           </p>
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors duration-200"
-          >
-            Request Custom Quote
-            <ArrowRight className="w-4 h-4" />
-          </a>
+            <a
+              href="#free-audit"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors duration-200"
+            >
+              Request Custom Quote
+              <ArrowRight className="w-4 h-4" />
+            </a>
         </div>
       </div>
     </section>

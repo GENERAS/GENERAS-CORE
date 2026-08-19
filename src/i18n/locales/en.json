@@ -9,6 +9,7 @@
     "mentorship": "Mentorship",
     "blog": "Blog",
     "hireMe": "Hire Me",
+    "services": "Services",
     "admin": "Admin Panel",
     "signOut": "Sign Out"
   },
@@ -36,37 +37,16 @@
     "previous": "Previous",
     "close": "Close",
     "view": "View",
-    "visit": "Visit"
+    "visit": "Visit",
+    "refreshPage": "Refresh Page",
+    "goHome": "Go Home",
+    "goBack": "Go Back"
   },
   "home": {
-    "heroTitle": "Master the Future of Finance",
-    "heroSubtitle": "Learn crypto trading, blockchain development, and DeFi strategies from industry experts in Rwanda and across Africa.",
-    "servicesTitle": "What We Offer",
-    "servicesSubtitle": "Comprehensive education and tools for your crypto journey",
-    "communityTitle": "Join Our Community",
-    "communitySubtitle": "Connect with thousands of learners and traders across Africa"
-  },
-  "stats": {
-    "academic": "Academic Levels",
-    "academicDesc": "From Nursery to PhD",
-    "projects": "Projects Built",
-    "projectsDesc": "Web, Mobile, Blockchain",
-    "trades": "Trades Logged",
-    "tradesDesc": "Binance, MT4, MT5",
-    "supporters": "Supporters",
-    "supportersDesc": "Coffee buyers",
-    "followers": "Followers",
-    "followersDesc": "Newsletter subscribers",
-    "daysActive": "Days Active",
-    "daysActiveDesc": "Building legacy"
-  },
-  "announcement": {
-    "new": "NEW",
-    "message": "A new training has just been uploaded. Check it out now!",
-    "submessage": "Limited spots available for this mentorship batch",
-    "getMentorship": "Get Mentorship",
-    "hireMe": "Hire Me",
-    "dismiss": "Dismiss"
+    "heroTitle": "Building Digital Systems That Solve Real Problems",
+    "heroSubtitle": "I'm Generas Kagiraneza, founder of Generas Core. I design, build, and improve software, AI-powered solutions, and digital systems.",
+    "exploreWork": "Explore My Work",
+    "letsConnect": "Let's Connect"
   },
   "sections": {
     "academic": {
@@ -90,14 +70,41 @@
       "supporters": "Supporters"
     }
   },
+  "business": {
+    "title": "Helping Local Businesses Grow Online",
+    "subtitle": "Professional websites, SEO, Google Maps optimization, WhatsApp integration, and digital transformation services in Rwanda",
+    "getFreeAudit": "Get Free Website Audit",
+    "chatWhatsApp": "Chat on WhatsApp",
+    "servicesWeOffer": "Services We Offer",
+    "industriesWeServe": "Industries We Serve",
+    "ourProcess": "Our Process",
+    "pricingPackages": "Pricing Packages",
+    "whyWorkWithUs": "Why Businesses Work With Me",
+    "freeAudit": "Get a Free Website & Google Visibility Audit",
+    "faqs": "Frequently Asked Questions",
+    "readyToGrow": "Ready to Grow Your Business Online?",
+    "callNow": "Call Now"
+  },
   "footer": {
     "rights": "All rights reserved",
     "madeWith": "Made with",
-    "inRwanda": "in Rwanda"
+    "inRwanda": "in Rwanda",
+    "explore": "Explore",
+    "services": "Services",
+    "contact": "Contact",
+    "follow": "Follow"
   },
   "language": {
     "english": "English",
     "kinyarwanda": "Kinyarwanda",
     "switchTo": "Switch to"
+  },
+  "errors": {
+    "notFound": "Page Not Found",
+    "notFoundDesc": "The page you're looking for doesn't exist or has been moved.",
+    "somethingWrong": "Something went wrong",
+    "somethingWrongDesc": "An unexpected error occurred. Please try refreshing the page.",
+    "accessDenied": "Access Denied",
+    "accessDeniedDesc": "You don't have admin privileges."
   }
 }

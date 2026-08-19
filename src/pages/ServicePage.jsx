@@ -140,12 +140,15 @@ const ServicePage = () => {
     }
   };
 
+  const [fileError, setFileError] = useState('');
+
   const handleFileChange = (e) => {
+    setFileError('');
     const file = e.target.files[0];
     if (file && file.size <= 5 * 1024 * 1024) {
       setFormData(prev => ({ ...prev, payment_screenshot: file }));
     } else {
-      alert('File must be less than 5MB');
+      setFileError('File must be less than 5MB');
     }
   };
 
@@ -229,15 +232,17 @@ const ServicePage = () => {
 
   const copyReference = (ref) => {
     navigator.clipboard.writeText(ref || referenceCode);
-    alert('Reference code copied!');
   };
 
   // Track Application handlers
+  const [trackError, setTrackError] = useState('');
+
   const searchApplications = async () => {
     if (!searchEmail) {
-      alert('Please enter your email address');
+      setTrackError('Please enter your email address');
       return;
     }
+    setTrackError('');
     
     setLoadingTrack(true);
     setSearched(true);
@@ -258,8 +263,7 @@ const ServicePage = () => {
       setApplications(mentorshipData || []);
       setInquiries(projectData || []);
     } catch (error) {
-      console.error('Error searching:', error);
-      alert('Error searching applications. Please try again.');
+      setTrackError('Error searching applications. Please try again.');
     } finally {
       setLoadingTrack(false);
     }
@@ -762,7 +766,7 @@ const ServicePage = () => {
                         value={formData.phone}
                         onChange={handleInputChange}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buue00"
-                        placeholder="0788 123 456"
+                        placeholder="0794 144 738"
                         required
                       />
                     </div>
@@ -890,7 +894,7 @@ const ServicePage = () => {
                           </div>
                           <div>
                             <p className="font-medium">MTN Mobile Money</p>
-                            <p className="text-gray-500">0788 123 456</p>
+                            <p className="text-gray-500">0794 144 738</p>
                           </div>
                         </div>
                         <div className="flex items-center gap-3">
@@ -899,7 +903,7 @@ const ServicePage = () => {
                           </div>
                           <div>
                             <p className="font-medium">Airtel Money</p>
-                            <p className="text-gray-500">0788 123 456</p>
+                            <p className="text-gray-500">0794 144 738</p>
                           </div>
                         </div>
                       </div>
@@ -1021,6 +1025,10 @@ const ServicePage = () => {
               >
                 {loadingTrack ? 'Searching...' : 'Track My Application'}
               </button>
+
+              {trackError && (
+                <p className="text-red-600 text-sm text-center">{trackError}</p>
+              )}
             </div>
 
             <div className="mt-6 pt-6 border-t">
@@ -1034,7 +1042,7 @@ const ServicePage = () => {
                 </button>
                 {' '}or{' '}
                 <button
-                  onClick={() => navigate('/hire')}
+                  onClick={() => navigate('/hire-me')}
                   className="text-blul00 hover:underline font-medium"
                 >
                   Hire for a Project
@@ -1107,7 +1115,7 @@ const ServicePage = () => {
             <Briefcase className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500">No project inquiries found for this email</p>
             <button
-              onClick={() => navigate('/hire')}
+              onClick={() => navigate('/hire-me')}
               className="mt-4 text-blul00 hover:underline font-medium"
             >
               Hire for a Project →
@@ -1281,7 +1289,7 @@ const ServicePage = () => {
                         Email Support
                       </a>
                       <a
-                        href="https://wa.me/250788123456"
+                        href="https://wa.me/250794144738"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-gray-600 hover:text-yellow-600"
@@ -1369,7 +1377,7 @@ const ServicePage = () => {
                       Email Support
                     </a>
                     <a
-                      href="https://wa.me/250788123456"
+                      href="https://wa.me/250794144738"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-sm text-gray-600 hover:text-yellow-600"

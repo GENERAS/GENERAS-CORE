@@ -105,10 +105,10 @@ export default function TrustSection() {
               <CheckCircle className="w-4 h-4" />
             </a>
             <a
-              href="#testimonials"
+              href="#free-audit"
               className="inline-flex items-center gap-2 px-6 py-3 bg-gray-800 text-white font-medium rounded-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700"
             >
-              See Testimonials
+              Get Free Audit
             </a>
           </div>
         </div>

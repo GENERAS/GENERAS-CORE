@@ -1,12 +1,12 @@
 {
-  "name": "Generas Kagiraneza - Full-Stack Developer & Trader",
-  "short_name": "Generas Legacy",
-  "description": "Tracking my journey from Nursery School to Infinity. Full-Stack Developer, Crypto & Forex Trader, Entrepreneur.",
+  "name": "Generas Core — Digital Systems Builder",
+  "short_name": "Generas Core",
+  "description": "Full-Stack Developer, AI Systems Builder, and Digital Entrepreneur from Kigali, Rwanda.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#1e293b",
-  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#eab308",
+  "orientation": "any",
   "scope": "/",
   "lang": "en",
   "icons": [
@@ -23,13 +23,5 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["portfolio", "personal", "education", "finance"],
-  "screenshots": [
-    {
-      "src": "/hero.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    }
-  ]
+  "categories": ["portfolio", "personal", "business", "education"]
 }

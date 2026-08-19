@@ -32,6 +32,7 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-300 mb-5 uppercase tracking-wider">Explore</h3>
             <ul className="space-y-3">
               <li><Link to="/" className="text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm">Home</Link></li>
+              <li><Link to="/business" className="text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm">Business Services</Link></li>
               <li><Link to="/academic" className="text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm">Academic Journey</Link></li>
               <li><Link to="/projects" className="text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm">Project Portfolio</Link></li>
               <li><Link to="/trading" className="text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm">Trading Dashboard</Link></li>

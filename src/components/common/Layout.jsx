@@ -20,10 +20,10 @@ function MobileBottomNav() {
   
   const navItems = [
     { path: '/', label: 'Home' },
-    { path: '/projects', label: 'Projects' },
     { path: '/business', label: 'Services' },
+    { path: '/projects', label: 'Projects' },
     { path: '/community', label: 'Community' },
-    { path: '/service', label: 'Mentor' },
+    { path: '/blog', label: 'Blog' },
   ]
   
   return (

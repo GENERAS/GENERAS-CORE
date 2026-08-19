@@ -9,6 +9,7 @@
     "mentorship": "Ubuyobozi",
     "blog": "Blog",
     "hireMe": "Nkorere",
+    "services": "Ibikorwa",
     "admin": "Panneau Admin",
     "signOut": "Sohoka"
   },
@@ -36,37 +37,16 @@
     "previous": "Icyabanjirije",
     "close": "Funga",
     "view": "Reba",
-    "visit": "Sura"
+    "visit": "Sura",
+    "refreshPage": "Subira Access",
+    "goHome": "Jya Ahabanza",
+    "goBack": "Subira Inyuma"
   },
   "home": {
-    "heroTitle": "Igira Umwuga wa Imari y'Ejo",
-    "heroSubtitle": "Igana kucuruza crypto, kwubaka blockchain, n'ubuhanga bwa DeFi baturutse ku banyamwuga mu Rwanda no muri Afurika yose.",
-    "servicesTitle": "Ibiduha",
-    "servicesSubtitle": "Amashuri yuzuye n'ibikoresho by'urugendo rwawe rwa crypto",
-    "communityTitle": "Uzuza Umuryango Wacu",
-    "communitySubtitle": "Huza n'ibihumbi by'abigana n'abacuruzi muri Afurika yose"
-  },
-  "stats": {
-    "academic": "Amashuri",
-    "academicDesc": "Kuva ku Gasozi kugeza ku PhD",
-    "projects": "Proje Zakozwe",
-    "projectsDesc": "Web, Mobile, Blockchain",
-    "trades": "Amadirishya Yakozwe",
-    "tradesDesc": "Binance, MT4, MT5",
-    "supporters": "Abafasha",
-    "supportersDesc": "Abagura ikawa",
-    "followers": "Abakurikira",
-    "followersDesc": "Abiyandikishije",
-    "daysActive": "Iminsi",
-    "daysActiveDesc": "Yubakwa umurage"
-  },
-  "announcement": {
-    "new": "GISHA",
-    "message": "Amahugurwa mashya amaze gushyirwa. Reba nonaha!",
-    "submessage": "Intebe ni nke cyane muri iki gihe cy'ubuyobozi",
-    "getMentorship": "Fata Ubuyobozi",
-    "hireMe": "Nkorere",
-    "dismiss": "Funga"
+    "heroTitle": "Kubaka Amasisteme ya Digitari Y uwagira Imp проблемы",
+    "heroSubtitle": "Ni Generas Kagiraneza, umuyobozi wa Generas Core. Nubaka software, amasolutions ya AI, n'amasisitema ya digitari.",
+    "exploreWork": "Reba Akazi Kanjye",
+    "letsConnect": "Tuganire"
   },
   "sections": {
     "academic": {
@@ -90,14 +70,41 @@
       "supporters": "Abafasha"
     }
   },
+  "business": {
+    "title": "Duufasha Amashamiyo Ku Mugaragaro",
+    "subtitle": "Inturo zisanzwe, SEO, Google Maps, WhatsApp, n'amabwiriza ya digitari mu Rwanda",
+    "getFreeAudit": "Shakisha Ubuyobozi bw'Ubuntu",
+    "chatWhatsApp": "Tuganire kuri WhatsApp",
+    "servicesWeOffer": "Ibikorwa T uwagira",
+    "industriesWeServe": "Amashamiyo Dukorana",
+    "ourProcess": "Uburyo Dukorana",
+    "pricingPackages": "Ibiciro",
+    "whyWorkWithUs": "Kubera iki Abantu Bakorana Natwe",
+    "freeAudit": "Shakisha Ubuyobozi bw'Ubuntu bw'Urubuga",
+    "faqs": "Ibibazo Bidasobanutse",
+    "readyToGrow": "Witegure Kuba Pamoja?",
+    "callNow": "Hamagara Nonaha"
+  },
   "footer": {
     "rights": "Uburenganzira bwose bwihariwe",
     "madeWith": "Yakozwe na",
-    "inRwanda": "mu Rwanda"
+    "inRwanda": "mu Rwanda",
+    "explore": "Rondera",
+    "services": "Ibikorwa",
+    "contact": "Twandikire",
+    "follow": "Kurikira"
   },
   "language": {
     "english": "Icyongereza",
     "kinyarwanda": "Ikinyarwanda",
     "switchTo": "Hindura"
+  },
+  "errors": {
+    "notFound": "Urubuga Ntirwabonetse",
+    "notFoundDesc": "Urubuga rushaka ntabwo rubaho cyangwa rwamurwa.",
+    "somethingWrong": "Hari ikosa ryabaye",
+    "somethingWrongDesc": "Ikosa ritagishije ryabaye. Nyamuneka ongera ugerageze.",
+    "accessDenied": "Nta rwego",
+    "accessDeniedDesc": "Nta rwego rw'admin ufise."
   }
 }

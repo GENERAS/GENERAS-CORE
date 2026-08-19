@@ -23,7 +23,7 @@ export default function LandingPageModal() {
   if (!isOpen) return null
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-40 p-4 md:p-6 pointer-events-none">
+    <div className="fixed bottom-20 md:bottom-6 left-0 right-0 z-40 p-4 pointer-events-none">
       <div className="max-w-4xl mx-auto pointer-events-auto">
         <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-2xl p-6 shadow-2xl border border-yellow-400 relative">
           <button

@@ -9,6 +9,7 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [success, setSuccess] = useState(false)
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
@@ -29,8 +30,7 @@ export default function RegisterPage() {
 
       if (error) throw error
 
-      alert('Registration successful! Please check your email to verify your account.')
-      navigate('/login')
+      setSuccess(true)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -48,6 +48,23 @@ export default function RegisterPage() {
         </div>
 
         <div className="bg-slate-800/50 backdrop-blur-sm rounded-2xl p-8 border border-slate-700">
+          {success ? (
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Registration Successful!</h3>
+              <p className="text-gray-400 mb-6">Please check your email to verify your account.</p>
+              <Link
+                to="/login"
+                className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Go to Login
+              </Link>
+            </div>
+          ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-2">Full Name</label>
@@ -109,6 +126,7 @@ export default function RegisterPage() {
               {loading ? 'Creating account...' : 'Sign Up'}
             </button>
           </form>
+          )}
 
           <p className="text-center text-sm text-gray-400 mt-4">
             Already have an account?{' '}

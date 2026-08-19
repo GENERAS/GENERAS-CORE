@@ -94,13 +94,15 @@ const ApplyMentorshipPage = () => {
     }
   };
 
+  const [fileError, setFileError] = useState('');
+
   const handleFileChange = (e) => {
+    setFileError('');
     const file = e.target.files[0];
     if (file && file.size <= 5 * 1024 * 1024) {
       setFormData(prev => ({ ...prev, payment_screenshot: file }));
-      console.log('File selected:', file.name);
     } else {
-      alert('File must be less than 5MB');
+      setFileError('File must be less than 5MB');
     }
   };
 
@@ -237,7 +239,6 @@ const ApplyMentorshipPage = () => {
 
   const copyReference = () => {
     navigator.clipboard.writeText(referenceCode);
-    alert('Reference code copied!');
   };
 
   const nextStep = () => setStep(step + 1);
@@ -382,7 +383,7 @@ const ApplyMentorshipPage = () => {
                     value={formData.phone}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="0788 123 456"
+                    placeholder="0794 144 738"
                     required
                   />
                 </div>
@@ -456,8 +457,8 @@ const ApplyMentorshipPage = () => {
                     Send <strong>${service?.price_hourly}</strong> ({usdToRwf(service?.price_hourly).toLocaleString()} RWF) to:
                   </p>
                   <div className="space-y-2 text-sm">
-                    <p><strong>MTN Mobile Money:</strong> 0788 123 456</p>
-                    <p><strong>Airtel Money:</strong> 0788 123 456</p>
+                    <p><strong>MTN Mobile Money:</strong> 0794 144 738</p>
+                    <p><strong>Airtel Money:</strong> 0794 144 738</p>
                     <div className="bg-yellow-50 p-2 rounded">
                       <p className="font-semibold">Reference Code:</p>
                       <code className="text-sm font-mono">{referenceCode}</code>

@@ -108,7 +108,7 @@ export default function IndustriesSection() {
             Don't see your industry? We work with businesses of all types.
           </p>
           <a
-            href="#contact"
+            href="#free-audit"
             className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white font-medium rounded-lg hover:bg-gray-800 transition-colors duration-200"
           >
             Discuss Your Industry

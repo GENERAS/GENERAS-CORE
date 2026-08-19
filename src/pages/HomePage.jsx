@@ -141,46 +141,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* TOP NAVIGATION BAR */}
-      <div className="sticky top-16 z-50 bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            {/* Logo/Brand */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[yellow-600] rounded-xl flex items-center justify-center">
-                <IconRocket className="text-white" />
-              </div>
-              <div>
-                <h1 className="font-bold text-lg text-gray-900">
-                  Generas Core
-                </h1>
-                <p className="text-xs text-gray-600">Building Digital Systems</p>
-              </div>
-            </div>
-
-            {/* Quick Stats Row */}
-            <div className="hidden md:flex items-center gap-6">
-              <div className="flex items-center gap-2 text-sm">
-                <IconCode className="text-yellow-600" />
-                <span className="text-gray-600">Projects:</span>
-                <span className="font-semibold text-gray-800">{stats.projects}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <IconBrain className="text-yellow-600" />
-                <span className="text-gray-600">Academic:</span>
-                <span className="font-semibold text-gray-800">{stats.academic_levels}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <IconUsers className="text-yellow-600" />
-                <span className="text-gray-600">Community:</span>
-                <span className="font-semibold text-gray-800">{stats.supporters}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Mobile Quick Navigation - Only visible on mobile */}
         <div className="lg:hidden mb-6">
@@ -341,7 +302,7 @@ export default function HomePage() {
                       Explore My Work <IconArrowRight />
                     </Link>
                     <Link 
-                      to="/contact"
+                      to="/hire-me"
                       className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl font-semibold transition-all duration-300"
                     >
                       Let's Connect
@@ -560,7 +521,7 @@ export default function HomePage() {
                 That is the mission behind Generas Core.
               </p>
               <Link 
-                to="/contact"
+                to="/hire-me"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-yellow-500 hover:bg-yellow-400 text-gray-900 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
               >
                 Let's Build Something Meaningful Together <IconArrowRight />
@@ -616,7 +577,7 @@ export default function HomePage() {
                   <Link to="/hire-me" className="block w-full text-center px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl font-semibold transition-colors duration-200">
                     Hire Me
                   </Link>
-                  <Link to="/contact" className="block w-full text-center px-4 py-3 border border-gray-300 hover:border-yellow-400 text-gray-700 rounded-xl font-semibold transition-colors duration-200">
+                  <Link to="/hire-me" className="block w-full text-center px-4 py-3 border border-gray-300 hover:border-yellow-400 text-gray-700 rounded-xl font-semibold transition-colors duration-200">
                     Contact
                   </Link>
                 </div>

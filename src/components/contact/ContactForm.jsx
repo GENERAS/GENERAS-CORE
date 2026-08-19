@@ -51,6 +51,7 @@ export default function ContactForm() {
     phone: '',
     message: ''
   });
+  const [submittedEmail, setSubmittedEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
@@ -74,15 +75,14 @@ export default function ContactForm() {
       
       if (!apiKey || apiKey === 'your_resend_api_key') {
         // Development mode: log to console instead of sending email
-        console.log('=== CONTACT FORM SUBMISSION (localhost mode) ===');
+        console.log('=== CONTACT FORM SUBMISSION (dev mode) ===');
         console.log('Name:', formData.name);
         console.log('Email:', formData.email);
         console.log('Phone:', formData.phone || 'Not provided');
         console.log('Message:', formData.message);
-        console.log('================================================');
         console.log('To enable real emails, add VITE_RESEND_API_KEY to your .env file');
         
-        // Simulate success for UI testing
+        setSubmittedEmail(formData.email);
         setSubmitted(true);
         setFormData({ name: '', email: '', phone: '', message: '' });
         setLoading(false);
@@ -96,6 +96,7 @@ export default function ContactForm() {
       const adminResult = await sendAdminContactNotification(formData);
 
       if (userResult.success && adminResult.success) {
+        setSubmittedEmail(formData.email);
         setSubmitted(true);
         setFormData({ name: '', email: '', phone: '', message: '' });
       } else {
@@ -121,7 +122,7 @@ export default function ContactForm() {
           I've got your message! Whether it's a tech problem, trading confusion, or business challenge — I'll get you an answer within 24-48 hours.
         </p>
         <p className="text-sm text-gray-500">
-          A confirmation email has been sent to {formData.email || 'your email'}.
+          {submittedEmail ? `Message received from ${submittedEmail}.` : 'Message received.'} I'll respond within 24-48 hours.
         </p>
         <button
           onClick={() => setSubmitted(false)}

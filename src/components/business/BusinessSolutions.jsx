@@ -115,10 +115,13 @@ export default function BusinessSolutions() {
                   </p>
                 </div>
                 
-                <button className="inline-flex items-center gap-2 text-sm font-medium text-yellow-600 hover:text-yellow-700 transition-colors duration-200">
+                <a
+                  href="#free-audit"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-yellow-600 hover:text-yellow-700 transition-colors duration-200"
+                >
                   {solution.cta}
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </a>
               </div>
             )
           })}

@@ -3,7 +3,10 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import Layout from './components/common/Layout'
 import ProtectedRoute from './components/common/ProtectedRoute'
+import ErrorBoundary from './components/common/ErrorBoundary'
 import Loader from './components/common/Loader'
+import BackToTop from './components/common/BackToTop'
+import usePageTitle from './hooks/usePageTitle'
 import AdminLoginPage from './pages/AdminLoginPage'
 import ChatWindow from './components/AIAssistant/ChatWindow'
 import LandingPageModal from './components/business/LandingPageModal'
@@ -22,7 +25,13 @@ const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage'))
 const HiringPage = lazy(() => import('./pages/HiringPage'))
 const ServicePage = lazy(() => import('./pages/ServicePage'))
 const TestimonialsPage = lazy(() => import('./pages/TestimonialsPage'))
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
+function PageTitle() {
+  const { pathname } = useLocation()
+  usePageTitle(pathname)
+  return null
+}
 
 function ScrollHandler() {
   const { pathname } = useLocation()
@@ -37,56 +46,47 @@ function ScrollHandler() {
 function App() {
   return (
     <AuthProvider>
-      <ScrollHandler />
+      <ErrorBoundary>
+        <PageTitle />
+        <ScrollHandler />
 
-      <Routes>
+        <Routes>
+          {/* PUBLIC */}
+          <Route path="/" element={<Layout><Suspense fallback={<Loader />}><HomePage /></Suspense></Layout>} />
+          <Route path="/business" element={<Layout><Suspense fallback={<Loader />}><BusinessPage /></Suspense></Layout>} />
+          <Route path="/academic" element={<Layout><Suspense fallback={<Loader />}><AcademicPage /></Suspense></Layout>} />
+          <Route path="/projects" element={<Layout><Suspense fallback={<Loader />}><ProjectsPage /></Suspense></Layout>} />
+          <Route path="/trading" element={<Layout><Suspense fallback={<Loader />}><TradingPage /></Suspense></Layout>} />
+          <Route path="/community" element={<Layout><Suspense fallback={<Loader />}><CommunityPage /></Suspense></Layout>} />
+          <Route path="/blog" element={<Layout><Suspense fallback={<Loader />}><BlogPage /></Suspense></Layout>} />
+          <Route path="/blog/:slug" element={<Layout><Suspense fallback={<Loader />}><BlogPostPage /></Suspense></Layout>} />
+          <Route path="/service" element={<Layout><Suspense fallback={<Loader />}><ServicePage /></Suspense></Layout>} />
+          <Route path="/services/:slug" element={<Layout><Suspense fallback={<Loader />}><ServiceDetailPage /></Suspense></Layout>} />
+          <Route path="/hire-me" element={<Layout><Suspense fallback={<Loader />}><HiringPage /></Suspense></Layout>} />
+          <Route path="/testimonials" element={<Layout><Suspense fallback={<Loader />}><TestimonialsPage /></Suspense></Layout>} />
 
-        {/* PUBLIC */}
-        <Route path="/" element={<Layout><Suspense fallback={<Loader />}><HomePage /></Suspense></Layout>} />
+          {/* REDIRECTS */}
+          <Route path="/mentorship" element={<Navigate to="/service" replace />} />
+          <Route path="/services" element={<Navigate to="/service" replace />} />
 
-        <Route path="/business" element={<Layout><Suspense fallback={<Loader />}><BusinessPage /></Suspense></Layout>} />
+          {/* AUTH */}
+          <Route path="/admin-login" element={<AdminLoginPage />} />
+          <Route path="/admin" element={
+            <ProtectedRoute>
+              <Suspense fallback={<Loader />}><AdminPage /></Suspense>
+            </ProtectedRoute>
+          } />
 
-        <Route path="/academic" element={<Layout><Suspense fallback={<Loader />}><AcademicPage /></Suspense></Layout>} />
+          {/* 404 */}
+          <Route path="*" element={<Layout><Suspense fallback={<Loader />}><NotFoundPage /></Suspense></Layout>} />
+        </Routes>
 
-        <Route path="/projects" element={<Layout><Suspense fallback={<Loader />}><ProjectsPage /></Suspense></Layout>} />
-
-        <Route path="/trading" element={<Layout><Suspense fallback={<Loader />}><TradingPage /></Suspense></Layout>} />
-
-        <Route path="/community" element={<Layout><Suspense fallback={<Loader />}><CommunityPage /></Suspense></Layout>} />
-
-        <Route path="/blog" element={<Layout><Suspense fallback={<Loader />}><BlogPage /></Suspense></Layout>} />
-
-        <Route path="/blog/:slug" element={<Layout><Suspense fallback={<Loader />}><BlogPostPage /></Suspense></Layout>} />
-
-        <Route path="/service" element={<Layout><Suspense fallback={<Loader />}><ServicePage /></Suspense></Layout>} />
-
-        <Route path="/services/:slug" element={<Layout><Suspense fallback={<Loader />}><ServiceDetailPage /></Suspense></Layout>} />
-
-        <Route path="/hire-me" element={<Layout><Suspense fallback={<Loader />}><HiringPage /></Suspense></Layout>} />
-
-        <Route path="/testimonials" element={<Layout><Suspense fallback={<Loader />}><TestimonialsPage /></Suspense></Layout>} />
-
-        {/* REDIRECTS */}
-        <Route path="/mentorship" element={<Navigate to="/service" replace />} />
-        <Route path="/services" element={<Navigate to="/service" replace />} />
-
-        {/* AUTH */}
-        <Route path="/admin-login" element={<AdminLoginPage />} />
-
-        <Route path="/admin" element={
-          <ProtectedRoute>
-            <Suspense fallback={<Loader />}><AdminPage /></Suspense>
-          </ProtectedRoute>
-        } />
-
-        {/* FALLBACK */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-
-      </Routes>
-      <ChatWindow />
-      <LandingPageModal />
+        <ChatWindow />
+        <LandingPageModal />
+        <BackToTop />
+      </ErrorBoundary>
     </AuthProvider>
   )
 }
 
-export default App;
+export default App

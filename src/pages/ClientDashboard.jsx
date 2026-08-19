@@ -19,12 +19,14 @@ const ClientDashboard = () => {
   const [searchEmail, setSearchEmail] = useState('');
   const [searched, setSearched] = useState(false);
   const [selectedApp, setSelectedApp] = useState(null);
+  const [searchError, setSearchError] = useState('');
 
   const searchApplications = async () => {
     if (!searchEmail) {
-      alert('Please enter your email address');
+      setSearchError('Please enter your email address');
       return;
     }
+    setSearchError('');
     
     setLoading(true);
     setSearched(true);
@@ -52,8 +54,7 @@ const ClientDashboard = () => {
       setInquiries(projectData || []);
       
     } catch (error) {
-      console.error('Error searching:', error);
-      alert('Error searching applications. Please try again.');
+      setSearchError('Error searching applications. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -97,7 +98,6 @@ const ClientDashboard = () => {
 
   const copyReference = (ref) => {
     navigator.clipboard.writeText(ref);
-    alert('Reference code copied!');
   };
 
   if (!searched) {
@@ -129,6 +129,10 @@ const ClientDashboard = () => {
               >
                 Track My Application
               </button>
+
+              {searchError && (
+                <p className="text-red-600 text-sm text-center">{searchError}</p>
+              )}
             </div>
             
             <div className="mt-6 pt-6 border-t">
@@ -382,7 +386,7 @@ const ClientDashboard = () => {
                         Email Support
                       </a>
                       <a
-                        href="https://wa.me/250788123456"
+                        href="https://wa.me/250794144738"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-sm text-gray-600 hover:text-green-600"
@@ -470,7 +474,7 @@ const ClientDashboard = () => {
                       Email Support
                     </a>
                     <a
-                      href="https://wa.me/250788123456"
+                      href="https://wa.me/250794144738"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 text-sm text-gray-600 hover:text-green-600"
