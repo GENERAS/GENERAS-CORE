@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { supabase } from '../../lib/supabase';
 import { sendContactFormConfirmation, sendAdminContactNotification } from '../../utils/emailService';
 
 // Inline SVG icons - no external libraries
@@ -70,39 +71,30 @@ export default function ContactForm() {
     setError('');
 
     try {
-      // Check if Resend is configured
+      // Save to Supabase so admin can see it
+      const { error: dbError } = await supabase
+        .from('contact_submissions')
+        .insert({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone || null,
+          message: formData.message,
+        });
+
+      if (dbError) {
+        console.error('DB insert error:', dbError);
+      }
+
+      // Try to send emails (non-blocking — don't fail the form if email fails)
       const apiKey = import.meta.env.VITE_RESEND_API_KEY;
-      
-      if (!apiKey || apiKey === 'your_resend_api_key') {
-        // Development mode: log to console instead of sending email
-        console.log('=== CONTACT FORM SUBMISSION (dev mode) ===');
-        console.log('Name:', formData.name);
-        console.log('Email:', formData.email);
-        console.log('Phone:', formData.phone || 'Not provided');
-        console.log('Message:', formData.message);
-        console.log('To enable real emails, add VITE_RESEND_API_KEY to your .env file');
-        
-        setSubmittedEmail(formData.email);
-        setSubmitted(true);
-        setFormData({ name: '', email: '', phone: '', message: '' });
-        setLoading(false);
-        return;
+      if (apiKey && apiKey !== 'your_resend_api_key') {
+        await sendContactFormConfirmation(formData).catch(() => {});
+        await sendAdminContactNotification(formData).catch(() => {});
       }
 
-      // Send confirmation to user
-      const userResult = await sendContactFormConfirmation(formData);
-      
-      // Send notification to admin
-      const adminResult = await sendAdminContactNotification(formData);
-
-      if (userResult.success && adminResult.success) {
-        setSubmittedEmail(formData.email);
-        setSubmitted(true);
-        setFormData({ name: '', email: '', phone: '', message: '' });
-      } else {
-        console.error('Email send failed:', { userResult, adminResult });
-        setError('Failed to send message. Please try again or contact via WhatsApp.');
-      }
+      setSubmittedEmail(formData.email);
+      setSubmitted(true);
+      setFormData({ name: '', email: '', phone: '', message: '' });
     } catch (err) {
       setError('An error occurred. Please try again.');
       console.error('Contact form error:', err);

@@ -134,6 +134,8 @@ CREATE TABLE IF NOT EXISTS project_inquiries (
   email TEXT NOT NULL,
   phone TEXT NOT NULL,
   company TEXT,
+  how_found TEXT,
+  additional_info TEXT,
   
   -- Status
   status TEXT DEFAULT 'new', -- new, quoted, deposit_paid, in_progress, completed

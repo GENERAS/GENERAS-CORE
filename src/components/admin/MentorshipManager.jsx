@@ -40,41 +40,21 @@ const MentorshipManager = () => {
   const fetchApplications = async () => {
     setLoading(true);
     try {
-      // Fetch from all service-specific tables
-      const tables = [
-        { name: 'trading_applications', service: 'Trading' },
-        { name: 'dev_applications', service: 'Development' },
-        { name: 'business_applications', service: 'Business' },
-        { name: 'blog_applications', service: 'Blog' },
-        { name: 'mentorship_applications', service: 'Mentorship' }
-      ];
+      const { data, error } = await supabase
+        .from('mentorship_applications')
+        .select('*')
+        .order('submitted_at', { ascending: false });
 
-      const allApps = [];
-      
-      for (const table of tables) {
-        const { data, error } = await supabase
-          .from(table.name)
-          .select('*')
-          .order('submitted_at', { ascending: false });
-
-        if (error) {
-          console.error(`Error fetching from ${table.name}:`, error);
-          continue;
-        }
-
-        // Add service type and table source to each application
-        if (data) {
-          const appsWithMetadata = data.map(app => ({
-            ...app,
-            service_type: table.service,
-            table_source: table.name
-          }));
-          allApps.push(...appsWithMetadata);
-        }
+      if (error) {
+        console.error('Error fetching mentorship applications:', error);
+        return;
       }
 
-      // Sort all applications by submitted_at
-      allApps.sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
+      const allApps = (data || []).map(app => ({
+        ...app,
+        service_type: app.service_title || 'Mentorship',
+        table_source: 'mentorship_applications'
+      }));
       
       setApplications(allApps);
       calculateStats(allApps);

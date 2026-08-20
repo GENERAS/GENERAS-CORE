@@ -77,12 +77,15 @@ export default async function handler(req, res) {
         location: body.location || null,
         user_type: body.userType || null,
         project_type: body.projectType || null,
+        industry: body.industry || null,
+        website_url: body.websiteUrl || null,
         discovery_answers: body.discovery || null,
         budget_range: body.budget || null,
         timeline: body.timeline || null,
+        message: body.message || null,
         chat_transcript: body.chatTranscript || null,
         project_brief: body.projectBrief || null,
-        source: 'ai_assistant',
+        source: body.type === 'website_audit' ? 'website_audit' : 'ai_assistant',
         lead_label: 'new',
       }).select().single()
 

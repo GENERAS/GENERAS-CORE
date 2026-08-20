@@ -54,7 +54,9 @@ export default function AdminDashboard() {
     videos: 0,
     photos: 0,
     mentorshipApps: 0,
-    projectInquiries: 0
+    projectInquiries: 0,
+    aiLeads: 0,
+    contactMessages: 0,
   })
   const [loading, setLoading] = useState(true)
 
@@ -66,7 +68,7 @@ export default function AdminDashboard() {
     try {
       console.log(' Loading dashboard stats...')
       
-      const [coffeeSupporters, comments, pending, blogs, videos, photos, mentorship, projects] = await Promise.all([
+      const [coffeeSupporters, comments, pending, blogs, videos, photos, mentorship, projects, aiLeads, contactMsgs] = await Promise.all([
         supabase.from('coffee_supporters').select('*', { count: 'exact', head: true }),
         supabase.from('comments').select('*', { count: 'exact', head: true }),
         supabase.from('comments').select('*', { count: 'exact', head: true }).eq('is_approved', false),
@@ -74,7 +76,9 @@ export default function AdminDashboard() {
         supabase.from('videos').select('*', { count: 'exact', head: true }),
         supabase.from('photos').select('*', { count: 'exact', head: true }),
         supabase.from('mentorship_applications').select('*', { count: 'exact', head: true }).eq('status', 'new'),
-        supabase.from('project_inquiries').select('*', { count: 'exact', head: true }).eq('status', 'new')
+        supabase.from('project_inquiries').select('*', { count: 'exact', head: true }).eq('status', 'new'),
+        supabase.from('ai_leads').select('*', { count: 'exact', head: true }),
+        supabase.from('contact_submissions').select('*', { count: 'exact', head: true }).eq('is_read', false),
       ])
 
       console.log(' Stats loaded:', {
@@ -91,7 +95,9 @@ export default function AdminDashboard() {
         videos: videos.count || 0,
         photos: photos.count || 0,
         mentorshipApps: mentorship.count || 0,
-        projectInquiries: projects.count || 0
+        projectInquiries: projects.count || 0,
+        aiLeads: aiLeads.count || 0,
+        contactMessages: contactMsgs.count || 0,
       })
     } catch (error) {
       console.error(' Error loading stats:', error)
@@ -156,6 +162,17 @@ export default function AdminDashboard() {
           <div className="text-orange-500 mx-auto mb-2"><IconTrendingUp /></div>
           <div className="text-2xl font-bold">{stats.projectInquiries}</div>
           <div className="text-xs text-gray-400">Project Inquiries</div>
+        </div>
+        <div className="bg-slate-800/50 rounded-xl p-4 text-center">
+          <div className="text-blue-400 mx-auto mb-2"><IconTrendingUp /></div>
+          <div className="text-2xl font-bold">{stats.aiLeads}</div>
+          <div className="text-xs text-gray-400">AI Leads</div>
+        </div>
+        <div className="bg-slate-800/50 rounded-xl p-4 text-center">
+          <div className="text-yellow-400 mx-auto mb-2"><IconMessageSquare /></div>
+          <div className="text-2xl font-bold">{stats.contactMessages}</div>
+          <div className="text-xs text-gray-400">Unread Messages</div>
+          {stats.contactMessages > 0 && <div className="text-xs text-yellow-400">{stats.contactMessages} unread</div>}
         </div>
       </div>
     </div>

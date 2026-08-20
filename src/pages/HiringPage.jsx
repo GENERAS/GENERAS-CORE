@@ -139,6 +139,8 @@ const HiringPage = () => {
         email: formData.email,
         phone: formData.phone,
         company: formData.company || null,
+        how_found: formData.how_found || null,
+        additional_info: formData.additional_info || null,
         status: 'new',
       };
       
@@ -643,6 +645,7 @@ const HiringPage = () => {
                   <p className="text-gray-900"><span className="text-gray-600 font-medium">Email:</span> <span className="text-gray-900 font-semibold">{formData.email || 'Not provided'}</span></p>
                   <p className="text-gray-900"><span className="text-gray-600 font-medium">Phone:</span> <span className="text-gray-900 font-semibold">{formData.phone || 'Not provided'}</span></p>
                   {formData.company && <p className="text-gray-900"><span className="text-gray-600 font-medium">Company:</span> <span className="text-gray-900 font-semibold">{formData.company}</span></p>}
+                  {formData.how_found && <p className="text-gray-900"><span className="text-gray-600 font-medium">How found:</span> <span className="text-gray-900 font-semibold">{formData.how_found}</span></p>}
                 </div>
               </div>
 

@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import { 
   FaChartLine, FaGraduationCap, FaBrain, FaCode, FaChartLine as FaTrading, 
   FaCoffee, FaNewspaper, FaVideo, FaImages, FaCrown, FaUsers, 
-  FaComments, FaCog, FaAward, FaUser, FaBriefcase, FaStar, FaFileAlt  
+  FaComments, FaCog, FaAward, FaUser, FaBriefcase, FaStar, FaFileAlt,
+  FaRobot, FaEnvelope
 } from 'react-icons/fa'
 import AdminDashboard from '../components/admin/AdminDashboard'
 import AcademicManager from '../components/admin/AcademicManager'
@@ -23,6 +24,8 @@ import CertificatesManager from '../components/admin/CertificatesManager'
 import MentorshipManager from '../components/admin/MentorshipManager'
 import ProjectInquiriesManager from '../components/admin/ProjectInquiriesManager'
 import TestimonialsManager from '../components/admin/TestimonialsManager'
+import AiLeadsManager from '../components/admin/AiLeadsManager'
+import ContactMessagesManager from '../components/admin/ContactMessagesManager'
 import NotificationCenter from '../components/admin/NotificationCenter'
 import SettingsManager from '../components/admin/SettingsManager'
 
@@ -63,6 +66,8 @@ export default function AdminPage() {
     { id: 'certificates', label: 'Certificates', icon: FaAward },
     { id: 'mentorship', label: 'Mentorship Apps', icon: FaUser },
     { id: 'inquiries', label: 'Project Inquiries', icon: FaBriefcase },
+    { id: 'ai-leads', label: 'AI Leads', icon: FaRobot },
+    { id: 'contact-messages', label: 'Contact Messages', icon: FaEnvelope },
     { id: 'testimonials', label: 'Testimonials', icon: FaStar },
   ]
 
@@ -110,6 +115,8 @@ export default function AdminPage() {
         {activeTab === 'certificates' && <CertificatesManager />}
         {activeTab === 'mentorship' && <MentorshipManager />}
         {activeTab === 'inquiries' && <ProjectInquiriesManager />}
+        {activeTab === 'ai-leads' && <AiLeadsManager />}
+        {activeTab === 'contact-messages' && <ContactMessagesManager />}
         {activeTab === 'testimonials' && <TestimonialsManager />}
       </div>
     </div>

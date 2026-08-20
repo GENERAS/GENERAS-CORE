@@ -229,6 +229,16 @@ const ProjectInquiriesManager = () => {
                         <p className="text-sm text-gray-900 mb-2">
                           <span className="font-medium text-gray-700">Timeline:</span> {inquiry.timeline}
                         </p>
+                        {inquiry.how_found && (
+                          <p className="text-sm text-gray-900 mb-2">
+                            <span className="font-medium text-gray-700">How Found:</span> {inquiry.how_found}
+                          </p>
+                        )}
+                        {inquiry.additional_info && (
+                          <p className="text-sm text-gray-900 mb-2">
+                            <span className="font-medium text-gray-700">Additional Info:</span> {inquiry.additional_info}
+                          </p>
+                        )}
                         <p className="text-sm text-gray-900">
                           <span className="font-medium text-gray-700">Description:</span>
                         </p>
