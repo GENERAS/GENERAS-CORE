@@ -1,12 +1,14 @@
 import { useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
+import { ThemeProvider } from './context/ThemeContext'
 import Layout from './components/common/Layout'
 import ProtectedRoute from './components/common/ProtectedRoute'
 import ErrorBoundary from './components/common/ErrorBoundary'
 import Loader from './components/common/Loader'
 import BackToTop from './components/common/BackToTop'
 import usePageTitle from './hooks/usePageTitle'
+import { trackPageView } from './utils/analytics'
 import AdminLoginPage from './pages/AdminLoginPage'
 import ChatWindow from './components/AIAssistant/ChatWindow'
 import LandingPageModal from './components/business/LandingPageModal'
@@ -25,6 +27,7 @@ const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage'))
 const HiringPage = lazy(() => import('./pages/HiringPage'))
 const ServicePage = lazy(() => import('./pages/ServicePage'))
 const TestimonialsPage = lazy(() => import('./pages/TestimonialsPage'))
+const ClientDashboard = lazy(() => import('./pages/ClientDashboard'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 function PageTitle() {
@@ -43,12 +46,24 @@ function ScrollHandler() {
   return null
 }
 
+function AnalyticsTracker() {
+  const { pathname } = useLocation()
+
+  useEffect(() => {
+    trackPageView(pathname)
+  }, [pathname])
+
+  return null
+}
+
 function App() {
   return (
+    <ThemeProvider>
     <AuthProvider>
       <ErrorBoundary>
         <PageTitle />
         <ScrollHandler />
+        <AnalyticsTracker />
 
         <Routes>
           {/* PUBLIC */}
@@ -64,6 +79,7 @@ function App() {
           <Route path="/services/:slug" element={<Layout><Suspense fallback={<Loader />}><ServiceDetailPage /></Suspense></Layout>} />
           <Route path="/hire-me" element={<Layout><Suspense fallback={<Loader />}><HiringPage /></Suspense></Layout>} />
           <Route path="/testimonials" element={<Layout><Suspense fallback={<Loader />}><TestimonialsPage /></Suspense></Layout>} />
+          <Route path="/dashboard" element={<Layout><Suspense fallback={<Loader />}><ClientDashboard /></Suspense></Layout>} />
 
           {/* REDIRECTS */}
           <Route path="/mentorship" element={<Navigate to="/service" replace />} />
@@ -86,6 +102,7 @@ function App() {
         <BackToTop />
       </ErrorBoundary>
     </AuthProvider>
+    </ThemeProvider>
   )
 }
 

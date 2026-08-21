@@ -1,6 +1,8 @@
 /* stylelint-disable */
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   body {
     @apply bg-white text-gray-900 min-h-screen;
@@ -8,14 +10,27 @@
     font-size: 18px;
   }
   
+  .dark body,
+  .dark {
+    @apply bg-gray-900 text-gray-100;
+  }
+
   textarea, input {
     color: #111827 !important;
+  }
+
+  .dark textarea, .dark input {
+    color: #f3f4f6 !important;
+    @apply bg-gray-800 border-gray-700;
   }
 }
 
 @layer components {
   .card {
     @apply bg-white p-6 border border-gray-200 shadow-sm rounded-lg;
+  }
+  .dark .card {
+    @apply bg-gray-800 border-gray-700;
   }
   
   .btn-primary {
@@ -25,6 +40,9 @@
   .btn-secondary {
     @apply bg-white text-gray-900 px-6 py-3 text-lg font-medium border border-gray-300 rounded-lg hover:border-gray-400 transition-colors duration-200;
   }
+  .dark .btn-secondary {
+    @apply bg-gray-800 text-gray-100 border-gray-600 hover:border-gray-500;
+  }
   
   .btn-coffee {
     @apply bg-yellow-600 text-white px-6 py-3 text-lg font-medium rounded-lg hover:bg-[#5a3a52] transition-colors duration-200;
@@ -32,6 +50,9 @@
   
   .stat-card {
     @apply bg-white p-6 text-center border border-gray-200 shadow-sm rounded-lg;
+  }
+  .dark .stat-card {
+    @apply bg-gray-800 border-gray-700;
   }
   
   .timeline-dot {

@@ -26,6 +26,7 @@ import ProjectInquiriesManager from '../components/admin/ProjectInquiriesManager
 import TestimonialsManager from '../components/admin/TestimonialsManager'
 import AiLeadsManager from '../components/admin/AiLeadsManager'
 import ContactMessagesManager from '../components/admin/ContactMessagesManager'
+import AnalyticsAdmin from '../components/admin/AnalyticsAdmin'
 import NotificationCenter from '../components/admin/NotificationCenter'
 import SettingsManager from '../components/admin/SettingsManager'
 
@@ -68,6 +69,7 @@ export default function AdminPage() {
     { id: 'inquiries', label: 'Project Inquiries', icon: FaBriefcase },
     { id: 'ai-leads', label: 'AI Leads', icon: FaRobot },
     { id: 'contact-messages', label: 'Contact Messages', icon: FaEnvelope },
+    { id: 'analytics', label: 'Analytics', icon: FaChartLine },
     { id: 'testimonials', label: 'Testimonials', icon: FaStar },
   ]
 
@@ -117,6 +119,7 @@ export default function AdminPage() {
         {activeTab === 'inquiries' && <ProjectInquiriesManager />}
         {activeTab === 'ai-leads' && <AiLeadsManager />}
         {activeTab === 'contact-messages' && <ContactMessagesManager />}
+        {activeTab === 'analytics' && <AnalyticsAdmin />}
         {activeTab === 'testimonials' && <TestimonialsManager />}
       </div>
     </div>

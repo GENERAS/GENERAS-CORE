@@ -8,7 +8,7 @@ function SimpleCTA() {
   return (
     <Link
       to="/hire-me"
-      className="px-4 py-2 bg-white border border-gray-300 text-lg text-gray-700 hover:text-gray-900 hover:border-gray-400 rounded-lg transition-colors duration-200 font-medium"
+      className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:border-gray-400 rounded-lg transition-colors duration-200 font-medium"
     >
       Need help?
     </Link>
@@ -27,7 +27,7 @@ function MobileBottomNav() {
   ]
   
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 z-50">
       <div className="flex justify-around items-center h-16 px-2 gap-1">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path
@@ -36,7 +36,7 @@ function MobileBottomNav() {
               key={item.path}
               to={item.path}
               className={`flex flex-col items-center justify-center flex-1 h-full text-sm md:text-base transition-colors duration-200 ${
-                isActive ? 'text-yellow-600 font-medium' : 'text-gray-600 hover:text-gray-900'
+                isActive ? 'text-yellow-600 font-medium' : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
               <span className="leading-tight">{item.label}</span>
@@ -59,7 +59,7 @@ export default function Layout({ children }) {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <Header />
       <main className="flex-1 max-w-7xl mx-auto px-6 py-12 w-full relative pt-20 md:pb-8 pb-20">
         {!isHomePage && (
@@ -78,7 +78,7 @@ export default function Layout({ children }) {
       <Footer />
       <MobileBottomNav />
       <WhatsAppButton 
-        phoneNumber="0794144738"
+        phoneNumber="250794144738"
         message="Hello! I visited your website and would like to connect."
       />
     </div>

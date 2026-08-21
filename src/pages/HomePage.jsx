@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { supabase } from '../lib/supabase'
 import { Link } from 'react-router-dom'
 import Loader from '../components/common/Loader'
+import SocialProof from '../components/common/SocialProof'
 
 // Inline SVG icons
 const IconRocket = () => (
@@ -314,6 +315,9 @@ export default function HomePage() {
 
             {/* ANNOUNCEMENT */}
             <NewAnnouncement />
+
+            {/* SOCIAL PROOF */}
+            <SocialProof />
 
             {/* WHO I AM + WHAT I DO */}
             <div className="bg-white rounded-2xl p-6 border border-gray-300">
