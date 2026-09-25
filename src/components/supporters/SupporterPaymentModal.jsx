@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import {
-  FaCoffee, FaTimes, FaCheckCircle
-} from 'react-icons/fa';
+  Coffee, X, CheckCircle2
+} from 'lucide-react';
 
 export default function SupporterPaymentModal({ isOpen, onClose }) {
   const [submitted, setSubmitted] = useState(false);
@@ -68,11 +68,11 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
         {/* Header */}
         <div className="p-6 border-b border-gray-200 flex justify-between items-center">
           <h2 className="text-2xl font-bold flex items-center gap-2 text-gray-900">
-            <FaCoffee className="text-amber-500" />
+            <Coffee className="text-amber-500" />
             Buy Me a Coffee
           </h2>
           <button onClick={resetAndClose} className="text-gray-400 hover:text-gray-600">
-            <FaTimes size={24} />
+            <X size={24} />
           </button>
         </div>
 
@@ -146,7 +146,7 @@ export default function SupporterPaymentModal({ isOpen, onClose }) {
             </form>
           ) : (
             <div className="text-center space-y-4">
-              <FaCheckCircle className="text-6xl text-green-500 mx-auto" />
+              <CheckCircle2 className="text-6xl text-green-500 mx-auto" />
               <h3 className="text-2xl font-bold text-gray-900">Thank You!</h3>
               <p className="text-gray-600">
                 Your payment has been submitted and is awaiting verification.

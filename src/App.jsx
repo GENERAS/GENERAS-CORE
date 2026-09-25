@@ -1,4 +1,4 @@
-import { useEffect, lazy, Suspense } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { ThemeProvider } from './context/ThemeContext'
@@ -10,8 +10,8 @@ import BackToTop from './components/common/BackToTop'
 import usePageTitle from './hooks/usePageTitle'
 import { trackPageView } from './utils/analytics'
 import AdminLoginPage from './pages/AdminLoginPage'
-import ChatWindow from './components/AIAssistant/ChatWindow'
-import LandingPageModal from './components/business/LandingPageModal'
+const ChatWindow = lazy(() => import('./components/AIAssistant/ChatWindow'))
+const LandingPageModal = lazy(() => import('./components/business/LandingPageModal'))
 
 // Pages
 const HomePage = lazy(() => import('./pages/HomePage'))
@@ -56,6 +56,28 @@ function AnalyticsTracker() {
   return null
 }
 
+function Deferred({ children, delay = 1000 }) {
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    const timer = setTimeout(() => {
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => !cancelled && setReady(true), { timeout: 2000 })
+      } else {
+        !cancelled && setReady(true)
+      }
+    }, delay)
+    return () => {
+      cancelled = true
+      clearTimeout(timer)
+    }
+  }, [delay])
+
+  if (!ready) return null
+  return children
+}
+
 function App() {
   return (
     <ThemeProvider>
@@ -98,8 +120,16 @@ function App() {
           <Route path="*" element={<Layout><Suspense fallback={<Loader />}><NotFoundPage /></Suspense></Layout>} />
         </Routes>
 
-        <ChatWindow />
-        <LandingPageModal />
+        <Deferred>
+          <Suspense fallback={null}>
+            <ChatWindow />
+          </Suspense>
+        </Deferred>
+        <Deferred>
+          <Suspense fallback={null}>
+            <LandingPageModal />
+          </Suspense>
+        </Deferred>
         <BackToTop />
       </ErrorBoundary>
     </AuthProvider>
