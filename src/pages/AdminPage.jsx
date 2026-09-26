@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
@@ -94,6 +94,7 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const mainRef = useRef(null)
 
   useEffect(() => {
     const handleResize = () => {
@@ -111,6 +112,7 @@ export default function AdminPage() {
   const handleNav = (id) => {
     setActiveTab(id)
     setMobileOpen(false)
+    mainRef.current?.scrollTo(0, 0)
   }
 
   if (loading) {
@@ -278,7 +280,7 @@ export default function AdminPage() {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-4 lg:p-6 overflow-y-auto">
+        <main ref={mainRef} className="flex-1 p-4 lg:p-6 overflow-y-auto overscroll-contain">
           {activeTab === 'dashboard' && <AdminDashboard />}
           {activeTab === 'academic' && <AcademicManager />}
           {activeTab === 'academic-reports' && <AcademicReportsManager />}
