@@ -60,14 +60,23 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end()
 
   const supabase = createClient(
-    process.env.VITE_AI_SUPABASE_URL,
-    process.env.VITE_AI_SUPABASE_SERVICE_ROLE_KEY
+    process.env.VITE_SUPABASE_URL,
+    process.env.VITE_SUPABASE_SERVICE_ROLE_KEY
   )
 
   // ─── POST: Create a new lead ─────────────────────────────────
   if (req.method === 'POST') {
     try {
       const body = await parseBody(req)
+
+      // Notification-only path: the lead was already persisted by the
+      // app (direct insert into ai_leads). Notify the owner via email/WhatsApp.
+      if (body.mode === 'notify') {
+        sendEmailNotification(body)
+        sendWhatsAppNotification(body)
+        return res.json({ success: true })
+      }
+
       const { data: lead, error } = await supabase.from('ai_leads').insert({
         name: body.name || null,
         email: body.email || null,
@@ -115,6 +124,7 @@ export default async function handler(req, res) {
       const { count: totalConversations } = await supabase
         .from('ai_conversations')
         .select('*', { count: 'exact', head: true })
+        .catch(() => ({ count: 0 }))
 
       const breakdown = { hot: 0, warm: 0, cold: 0 }
       if (leads) leads.forEach(l => { if (breakdown[l.lead_label] !== undefined) breakdown[l.lead_label]++ })

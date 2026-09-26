@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { MessageCircle, X, Bot, Send, CheckCircle } from 'lucide-react'
+import { supabase } from '../../lib/supabase'
 import ChatMessage from './ChatMessage'
 import LeadForm from './LeadForm'
 import type { LeadFormData } from './LeadForm'
@@ -135,14 +136,6 @@ interface CollectedData {
   location: string
 }
 
-function generateId(): string {
-  const stored = localStorage.getItem('ai_assistant_session')
-  if (stored) return stored
-  const id = `session_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
-  localStorage.setItem('ai_assistant_session', id)
-  return id
-}
-
 function buildProjectBrief(data: CollectedData): string {
   const lines = [
     'PROJECT SUMMARY',
@@ -201,7 +194,6 @@ export default function ChatWindow() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [unread, setUnread] = useState(1)
-  const sessionId = useRef(generateId())
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -347,37 +339,81 @@ export default function ChatWindow() {
     setIsSubmitting(true)
     const fullData = { ...currentData }
     const brief = buildProjectBrief(fullData)
+    const transcript = messages
+      .map(m => `${m.role === 'user' ? 'Client' : 'AI'}: ${m.content}`)
+      .join('\n\n')
+    const apiPayload = {
+      name: fullData.name || null,
+      email: fullData.email || null,
+      phone: fullData.phone || null,
+      whatsapp: fullData.whatsapp || null,
+      company: fullData.company || null,
+      location: fullData.location || null,
+      userType: fullData.userType || null,
+      projectType: fullData.projectType || null,
+      budget: fullData.budget || null,
+      timeline: fullData.timeline || null,
+      message: `${fullData.projectType} — ${fullData.userType}`,
+      chatTranscript: transcript,
+      projectBrief: brief,
+      source: 'ai_assistant',
+    }
+
+    const insertPayload = {
+      name: fullData.name || null,
+      email: fullData.email || null,
+      phone: fullData.phone || null,
+      whatsapp: fullData.whatsapp || null,
+      company: fullData.company || null,
+      location: fullData.location || null,
+      user_type: fullData.userType || null,
+      project_type: fullData.projectType || null,
+      budget_range: fullData.budget || null,
+      timeline: fullData.timeline || null,
+      discovery_answers: fullData.discovery,
+      chat_transcript: transcript,
+      project_brief: brief,
+      message: `${fullData.projectType} — ${fullData.userType}`,
+      source: 'ai_assistant',
+      lead_label: 'new',
+    }
 
     try {
-      const res = await fetch('/api/leads', {
+      const { error } = await supabase.from('ai_leads').insert(insertPayload)
+      if (error) throw error
+      fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...fullData,
-          sessionId: sessionId.current,
-          chatTranscript: messages.map(m => ({ role: m.role, content: m.content })),
-          projectBrief: brief,
-        }),
-      })
-      const result = await res.json()
-      setSubmitted(true)
-
-      addUserMessage('I confirm and submit my project requirements')
-      addBotMessage(
-        `### Thank You, ${fullData.name}! 🎉\n\n` +
-        `Your project brief has been submitted successfully.\n\n` +
-        `**What happens next:**\n` +
-        `1. I will review your requirements within 24 hours\n` +
-        `2. You will receive a personalized proposal via email\n` +
-        `3. We can schedule a call to discuss next steps\n\n` +
-        `For immediate response, reach out on WhatsApp.`
-      )
-      goToStep('submitted')
-    } catch {
-      addBotMessage('Something went wrong. Please try again or contact us directly on WhatsApp.')
-    } finally {
-      setIsSubmitting(false)
+        body: JSON.stringify({ ...apiPayload, mode: 'notify' }),
+      }).catch(() => {})
+    } catch (directError) {
+      try {
+        const res = await fetch('/api/leads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(apiPayload),
+        })
+        if (!res.ok) throw new Error('Lead API failed')
+      } catch (apiError) {
+        addBotMessage(
+          `Something went wrong while saving your request. Please reach out directly on WhatsApp and mention the *${fullData.projectType || 'project'}* you need help with — I'll respond quickly.`
+        )
+        return
+      }
     }
+
+    setSubmitted(true)
+    addUserMessage('I confirm and submit my project requirements')
+    addBotMessage(
+      `### Thank You, ${fullData.name}! 🎉\n\n` +
+      `Your project brief has been submitted successfully.\n\n` +
+      `**What happens next:**\n` +
+      `1. I will review your requirements within 24 hours\n` +
+      `2. You will receive a personalized proposal via email\n` +
+      `3. We can schedule a call to discuss next steps\n\n` +
+      `For immediate response, reach out on WhatsApp.`
+    )
+    goToStep('submitted')
   }, [currentData, messages, addUserMessage, addBotMessage, goToStep])
 
   const handleEdit = useCallback(() => {
