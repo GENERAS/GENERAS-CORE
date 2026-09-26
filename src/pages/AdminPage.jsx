@@ -1,7 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useTheme } from '../context/ThemeContext'
+import { supabase } from '../lib/supabase'
+import { getAnalyticsSummary } from '../utils/analytics'
 import {
   FaChartLine, FaGraduationCap, FaBrain, FaCode, FaCoffee, FaNewspaper,
   FaVideo, FaImages, FaCrown, FaUsers, FaComments, FaCog, FaAward,
@@ -96,6 +98,49 @@ export default function AdminPage() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const mainRef = useRef(null)
 
+  const [badges, setBadges] = useState({})
+
+  const loadBadges = useCallback(async () => {
+    const queries = [
+      { id: 'comments', q: () => supabase.from('comments').select('*', { count: 'exact', head: true }).eq('is_approved', false) },
+      { id: 'ai-leads', q: () => supabase.from('ai_leads').select('*', { count: 'exact', head: true }).eq('lead_label', 'new') },
+      { id: 'inquiries', q: () => supabase.from('project_inquiries').select('*', { count: 'exact', head: true }).eq('status', 'new') },
+      { id: 'contact-messages', q: () => supabase.from('contact_submissions').select('*', { count: 'exact', head: true }).eq('is_read', false) },
+      { id: 'testimonials', q: () => supabase.from('testimonials').select('*', { count: 'exact', head: true }).eq('status', 'pending') },
+      { id: 'supporters', q: () => supabase.from('coffee_supporters').select('*', { count: 'exact', head: true }).neq('payment_status', 'verified') },
+    ]
+    const settled = await Promise.allSettled(queries.map(({ q }) => q()))
+    const next = {}
+    queries.forEach(({ id }, i) => {
+      const r = settled[i]
+      next[id] = r.status === 'fulfilled' && r.value.error == null ? (r.value.count || 0) : 0
+    })
+    const [newApps, pendingVerify] = await Promise.allSettled([
+      supabase.from('mentorship_applications').select('*', { count: 'exact', head: true }).eq('status', 'new'),
+      supabase.from('mentorship_applications').select('*', { count: 'exact', head: true }).eq('payment_status', 'awaiting_verification'),
+    ])
+    next.mentorship = (newApps.status === 'fulfilled' ? newApps.value.count || 0 : 0) + (pendingVerify.status === 'fulfilled' ? pendingVerify.value.count || 0 : 0)
+    next.analytics = getAnalyticsSummary().todayViews
+    setBadges(next)
+  }, [])
+
+  useEffect(() => {
+    loadBadges()
+    const badgeTables = ['comments', 'ai_leads', 'project_inquiries', 'contact_submissions', 'testimonials', 'coffee_supporters', 'mentorship_applications']
+    const badgeChannel = badgeTables.reduce(
+      (channel, table) =>
+        channel.on('postgres_changes', { event: '*', schema: 'public', table }, () => loadBadges()),
+      supabase.channel('admin_sidebar_badges')
+    )
+    badgeChannel.subscribe()
+    const onFocus = () => loadBadges()
+    window.addEventListener('focus', onFocus)
+    return () => {
+      supabase.removeChannel(badgeChannel)
+      window.removeEventListener('focus', onFocus)
+    }
+  }, [activeTab, loadBadges])
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 1024) {
@@ -156,6 +201,7 @@ export default function AdminPage() {
             {section.items.map((item) => {
               const Icon = item.icon
               const isActive = activeTab === item.id
+              const badgeCount = badges[item.id] || 0
               return (
                 <button
                   key={item.id}
@@ -169,8 +215,22 @@ export default function AdminPage() {
                         : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                   } ${collapsed ? 'justify-center' : ''}`}
                 >
-                  <Icon className="w-4 h-4 flex-shrink-0" />
-                  {!collapsed && <span>{item.label}</span>}
+                  <span className="relative flex-shrink-0">
+                    <Icon className="w-4 h-4" />
+                    {collapsed && badgeCount > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                        {badgeCount > 99 ? '99+' : badgeCount}
+                      </span>
+                    )}
+                  </span>
+                  {!collapsed && <span className="flex-1 text-left truncate">{item.label}</span>}
+                  {!collapsed && badgeCount > 0 && (
+                    <span className={`ml-auto min-w-[20px] h-5 px-1.5 rounded-full text-[11px] font-bold flex items-center justify-center ${
+                      isActive ? 'bg-white text-yellow-700' : 'bg-red-500 text-white'
+                    }`}>
+                      {badgeCount > 99 ? '99+' : badgeCount}
+                    </span>
+                  )}
                 </button>
               )
             })}
