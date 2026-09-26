@@ -212,10 +212,10 @@ export default function AdminPage() {
   )
 
   return (
-    <div className={`min-h-screen flex ${isDark ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
+    <div className={`h-dvh overflow-hidden flex ${isDark ? 'bg-gray-900 text-gray-100' : 'bg-gray-50 text-gray-900'}`}>
       {/* Desktop sidebar */}
       <aside
-        className={`hidden lg:flex flex-col fixed top-0 left-0 h-screen z-30 transition-all duration-200 border-r ${
+        className={`hidden lg:flex flex-col flex-shrink-0 h-full z-30 transition-all duration-200 border-r ${
           isDark ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
         } ${sidebarOpen ? 'w-60' : 'w-16'}`}
       >
@@ -239,9 +239,9 @@ export default function AdminPage() {
       )}
 
       {/* Main content */}
-      <div className={`flex-1 flex flex-col transition-all duration-200 ${sidebarOpen ? 'lg:ml-60' : 'lg:ml-16'}`}>
+      <div className="flex-1 flex flex-col min-w-0 h-full">
         {/* Top bar */}
-        <header className={`sticky top-0 z-20 flex items-center justify-between px-4 lg:px-6 h-14 border-b backdrop-blur-sm ${
+        <header className={`flex-shrink-0 z-20 flex items-center justify-between px-4 lg:px-6 h-14 border-b backdrop-blur-sm ${
           isDark ? 'bg-gray-900/80 border-gray-700' : 'bg-white/80 border-gray-200'
         }`}>
           <div className="flex items-center gap-3">
@@ -278,7 +278,7 @@ export default function AdminPage() {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 p-4 lg:p-6 overflow-auto">
+        <main className="flex-1 p-4 lg:p-6 overflow-y-auto">
           {activeTab === 'dashboard' && <AdminDashboard />}
           {activeTab === 'academic' && <AcademicManager />}
           {activeTab === 'academic-reports' && <AcademicReportsManager />}
