@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { Link } from 'react-router-dom'
 import Loader from '../components/common/Loader'
 import SocialProof from '../components/common/SocialProof'
+import JobraPortfolioModal from '../components/common/JobraPortfolioModal'
 
 // Inline SVG icons
 const IconRocket = () => (
@@ -78,6 +79,7 @@ export default function HomePage() {
   const [showAnnouncement, setShowAnnouncement] = useState(true)
   const [heroImageIndex, setHeroImageIndex] = useState(0)
   const heroImages = ['/owner-photo.jpg']
+  const [portfolioOpen, setPortfolioOpen] = useState(false)
 
   useEffect(() => {
     loadStats()
@@ -308,6 +310,12 @@ export default function HomePage() {
                     >
                       Let's Connect
                     </Link>
+                    <button
+                      onClick={() => setPortfolioOpen(true)}
+                      className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
+                    >
+                      View Portfolio <IconArrowRight />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -618,6 +626,8 @@ export default function HomePage() {
           </Suspense>
         </div>
       </div>
+
+      <JobraPortfolioModal open={portfolioOpen} onClose={() => setPortfolioOpen(false)} />
     </div>
   )
 }
