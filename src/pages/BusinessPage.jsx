@@ -1,6 +1,7 @@
 // src/pages/BusinessPage.jsx
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import JobraPortfolioModal from '../components/common/JobraPortfolioModal'
 import {
   Globe, ShoppingCart, BarChart3, CreditCard, Rocket,
   CheckCircle, ChevronRight, ArrowRight, Shield, Clock,
@@ -441,6 +442,7 @@ const addOns = [
 export default function BusinessPage() {
   const [expandedCategory, setExpandedCategory] = useState(null)
   const [showAddOns, setShowAddOns] = useState(false)
+  const [portfolioOpen, setPortfolioOpen] = useState(false)
 
   return (
     <div className="min-h-screen -mx-6 -mt-20 -mb-8">
@@ -489,6 +491,13 @@ export default function BusinessPage() {
                 <MessageCircle className="w-5 h-5 inline mr-2" />
                 Chat on WhatsApp
               </a>
+              <button
+                onClick={() => setPortfolioOpen(true)}
+                className="border-2 border-yellow-400/50 text-yellow-300 px-8 py-4 rounded-xl font-bold text-lg hover:bg-yellow-400/10 hover:border-yellow-400 transition-all duration-300 text-center inline-flex items-center justify-center"
+              >
+                <Briefcase className="w-5 h-5 inline mr-2" />
+                View My Portfolio
+              </button>
             </div>
           </div>
         </div>
@@ -764,6 +773,8 @@ export default function BusinessPage() {
           </div>
         </div>
       </section>
+
+      <JobraPortfolioModal open={portfolioOpen} onClose={() => setPortfolioOpen(false)} />
     </div>
   )
 }

@@ -89,9 +89,9 @@ function App() {
 
         <Routes>
           {/* PUBLIC */}
-          <Route path="/" element={<Layout><Suspense fallback={<Loader />}><BusinessPage /></Suspense></Layout>} />
-          <Route path="/home" element={<Layout><Suspense fallback={<Loader />}><HomePage /></Suspense></Layout>} />
-          <Route path="/business" element={<Navigate to="/" replace />} />
+          <Route path="/" element={<Layout><Suspense fallback={<Loader />}><HomePage /></Suspense></Layout>} />
+          <Route path="/business" element={<Layout><Suspense fallback={<Loader />}><BusinessPage /></Suspense></Layout>} />
+          <Route path="/home" element={<Navigate to="/" replace />} />
           <Route path="/academic" element={<Layout><Suspense fallback={<Loader />}><AcademicPage /></Suspense></Layout>} />
           <Route path="/projects" element={<Layout><Suspense fallback={<Loader />}><ProjectsPage /></Suspense></Layout>} />
           <Route path="/trading" element={<Layout><Suspense fallback={<Loader />}><TradingPage /></Suspense></Layout>} />

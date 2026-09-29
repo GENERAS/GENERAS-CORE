@@ -78,7 +78,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true)
   const [showAnnouncement, setShowAnnouncement] = useState(true)
   const [heroImageIndex, setHeroImageIndex] = useState(0)
-  const heroImages = ['/owner-photo.jpg']
+  const heroImages = ['/owner-photo.jpg', '/owner-photo-2.jpg', '/hero-3.jpg', '/hero-4.jpg']
   const [portfolioOpen, setPortfolioOpen] = useState(false)
 
   useEffect(() => {
@@ -112,6 +112,14 @@ export default function HomePage() {
 
   const prevHero = () => setHeroImageIndex(prev => (prev === 0 ? heroImages.length - 1 : prev - 1))
   const nextHero = () => setHeroImageIndex(prev => (prev === heroImages.length - 1 ? 0 : prev + 1))
+
+  useEffect(() => {
+    if (heroImages.length < 2) return
+    const id = setInterval(() => {
+      setHeroImageIndex(prev => (prev === heroImages.length - 1 ? 0 : prev + 1))
+    }, 5000)
+    return () => clearInterval(id)
+  }, [heroImages.length])
 
   const NewAnnouncement = () => {
     return (
@@ -227,23 +235,26 @@ export default function HomePage() {
           </div>
 
           {/* MAIN CONTENT AREA */}
-          <div className="lg:col-span-6 space-y-6">
+          <div className="lg:col-span-9 space-y-6">
             
             {/* HERO SECTION */}
             <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl p-8 text-white overflow-hidden relative">
               <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl"></div>
               <div className="absolute bottom-0 left-0 w-48 h-48 bg-yellow-500/10 rounded-full blur-3xl"></div>
               
-              <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center">
+              <div className="relative z-10 flex flex-col md:flex-row gap-6 md:gap-8 items-stretch">
                 {/* Photo Section */}
-                <div className="flex-shrink-0">
-                  <div className="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden border-4 border-yellow-500/30 shadow-2xl relative">
+                <div className="w-full md:w-64 lg:w-72 xl:w-80 flex-shrink-0 flex">
+                  <div className="w-full h-72 sm:h-80 md:h-auto md:flex-1 md:min-h-[26rem] rounded-2xl overflow-hidden border-4 border-yellow-500/30 shadow-2xl relative">
                     {heroImages.length > 0 ? (
                       <>
                         <img
                           src={heroImages[heroImageIndex]}
-                          alt={`Hero ${heroImageIndex + 1}`}
-                          loading="lazy" className="w-full h-full object-cover"
+                          alt={`Generas Kagiraneza — photo ${heroImageIndex + 1} of ${heroImages.length}`}
+                          loading={heroImageIndex === 0 ? 'eager' : 'lazy'}
+                          fetchPriority={heroImageIndex === 0 ? 'high' : 'auto'}
+                          decoding="async"
+                          className="w-full h-full object-cover"
                           onError={(e) => {
                             e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23fbbf24' width='200' height='200'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='20' fill='%231f2937'%3EImage%3C/text%3E%3C/svg%3E";
                           }}
@@ -274,45 +285,44 @@ export default function HomePage() {
                 </div>
 
                 {/* Content Section */}
-                <div className="flex-1">
+                <div className="flex-1 flex flex-col justify-center">
                   {/* Small Badge */}
-                  <div className="inline-flex items-center gap-2 bg-yellow-500/20 border border-yellow-500/30 rounded-full px-4 py-2 mb-6">
+                  <div className="inline-flex items-center gap-2 bg-yellow-500/20 border border-yellow-500/30 rounded-full px-4 py-2 mb-5 self-start">
                     <span className="text-xs font-semibold text-yellow-400 uppercase tracking-wider">
-                      SOFTWARE • AI • DIGITAL SYSTEMS • EDUCATION
+                      SOFTWARE • AI • DIGITAL SYSTEMS
                     </span>
                   </div>
 
                   {/* Main Headline */}
-                  <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-                    Building Digital Systems That Solve Real Problems.
+                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+                    Digital Systems That Solve Real Problems.
                   </h1>
 
                   {/* Supporting Text */}
-                  <p className="text-gray-300 text-lg mb-6 leading-relaxed max-w-2xl">
-                    I'm Generas Kagiraneza, founder of Generas Core.
-                    <br /><br />
-                    I design, build, and improve software, AI-powered solutions, and digital systems that help individuals, businesses, and communities work smarter, grow faster, and create more opportunities.
-                    <br /><br />
-                    From web applications and automation tools to AI systems and educational platforms, my mission is to turn ideas into scalable solutions that create real value.
+                  <p className="text-gray-300 text-base md:text-lg mb-6 leading-relaxed">
+                    I'm Generas Kagiraneza, founder of Generas Core. I design and build
+                    software, AI tools, and digital systems that help people and businesses
+                    work smarter and grow faster.
                   </p>
 
                   {/* CTA Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
                     <Link 
                       to="/projects"
-                      className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-yellow-500 hover:bg-yellow-400 text-gray-900 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-yellow-500 hover:bg-yellow-400 text-gray-900 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
                     >
                       Explore My Work <IconArrowRight />
                     </Link>
                     <Link 
                       to="/hire-me"
-                      className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl font-semibold transition-all duration-300"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl font-semibold transition-all duration-300"
                     >
                       Let's Connect
                     </Link>
                     <button
                       onClick={() => setPortfolioOpen(true)}
-                      className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
+                      aria-label="View my Jobra portfolio"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
                     >
                       View Portfolio <IconArrowRight />
                     </button>
