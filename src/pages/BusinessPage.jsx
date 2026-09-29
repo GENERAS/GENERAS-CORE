@@ -474,14 +474,12 @@ export default function BusinessPage() {
               Projects start from 250,000 RWF. Final price depends on features, integrations, and complexity.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a
-                href="https://wa.me/250794144738"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to="/hire-me"
                 className="bg-yellow-500 text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-yellow-400 transition-all duration-300 shadow-lg hover:shadow-xl text-center"
               >
                 Start Your Project
-              </a>
+              </Link>
               <a
                 href="https://wa.me/250794144738"
                 target="_blank"
@@ -547,14 +545,12 @@ export default function BusinessPage() {
                         <p className="text-sm text-gray-600">{cat.tagline}</p>
                       </div>
                     </div>
-                    <a
-                      href="https://wa.me/250794144738"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="bg-gradient-to-r from-gray-900 to-gray-800 text-white px-6 py-3 rounded-xl font-semibold hover:from-gray-800 hover:to-gray-700 transition-all duration-300 shadow-sm hover:shadow-md text-center text-sm"
+                    <Link
+                      to={`/hire-me?service=${encodeURIComponent(cat.id)}&service_name=${encodeURIComponent(cat.title)}`}
+                      className="bg-gradient-to-r from-gray-900 to-gray-800 text-white px-6 py-3 rounded-xl font-semibold hover:from-gray-800 hover:to-gray-700 transition-all duration-300 shadow-sm hover:shadow-md text-center text-sm whitespace-nowrap"
                     >
                       Get Quote
-                    </a>
+                    </Link>
                   </div>
                 </div>
 
@@ -753,14 +749,12 @@ export default function BusinessPage() {
             Projects start from 250,000 RWF
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://wa.me/250794144738"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              to="/hire-me"
               className="bg-gray-900 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-800 transition-all duration-300 shadow-lg text-center"
             >
               Get a Free Quote
-            </a>
+            </Link>
             <a
               href="https://wa.me/250794144738"
               target="_blank"

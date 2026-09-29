@@ -885,7 +885,7 @@ const ServicePage = () => {
                         Payment Instructions
                       </h3>
                       <p className="text-gray-600 mb-4">
-                        Send <strong className="text-blul00 text-lg">${selectedService?.price_hourly}</strong> <span className="text-sm text-gray-600">({usdToRwf(selectedService?.price_hourly).toLocaleString()} RWF)</span> to:
+                        Send <strong className="text-blue-600 text-lg">${selectedService?.price_hourly}</strong> <span className="text-sm text-gray-600">({usdToRwf(selectedService?.price_hourly).toLocaleString()} RWF)</span> to:
                       </p>
                       <div className="space-y-3 text-sm bg-white rounded-lg p-4">
                         <div className="flex items-center gap-3">
@@ -1001,7 +1001,7 @@ const ServicePage = () => {
         <div className="max-w-md mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
             <div className="w-20 h-20 bg-blul00 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Search className="w-10 h-10 text-blul00" />
+              <Search className="w-10 h-10 text-blue-600" />
             </div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">Track Your Application</h1>
             <p className="text-gray-600 mb-6">
@@ -1036,14 +1036,14 @@ const ServicePage = () => {
                 Don't have an application yet?
                 <button
                   onClick={() => setActiveTab('browse')}
-                  className="text-blul00 ml-1 hover:underline font-medium"
+                  className="text-blue-600 ml-1 hover:underline font-medium"
                 >
                   Apply for Mentorship
                 </button>
                 {' '}or{' '}
                 <button
                   onClick={() => navigate('/hire-me')}
-                  className="text-blul00 hover:underline font-medium"
+                  className="text-blue-600 hover:underline font-medium"
                 >
                   Hire for a Project
                 </button>
@@ -1060,7 +1060,7 @@ const ServicePage = () => {
         <div className="mb-8">
           <button
             onClick={() => setSearched(false)}
-            className="text-blul00 hover:underline mb-4 inline-flex items-center gap-1"
+            className="text-blue-600 hover:underline mb-4 inline-flex items-center gap-1"
           >
             <ChevronLeft className="w-4 h-4" />
             New Search
@@ -1075,7 +1075,7 @@ const ServicePage = () => {
             onClick={() => setTrackTab('mentorship')}
             className={`px-6 py-3 font-medium transition-all ${
               trackTab === 'mentorship'
-                ? 'text-blul00 border-b-2 border-blblue'
+                ? 'text-blue-600 border-b-2 border-blblue'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -1086,7 +1086,7 @@ const ServicePage = () => {
             onClick={() => setTrackTab('projects')}
             className={`px-6 py-3 font-medium transition-all ${
               trackTab === 'projects'
-                ? 'text-blul00 border-b-2 border-blblue'
+                ? 'text-blue-600 border-b-2 border-blblue'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -1105,7 +1105,7 @@ const ServicePage = () => {
             <p className="text-gray-500">No mentorship applications found for this email</p>
             <button
               onClick={() => setActiveTab('browse')}
-              className="mt-4 text-blul00 hover:underline font-medium"
+              className="mt-4 text-blue-600 hover:underline font-medium"
             >
               Apply for Mentorship →
             </button>
@@ -1116,7 +1116,7 @@ const ServicePage = () => {
             <p className="text-gray-500">No project inquiries found for this email</p>
             <button
               onClick={() => navigate('/hire-me')}
-              className="mt-4 text-blul00 hover:underline font-medium"
+              className="mt-4 text-blue-600 hover:underline font-medium"
             >
               Hire for a Project →
             </button>
@@ -1134,7 +1134,7 @@ const ServicePage = () => {
                     <div className="flex justify-between items-start flex-wrap gap-2">
                       <div>
                         <h2 className="text-xl font-semibold">{app.service_title || 'Mentorship Application'}</h2>
-                        <p className="text-blul00 text-sm mt-1">Applied on {new Date(app.submitted_at).toLocaleDateString()}</p>
+                        <p className="text-blue-600 text-sm mt-1">Applied on {new Date(app.submitted_at).toLocaleDateString()}</p>
                       </div>
                       <div className="flex items-center gap-2 bg-white/20 px-3 py-1 rounded-full">
                         {getStatusIcon(app.status, app.payment_status)}
@@ -1153,7 +1153,7 @@ const ServicePage = () => {
                       </div>
                       <button
                         onClick={() => copyReference(app.application_id)}
-                        className="text-blul00 text-sm hover:underline flex items-center gap-1"
+                        className="text-blue-600 text-sm hover:underline flex items-center gap-1"
                       >
                         <Copy className="w-4 h-4" />
                         Copy
@@ -1222,7 +1222,7 @@ const ServicePage = () => {
                     {app.goals && (
                       <div className="bg-blul0 rounded-lg p-3 mb-4">
                         <p className="text-sm text-gray-900">
-                          <strong className="text-blul00">Your Goals:</strong> {app.goals}
+                          <strong className="text-blue-600">Your Goals:</strong> {app.goals}
                         </p>
                       </div>
                     )}
@@ -1263,15 +1263,15 @@ const ServicePage = () => {
 
                     {app.payment_status === 'pending_payment' && (
                       <div className="bg-blul0 rounded-lg p-3 flex items-start gap-3">
-                        <AlertCircle className="w-5 h-5 text-blul00 flex-shrink-0 mt-0.5" />
+                        <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                         <div>
-                          <p className="font-semibold text-blul00">Complete Your Payment</p>
-                          <p className="text-sm text-blul00 mt-1">
+                          <p className="font-semibold text-blue-600">Complete Your Payment</p>
+                          <p className="text-sm text-blue-600 mt-1">
                             Use reference code <strong>{app.application_id}</strong> to complete your payment.
                           </p>
                           <button
                             onClick={() => handleServiceSelect(services.find(s => s.id === app.service_id))}
-                            className="mt-2 text-sm text-blul00 font-semibold hover:underline"
+                            className="mt-2 text-sm text-blue-600 font-semibold hover:underline"
                           >
                             Complete Payment →
                           </button>
@@ -1283,7 +1283,7 @@ const ServicePage = () => {
                     <div className="border-t pt-4 mt-4 flex flex-wrap gap-3">
                       <a
                         href="mailto:generaskagiraneza@gmail.com"
-                        className="flex items-center gap-2 text-sm text-gray-600 hover:text-blul00"
+                        className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600"
                       >
                         <Mail className="w-4 h-4" />
                         Email Support
@@ -1371,7 +1371,7 @@ const ServicePage = () => {
                   <div className="border-t pt-4 mt-3 flex gap-3">
                     <a
                       href="mailto:generaskagiraneza@gmail.com"
-                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-blul00"
+                      className="flex items-center gap-2 text-sm text-gray-600 hover:text-blue-600"
                     >
                       <Mail className="w-4 h-4" />
                       Email Support

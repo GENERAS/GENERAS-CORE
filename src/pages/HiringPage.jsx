@@ -1,6 +1,6 @@
 // src/pages/HiringPage.jsx
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { sendProjectInquiryEmail, sendAdminProjectInquiryEmail } from '../utils/emailService';
 import { usdToRwf } from '../utils/currency';
@@ -11,8 +11,33 @@ import {
   ChevronRight, Briefcase, Rocket, Zap, Mail, User, Phone, AlertCircle
 } from 'lucide-react';
 
+// Service categories from the pricing page map onto a project type
+const serviceToProjectType = {
+  'business-websites': 'website',
+  'ecommerce': 'website',
+  'website-improvement': 'website',
+  'website-maintenance': 'website',
+  'seo-local': 'website',
+  'ui-ux-design': 'website',
+  'business-systems': 'webapp',
+  'payment-integration': 'webapp',
+  'whatsapp-business': 'webapp',
+  'custom-saas': 'webapp',
+  'api-backend': 'webapp',
+  'database-services': 'webapp',
+  'hosting-deployment': 'webapp',
+  'automation-ai': 'webapp',
+  'digitization-consulting': 'webapp',
+};
+
 const HiringPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const requestedService = searchParams.get('service') || '';
+  const requestedServiceName = searchParams.get('service_name') || '';
+
+  const preselectedType = serviceToProjectType[requestedService] || '';
+
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -20,8 +45,8 @@ const HiringPage = () => {
   
   const [formData, setFormData] = useState({
     // Step 1: Project Details
-    project_type: '',
-    project_name: '',
+    project_type: preselectedType,
+    project_name: requestedServiceName,
     description: '',
     budget_range: '',
     timeline: '',
@@ -141,6 +166,8 @@ const HiringPage = () => {
         company: formData.company || null,
         how_found: formData.how_found || null,
         additional_info: formData.additional_info || null,
+        service: requestedService || null,
+        service_name: requestedServiceName || null,
         status: 'new',
       };
       
@@ -296,6 +323,17 @@ const HiringPage = () => {
       </div>
 
       <div className="container mx-auto px-4 max-w-4xl">
+        {/* Requested service, carried over from the pricing page */}
+        {requestedServiceName && (
+          <div className="mb-6 -mt-4 flex items-start gap-3 bg-yellow-50 border border-yellow-200 text-yellow-900 rounded-xl px-4 py-3">
+            <Briefcase className="w-5 h-5 shrink-0 mt-0.5 text-yellow-600" />
+            <p className="text-sm">
+              <span className="font-semibold">Requesting a quote for:</span>{' '}
+              {requestedServiceName}
+            </p>
+          </div>
+        )}
+
         {/* Progress Bar */}
         <div className="mb-8">
           <div className="flex justify-between mb-2">

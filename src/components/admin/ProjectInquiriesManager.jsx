@@ -4,7 +4,7 @@ import { supabase } from '../../lib/supabase';
 import { 
   Briefcase, Eye, Mail, Phone, DollarSign, 
   Clock, CheckCircle, XCircle, MessageCircle,
-  Search, Filter, RefreshCw, ExternalLink
+  Search, Filter, RefreshCw, ExternalLink, Tag
 } from 'lucide-react';
 
 const ProjectInquiriesManager = () => {
@@ -182,6 +182,12 @@ const ProjectInquiriesManager = () => {
                         <Briefcase className="w-4 h-4" />
                         {inquiry.project_type}
                       </div>
+                      {inquiry.service_name && (
+                        <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800 text-xs font-medium">
+                          <Tag className="w-3.5 h-3.5" />
+                          {inquiry.service_name}
+                        </div>
+                      )}
                       <div className="flex items-center gap-1">
                         <Mail className="w-4 h-4" />
                         {inquiry.email}
