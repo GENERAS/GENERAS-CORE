@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { usdToRwf } from '../utils/currency';
+import { normalizeTrackingToken } from '../utils/trackingToken';
 import { 
   CheckCircle, Clock, XCircle, Eye, Calendar,
   MessageCircle, Mail, Phone, ChevronRight,
@@ -22,8 +23,9 @@ const ClientDashboard = () => {
   const [searchError, setSearchError] = useState('');
 
   const searchApplications = async () => {
-    if (!searchEmail) {
-      setSearchError('Please enter your email address');
+    const query = searchEmail.trim();
+    if (!query) {
+      setSearchError('Please enter your tracking code');
       return;
     }
     setSearchError('');
@@ -32,27 +34,42 @@ const ClientDashboard = () => {
     setSearched(true);
     
     try {
-      // Search mentorship applications
-      const { data: mentorshipData, error: mentorshipError } = await supabase
-        .from('mentorship_applications')
-        .select('*')
-        .eq('email', searchEmail)
-        .order('submitted_at', { ascending: false });
-      
-      if (mentorshipError) throw mentorshipError;
-      
-      // Search project inquiries
-      const { data: projectData, error: projectError } = await supabase
-        .from('project_inquiries')
-        .select('*')
-        .eq('email', searchEmail)
-        .order('created_at', { ascending: false });
-      
-      if (projectError) throw projectError;
-      
-      setApplications(mentorshipData || []);
-      setInquiries(projectData || []);
-      
+      // project_inquiries is protected by row level security and has no
+      // anonymous read policy, so it is looked up by the tracking code
+      // issued at submission rather than by email address.
+      const isToken = normalizeTrackingToken(query).startsWith('TRK-');
+
+      // Mentorship applications are still matched on email for now.
+      let mentorshipData = [];
+      if (!isToken) {
+        const { data, error: mentorshipError } = await supabase
+          .from('mentorship_applications')
+          .select('*')
+          .eq('email', query)
+          .order('submitted_at', { ascending: false });
+
+        if (mentorshipError) throw mentorshipError;
+        mentorshipData = data || [];
+      }
+
+      let projectData = [];
+      if (isToken) {
+        const { data, error: projectError } = await supabase
+          .from('project_inquiries')
+          .select('*')
+          .eq('tracking_token', normalizeTrackingToken(query))
+          .order('created_at', { ascending: false });
+
+        if (projectError) throw projectError;
+        projectData = data || [];
+      }
+
+      setApplications(mentorshipData);
+      setInquiries(projectData);
+
+      if (!mentorshipData.length && !projectData.length) {
+        setSearchError('Nothing found for that code. Check it and try again.');
+      }
     } catch (error) {
       setSearchError('Error searching applications. Please try again.');
     } finally {
@@ -110,15 +127,16 @@ const ClientDashboard = () => {
             </div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">Track Your Application</h1>
             <p className="text-gray-600 mb-6">
-              Enter your email address to check the status of your mentorship application or project inquiry.
+              Enter the tracking code you were given when you submitted your project
+              inquiry. Mentor applicants can still search using their email address.
             </p>
             
             <div className="space-y-4">
               <input
-                type="email"
+                type="text"
                 value={searchEmail}
                 onChange={(e) => setSearchEmail(e.target.value)}
-                placeholder="Enter your email address"
+                placeholder="TRK-XXXXX-XXXXX-XXXXX"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 onKeyPress={(e) => e.key === 'Enter' && searchApplications()}
               />

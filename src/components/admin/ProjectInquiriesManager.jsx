@@ -75,6 +75,7 @@ const ProjectInquiriesManager = () => {
     if (filter !== 'all' && inq.status !== filter) return false;
     if (searchTerm && !inq.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) &&
         !inq.email?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+        !inq.tracking_token?.toLowerCase().includes(searchTerm.toLowerCase()) &&
         !inq.inquiry_id?.toLowerCase().includes(searchTerm.toLowerCase())) {
       return false;
     }
@@ -201,6 +202,15 @@ const ProjectInquiriesManager = () => {
                         {inquiry.budget_range}
                       </div>
                     </div>
+                    {inquiry.tracking_token && (
+                      <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
+                        <span className="font-medium text-gray-600">Tracking code</span>
+                        <code className="bg-gray-100 px-2 py-0.5 rounded select-all">
+                          {inquiry.tracking_token}
+                        </code>
+                        <span className="text-gray-400">the client uses this to check status</span>
+                      </div>
+                    )}
                   </div>
                   <div className="flex gap-2">
                     <select

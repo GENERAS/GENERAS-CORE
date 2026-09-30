@@ -4,6 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { sendProjectInquiryEmail, sendAdminProjectInquiryEmail } from '../utils/emailService';
 import { usdToRwf } from '../utils/currency';
+import { generateTrackingToken } from '../utils/trackingToken';
 import { 
   Globe, Smartphone, Bot, Code, CheckCircle, 
   Clock, DollarSign, MessageCircle, Send, 
@@ -40,8 +41,10 @@ const HiringPage = () => {
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [inquiryId, setInquiryId] = useState('');
+const [submitted, setSubmitted] = useState(false);
+const [inquiryId, setInquiryId] = useState('');
+const [trackingToken, setTrackingToken] = useState('');
+const [tokenCopied, setTokenCopied] = useState(false);
   
   const [formData, setFormData] = useState({
     // Step 1: Project Details
@@ -151,6 +154,7 @@ const HiringPage = () => {
     
     try {
       const inquiryIdGen = generateInquiryId();
+      const trackingTokenGen = generateTrackingToken();
       
       const insertData = {
         inquiry_id: inquiryIdGen,
@@ -168,14 +172,18 @@ const HiringPage = () => {
         additional_info: formData.additional_info || null,
         service: requestedService || null,
         service_name: requestedServiceName || null,
+        tracking_token: trackingTokenGen,
         status: 'new',
       };
       
-      const { data, error } = await supabase
+      // No .select() here on purpose. project_inquiries has row level
+      // security with no anonymous SELECT policy, and Postgres needs SELECT
+      // rights to return inserted rows, so asking for the row back would
+      // fail. The token is generated above precisely so we never need to
+      // read the row to show it to the user.
+      const { error } = await supabase
         .from('project_inquiries')
-        .insert([insertData])
-        .select()
-        .single();
+        .insert([insertData]);
       
       if (error) {
         console.error('🔴 SUBMISSION ERROR:', error);
@@ -186,6 +194,7 @@ const HiringPage = () => {
       }
       
       setInquiryId(inquiryIdGen);
+      setTrackingToken(trackingTokenGen);
       setSubmitted(true);
       
       // Send confirmation email to user
@@ -204,7 +213,9 @@ const HiringPage = () => {
         timeline: formData.timeline,
         email: formData.email,
         phone: formData.phone,
-        description: formData.description
+        description: formData.description,
+        inquiry_id: inquiryIdGen,
+        tracking_token: trackingTokenGen
       });
       
     } catch (error) {
@@ -289,6 +300,36 @@ const HiringPage = () => {
               <p className="text-gray-900"><span className="text-gray-600 font-medium">Project Type:</span> <span className="text-gray-900">{formData.project_type}</span></p>
               <p className="text-gray-900"><span className="text-gray-600 font-medium">Next Steps:</span> <span className="text-gray-900">I'll contact you within 24 hours to discuss details</span></p>
             </div>
+          </div>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6 text-left">
+            <h3 className="font-semibold text-gray-900 mb-2">Save your tracking code</h3>
+            <p className="text-sm text-gray-700 mb-3">
+              Use this code to check the status of your inquiry at any time. It is the
+              only way to look your project up, so treat it like a password. I have
+              also emailed it to you.
+            </p>
+            <div className="flex items-center gap-2 flex-wrap">
+              <code className="bg-white border border-blue-200 px-3 py-2 rounded text-base font-bold tracking-widest text-gray-900 select-all">
+                {trackingToken}
+              </code>
+              <button
+                onClick={() => {
+                  navigator.clipboard?.writeText(trackingToken);
+                  setTokenCopied(true);
+                  setTimeout(() => setTokenCopied(false), 2000);
+                }}
+                className="px-3 py-2 text-sm border border-blue-300 rounded-lg text-blue-700 hover:bg-white transition-colors font-medium"
+              >
+                {tokenCopied ? 'Copied' : 'Copy'}
+              </button>
+            </div>
+            <button
+              onClick={() => navigate('/service')}
+              className="mt-4 text-sm text-blue-700 hover:underline font-medium"
+            >
+              Track this inquiry
+            </button>
           </div>
           
           <div className="flex gap-3 justify-center">

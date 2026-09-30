@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { usdToRwf } from '../utils/currency';
+import { normalizeTrackingToken } from '../utils/trackingToken';
 import { 
   TrendingUp, Code, Briefcase, Edit, Star, Clock, Shield, CreditCard,
   ChevronRight, CheckCircle, Award, Users, Zap, Globe, Search,
@@ -238,30 +239,45 @@ const ServicePage = () => {
   const [trackError, setTrackError] = useState('');
 
   const searchApplications = async () => {
-    if (!searchEmail) {
-      setTrackError('Please enter your email address');
+    const query = searchEmail.trim();
+    if (!query) {
+      setTrackError('Please enter your tracking code');
       return;
     }
     setTrackError('');
-    
+
     setLoadingTrack(true);
     setSearched(true);
-    
+
     try {
-      const { data: mentorshipData } = await supabase
-        .from('mentorship_applications')
-        .select('*')
-        .eq('email', searchEmail)
-        .order('submitted_at', { ascending: false });
-      
-      const { data: projectData } = await supabase
-        .from('project_inquiries')
-        .select('*')
-        .eq('email', searchEmail)
-        .order('created_at', { ascending: false });
-      
+      // project_inquiries is not readable anonymously any more, so it is
+      // looked up by the unguessable tracking code issued at submission.
+      const isToken = normalizeTrackingToken(query).startsWith('TRK-');
+
+      const { data: projectData } = isToken
+        ? await supabase
+            .from('project_inquiries')
+            .select('*')
+            .eq('tracking_token', normalizeTrackingToken(query))
+            .order('created_at', { ascending: false })
+        : { data: [] };
+
+      // Mentorship applications are still matched on email for now; that
+      // table has not been moved to tokens yet.
+      const { data: mentorshipData } = !isToken
+        ? await supabase
+            .from('mentorship_applications')
+            .select('*')
+            .eq('email', query)
+            .order('submitted_at', { ascending: false })
+        : { data: [] };
+
       setApplications(mentorshipData || []);
       setInquiries(projectData || []);
+
+      if (!(projectData || []).length && !(mentorshipData || []).length) {
+        setTrackError('No application found for that code. Check it and try again.');
+      }
     } catch (error) {
       setTrackError('Error searching applications. Please try again.');
     } finally {
@@ -1005,15 +1021,16 @@ const ServicePage = () => {
             </div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">Track Your Application</h1>
             <p className="text-gray-600 mb-6">
-              Enter your email address to check the status of your mentorship application or project inquiry.
+              Enter the tracking code you were given when you submitted your project
+              inquiry. Mentor applicants can still search using their email address.
             </p>
 
             <div className="space-y-4">
               <input
-                type="email"
+                type="text"
                 value={searchEmail}
                 onChange={(e) => setSearchEmail(e.target.value)}
-                placeholder="Enter your email address"
+                placeholder="TRK-XXXXX-XXXXX-XXXXX"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blul00"
                 onKeyPress={(e) => e.key === 'Enter' && searchApplications()}
               />
