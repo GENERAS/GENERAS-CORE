@@ -30,7 +30,9 @@ export default function Footer() {
     { icon: GithubIcon, href: 'https://github.com/generas', label: 'GitHub' },
     { icon: TwitterIcon, href: 'https://twitter.com/generas', label: 'Twitter' },
     { icon: LinkedinIcon, href: 'https://linkedin.com/in/generas', label: 'LinkedIn' },
-    { icon: YoutubeIcon, href: 'https://youtube.com/@generas', label: 'YouTube' },
+    // Channel ID rather than the @generas handle: handles can be changed by
+    // the owner, while the channel ID is permanent and cannot be taken.
+    { icon: YoutubeIcon, href: 'https://www.youtube.com/channel/UC97tXtqMG5JVF0vG4DXbv2g', label: 'YouTube' },
   ]
 
   return (
