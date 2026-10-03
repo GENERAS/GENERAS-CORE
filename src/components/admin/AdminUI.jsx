@@ -7,7 +7,7 @@ import { FaUpload, FaLink, FaArrowUp, FaArrowDown, FaTrash, FaImages } from 'rea
 // no border, no label, so forms read as a flat grey block. These classes
 // are the corrected version, shared so every admin screen matches.
 export const inputCls =
-  'w-full bg-slate-800 border-2 border-slate-500 rounded-lg px-3 py-2.5 text-white ' +
+  'admin-field w-full bg-slate-800 border-2 border-slate-500 rounded-lg px-3 py-2.5 text-white ' +
   'placeholder-slate-400 outline-none transition-colors focus:border-yellow-400 ' +
   'focus:ring-2 focus:ring-yellow-400/40 disabled:opacity-50'
 

@@ -15,13 +15,58 @@
     @apply bg-gray-900 text-gray-100;
   }
 
+  /* Baseline only. These used to carry !important, which beat every
+     component class and left the dark admin inputs with near-black text on a
+     dark background. Tailwind's utilities live in a later cascade layer, so
+     plain declarations here are overridden by any class that sets a colour. */
   textarea, input {
-    color: #111827 !important;
+    color: #111827;
   }
 
   .dark textarea, .dark input {
-    color: #f3f4f6 !important;
+    color: #f3f4f6;
     @apply bg-gray-800 border-gray-700;
+  }
+
+  /* Chrome paints its own tinted background on autofilled fields and ignores
+     normal background classes, which is what made filled-in admin inputs look
+     blue. The inset shadow wins over that tint; the long transition stops the
+     yellow "autofill in progress" flash. */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  select:-webkit-autofill {
+    -webkit-text-fill-color: #111827;
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset;
+    caret-color: #111827;
+    transition: background-color 600000s 0s, color 600000s 0s;
+  }
+
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover,
+  .dark input:-webkit-autofill:focus,
+  .dark textarea:-webkit-autofill,
+  .dark select:-webkit-autofill {
+    -webkit-text-fill-color: #f3f4f6;
+    -webkit-box-shadow: 0 0 0 1000px #1e293b inset;
+    caret-color: #f3f4f6;
+  }
+
+  /* The admin panel themes itself with a hook rather than the .dark class, so
+     it needs its own autofill rule. The inset colour matches inputCls's
+     bg-slate-800 (#1e293b), keeping a filled field identical to an empty one. */
+  .admin-field:-webkit-autofill,
+  .admin-field:-webkit-autofill:hover,
+  .admin-field:-webkit-autofill:focus {
+    -webkit-text-fill-color: #f8fafc;
+    -webkit-box-shadow: 0 0 0 1000px #1e293b inset;
+    caret-color: #f8fafc;
+  }
+
+  select.admin-field:-webkit-autofill {
+    -webkit-text-fill-color: #f8fafc;
+    -webkit-box-shadow: 0 0 0 1000px #1e293b inset;
   }
 }
 

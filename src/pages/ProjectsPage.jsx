@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { Link } from 'react-router-dom'
 import CommentsSection from '../components/comments/CommentsSection'
+import ProjectLightbox from '../components/projects/ProjectLightbox'
 import Loader from '../components/common/Loader'
 
 // Simple inline SVG icons - no external libraries
@@ -103,14 +104,20 @@ export default function ProjectsPage() {
     return []
   })
   const [viewMode, setViewMode] = useState('grid') // 'grid' or 'list'
+  const [imagesByProject, setImagesByProject] = useState({})
+  const [activeProject, setActiveProject] = useState(null)
 
   useEffect(() => {
     loadProjects()
-    
+
     const channel = supabase
       .channel('projects-changes')
-      .on('postgres_changes', 
+      .on('postgres_changes',
         { event: '*', schema: 'public', table: 'projects' },
+        () => loadProjects()
+      )
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'project_images' },
         () => loadProjects()
       )
       .subscribe()
@@ -120,18 +127,36 @@ export default function ProjectsPage() {
 
   const loadProjects = async () => {
     try {
-      const { data } = await supabase
-        .from('projects')
-        .select('*')
-        .order('display_order')
-      
+      const [{ data, error }, galleryRes] = await Promise.all([
+        supabase.from('projects').select('*').order('display_order'),
+        supabase.from('project_images').select('project_id, image_url').order('sort_order')
+      ])
+
+      if (error) throw error
       setProjects(data || [])
+
+      // Group the screenshots the admin uploaded so each card can offer them.
+      const grouped = {}
+      ;(galleryRes.data || []).forEach(img => {
+        if (!grouped[img.project_id]) grouped[img.project_id] = []
+        grouped[img.project_id].push(img.image_url)
+      })
+      setImagesByProject(grouped)
     } catch (error) {
       console.error('Error loading projects:', error)
     } finally {
       setLoading(false)
     }
   }
+
+  // Cover first, then anything from the gallery. Falls back to the single
+  // image_url so projects with no gallery rows still open.
+  const imagesFor = (project) => {
+    const gallery = imagesByProject[project.id] || []
+    return [...new Set([project.image_url, ...gallery].filter(Boolean))]
+  }
+
+  const openProject = (project) => setActiveProject(project)
 
   const toggleFavorite = (projectId) => {
     const newFavorites = favorites.includes(projectId)
@@ -316,10 +341,16 @@ export default function ProjectsPage() {
                   <h2 className="text-xl font-bold text-gray-800">Featured Projects</h2>
                 </div>
                 <div className="grid md:grid-cols-3 gap-4">
-                  {featuredProjects.map(project => (
+                  {featuredProjects.map(project => {
+                    const shots = imagesFor(project)
+                    return (
                     <div 
                       key={project.id}
-                      className="group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+                      onClick={() => openProject(project)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), openProject(project))}
+                      className="group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
                     >
                       <div className="relative h-40 overflow-hidden">
                         {project.image_url ? (
@@ -332,13 +363,24 @@ export default function ProjectsPage() {
                         <div className="absolute top-2 right-2">
                           {getStatusBadge(project.status)}
                         </div>
+                        {shots.length > 1 && (
+                          <span className="absolute bottom-2 left-2 bg-black/80 text-white text-xs font-medium px-2 py-1 rounded">
+                            {shots.length} screenshots
+                          </span>
+                        )}
+                        <span className="absolute inset-0 bg-black/0 group-hover:bg-black/40 flex items-center justify-center transition-colors">
+                          <span className="text-white text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                            View project
+                          </span>
+                        </span>
                       </div>
                       <div className="p-4">
                         <h3 className="font-bold text-lg mb-1 group-hover:text-yellow-600 transition-colors duration-200 text-gray-800">{project.title}</h3>
                         <p className="text-gray-600 text-sm line-clamp-2">{project.description}</p>
                       </div>
                     </div>
-                  ))}
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -348,10 +390,16 @@ export default function ProjectsPage() {
               ? "grid grid-cols-1 md:grid-cols-2 gap-6"
               : "space-y-4"
             }>
-              {filteredProjects.map(project => (
+              {filteredProjects.map(project => {
+                const shots = imagesFor(project)
+                return (
                 <div 
                   key={project.id} 
-                  className={`group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 ${viewMode === 'grid' ? '' : 'flex flex-col md:flex-row'}`}
+                  onClick={() => openProject(project)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), openProject(project))}
+                  className={`group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer ${viewMode === 'grid' ? '' : 'flex flex-col md:flex-row'}`}
                 >
                   {/* Image */}
                   <div className={`relative overflow-hidden ${viewMode === 'list' ? 'md:w-72 h-48 md:h-auto shrink-0' : ''}`}>
@@ -366,10 +414,17 @@ export default function ProjectsPage() {
                         <IconCode className="text-5xl text-yellow-600 group-hover:text-yellow-700 transition-colors duration-200" />
                       </div>
                     )}
+
+                    {shots.length > 1 && (
+                      <span className="absolute bottom-3 right-3 bg-black/80 text-white text-xs font-medium px-2 py-1 rounded">
+                        {shots.length} screenshots
+                      </span>
+                    )}
                     
                     {/* Favorite Button */}
                     <button
-                      onClick={() => toggleFavorite(project.id)}
+                      onClick={e => { e.stopPropagation(); toggleFavorite(project.id) }}
+                      aria-label="Favourite"
                       className={`absolute top-3 left-3 p-2 rounded-full transition-colors duration-200 ${favorites.includes(project.id) ? 'text-yellow-600 bg-yellow-100' : 'text-gray-600 bg-white hover:bg-gray-100'}`}
                     >
                       <IconHeart filled={favorites.includes(project.id)} />
@@ -421,6 +476,7 @@ export default function ProjectsPage() {
                             href={project.github_url}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={e => e.stopPropagation()}
                             className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200"
                           >
                             <IconGithub />
@@ -433,6 +489,7 @@ export default function ProjectsPage() {
                             href={project.live_demo_url}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={e => e.stopPropagation()}
                             className="flex items-center gap-1.5 text-sm text-yellow-600 hover:text-yellow-700 transition-colors duration-200"
                           >
                             <IconExternal />
@@ -445,19 +502,28 @@ export default function ProjectsPage() {
                       {/* Views */}
                       <div className="flex items-center gap-1 text-xs text-gray-600">
                         <IconEye />
-                        <span>{Math.floor(Math.random() * 500) + 100}</span>
+                        <span>{project.views ?? 0}</span>
                       </div>
                     </div>
+
+                    {/* Opens the full description and every screenshot */}
+                    <button
+                      onClick={e => { e.stopPropagation(); openProject(project) }}
+                      className="mt-4 w-full text-center px-3 py-2 rounded-lg bg-gray-100 hover:bg-yellow-500 hover:text-slate-900 text-sm font-semibold text-gray-700 transition-colors duration-200"
+                    >
+                      View details{shots.length > 1 ? ` (${shots.length} screenshots)` : ''}
+                    </button>
                     
                     {/* Comments - Only in grid mode */}
                     {viewMode === 'grid' && (
-                      <div className="mt-4 pt-3 border-t border-gray-200">
+                      <div className="mt-4 pt-3 border-t border-gray-200" onClick={e => e.stopPropagation()}>
                         <CommentsSection contentType="project" contentId={project.id} compact />
                       </div>
                     )}
                   </div>
                 </div>
-              ))}
+                )
+              })}
             </div>
 
             {/* Empty State */}
@@ -550,6 +616,15 @@ export default function ProjectsPage() {
           </div>
         </div>
       </div>
+
+      {activeProject && (
+        <ProjectLightbox
+          key={activeProject.id}
+          project={activeProject}
+          images={imagesFor(activeProject)}
+          onClose={() => setActiveProject(null)}
+        />
+      )}
     </div>
   )
 }
