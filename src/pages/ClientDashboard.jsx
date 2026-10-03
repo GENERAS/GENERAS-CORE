@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { usdToRwf } from '../utils/currency';
-import { normalizeTrackingToken } from '../utils/trackingToken';
+import { normalizeTrackingToken, looksLikeTrackingToken } from '../utils/trackingToken';
 import { 
   CheckCircle, Clock, XCircle, Eye, Calendar,
   MessageCircle, Mail, Phone, ChevronRight,
@@ -37,7 +37,7 @@ const ClientDashboard = () => {
       // project_inquiries is protected by row level security and has no
       // anonymous read policy, so it is looked up by the tracking code
       // issued at submission rather than by email address.
-      const isToken = normalizeTrackingToken(query).startsWith('TRK-');
+      const isToken = looksLikeTrackingToken(query);
 
       // Mentorship applications are still matched on email for now.
       let mentorshipData = [];
@@ -54,13 +54,15 @@ const ClientDashboard = () => {
 
       let projectData = [];
       if (isToken) {
-        const { data, error: projectError } = await supabase
-          .from('project_inquiries')
-          .select('*')
-          .eq('tracking_token', normalizeTrackingToken(query))
-          .order('created_at', { ascending: false });
+        // See database-inquiry-tracking-rpc.sql: RLS blocks anonymous reads on
+        // project_inquiries, so the lookup has to go through the RPC.
+        const { data, error: projectError } = await supabase.rpc(
+          'get_project_inquiry_by_tracking_token',
+          { p_token: normalizeTrackingToken(query) }
+        );
 
         if (projectError) throw projectError;
+        // The function returns a set, so PostgREST hands back an array.
         projectData = data || [];
       }
 

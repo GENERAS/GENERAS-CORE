@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { usdToRwf } from '../utils/currency';
-import { normalizeTrackingToken } from '../utils/trackingToken';
+import { normalizeTrackingToken, looksLikeTrackingToken } from '../utils/trackingToken';
 import { 
   TrendingUp, Code, Briefcase, Edit, Star, Clock, Shield, CreditCard,
   ChevronRight, CheckCircle, Award, Users, Zap, Globe, Search,
@@ -252,14 +252,16 @@ const ServicePage = () => {
     try {
       // project_inquiries is not readable anonymously any more, so it is
       // looked up by the unguessable tracking code issued at submission.
-      const isToken = normalizeTrackingToken(query).startsWith('TRK-');
+      const isToken = looksLikeTrackingToken(query);
 
+      // project_inquiries has no anonymous SELECT policy, so a direct
+      // .eq('tracking_token', ...) query is filtered away by RLS and every
+      // lookup came back empty. This RPC is the one sanctioned way in: it
+      // returns a single row only for a caller who already holds the token.
       const { data: projectData } = isToken
-        ? await supabase
-            .from('project_inquiries')
-            .select('*')
-            .eq('tracking_token', normalizeTrackingToken(query))
-            .order('created_at', { ascending: false })
+        ? await supabase.rpc('get_project_inquiry_by_tracking_token', {
+            p_token: normalizeTrackingToken(query)
+          })
         : { data: [] };
 
       // Mentorship applications are still matched on email for now; that

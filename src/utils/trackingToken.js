@@ -46,3 +46,21 @@ export const generateTrackingToken = () => {
 /** Tolerant of how the token was pasted: trims, uppercases, drops spaces. */
 export const normalizeTrackingToken = (value) =>
   (value || '').trim().toUpperCase().replace(/\s+/g, '')
+
+/**
+ * Whether a search box entry should be treated as a tracking code rather than
+ * an email address.
+ *
+ * Two formats are in circulation. Anything submitted now gets a TRK- code from
+ * generateTrackingToken(), but the rows that predate it hold a plain uuid, and
+ * those were previously misread as an email address, so a visitor holding a
+ * legitimate older code was told nothing was found. Both are recognised here.
+ */
+export const looksLikeTrackingToken = (value) => {
+  const token = normalizeTrackingToken(value)
+  if (!token) return false
+  return (
+    /^TRK-[A-Z2-9]{5}-[A-Z2-9]{5}-[A-Z2-9]{5}$/.test(token) ||
+    /^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$/.test(token)
+  )
+}
