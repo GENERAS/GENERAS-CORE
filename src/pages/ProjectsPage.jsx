@@ -376,7 +376,7 @@ export default function ProjectsPage() {
                       </div>
                       <div className="p-4">
                         <h3 className="font-bold text-lg mb-1 group-hover:text-yellow-600 transition-colors duration-200 text-gray-800">{project.title}</h3>
-                        <p className="text-gray-600 text-sm line-clamp-2">{project.description}</p>
+                        <p className="text-gray-600 text-sm line-clamp-4">{project.description}</p>
                       </div>
                     </div>
                     )
@@ -442,7 +442,7 @@ export default function ProjectsPage() {
                       {project.title}
                     </h3>
                     
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-5">
                       {project.description}
                     </p>
                     

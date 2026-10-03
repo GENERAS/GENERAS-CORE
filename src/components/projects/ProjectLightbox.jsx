@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import {
-  FaChevronLeft, FaChevronRight, FaTimes, FaGithub, FaExternalLinkAlt, FaInfoCircle
+  FaChevronLeft, FaChevronRight, FaChevronUp, FaChevronDown, FaTimes,
+  FaGithub, FaExternalLinkAlt, FaInfoCircle
 } from 'react-icons/fa'
 import { FiMaximize2, FiMinimize2 } from 'react-icons/fi'
 
@@ -33,10 +34,11 @@ const STATUS_TEXT = {
  */
 export default function ProjectLightbox({ project, images = [], onClose }) {
   const [index, setIndex] = useState(0)
-  // ProjectsPage passes key={project.id}, so this initialiser runs once per
-  // project. Most portfolio rows have no screenshots yet, and an empty black
-  // screen tells a visitor nothing, so those open on the write-up instead.
-  const [showInfo, setShowInfo] = useState(images.length === 0)
+  // Always on. The description used to sit behind an icon in the top-right
+  // corner, which most visitors never found, so the write-up was effectively
+  // invisible. It now overlays the bottom of the image at all times.
+  const [showInfo, setShowInfo] = useState(true)
+  const [expanded, setExpanded] = useState(false)
   const [zoomed, setZoomed] = useState(false)
 
   const total = images.length
@@ -91,17 +93,9 @@ export default function ProjectLightbox({ project, images = [], onClose }) {
             className={zoomed ? 'max-w-none max-h-none' : 'max-w-full max-h-full object-contain'}
           />
         ) : (
-          <div className="text-center text-gray-400 px-6 max-w-md">
-            <p className="text-xl font-semibold text-gray-200 mb-2">{project.title}</p>
-            <p className="text-sm mb-4">
-              No screenshots have been published for this project yet. The full write-up is below.
-            </p>
-            <button
-              onClick={() => setShowInfo(true)}
-              className="px-4 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-slate-900 text-sm font-semibold transition"
-            >
-              Read the description
-            </button>
+          <div className="text-center text-gray-300 px-6 max-w-md -translate-y-16">
+            <p className="text-sm mb-3">No screenshots have been published for this project yet.</p>
+            <p className="text-xs text-gray-500">The full write-up is below.</p>
           </div>
         )}
 
@@ -151,8 +145,8 @@ export default function ProjectLightbox({ project, images = [], onClose }) {
           )}
           <button
             onClick={() => setShowInfo(v => !v)}
-            aria-label="Toggle project details"
-            title="Details (I)"
+            aria-label={showInfo ? 'Hide description' : 'Show description'}
+            title={showInfo ? 'Hide description (I)' : 'Show description (I)'}
             className={`p-2 rounded-lg transition ${showInfo ? 'bg-yellow-500 text-slate-900' : 'text-gray-200 hover:text-slate-900 hover:bg-yellow-500'}`}
           >
             <FaInfoCircle className="text-lg" />
@@ -167,59 +161,59 @@ export default function ProjectLightbox({ project, images = [], onClose }) {
         </div>
       </div>
 
-      {/* Thumbnail strip, floating over the bottom of the image */}
-      {total > 1 && !showInfo && (
-        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 to-transparent p-3 sm:p-4">
-          <div className="flex gap-2 overflow-x-auto justify-start sm:justify-center pb-1">
-            {images.map((src, i) => (
-              <button
-                key={src + i}
-                onClick={() => setIndex(i)}
-                aria-label={`Go to screenshot ${i + 1}`}
-                aria-current={i === safeIndex}
-                className={`w-20 h-14 sm:w-28 sm:h-20 rounded border-2 overflow-hidden shrink-0 transition ${
-                  i === safeIndex ? 'border-yellow-500 scale-105' : 'border-transparent opacity-50 hover:opacity-90'
-                }`}
-              >
-                <img src={src} alt="" loading="lazy" className="w-full h-full object-cover" />
-              </button>
-            ))}
+      {/* Bottom stack: thumbnails then the description, both floating over the
+          image so nothing here reduces the size the screenshot is shown at. */}
+      <div className="absolute inset-x-0 bottom-0 flex flex-col justify-end">
+        {/* Thumbnail strip */}
+        {total > 1 && (
+          <div className="px-3 sm:px-4 pb-2">
+            <div className="flex gap-2 overflow-x-auto justify-start sm:justify-center">
+              {images.map((src, i) => (
+                <button
+                  key={src + i}
+                  onClick={() => setIndex(i)}
+                  aria-label={`Go to screenshot ${i + 1}`}
+                  aria-current={i === safeIndex}
+                  className={`w-16 h-11 sm:w-24 sm:h-16 rounded border-2 overflow-hidden shrink-0 transition ${
+                    i === safeIndex ? 'border-yellow-500 scale-105' : 'border-transparent opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <img src={src} alt="" loading="lazy" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
           </div>
-          <p className="hidden sm:block text-center text-xs text-gray-400 mt-2">
-            Use &larr; &rarr; to browse, Z for full size, Esc to close
-          </p>
-        </div>
-      )}
+        )}
 
-      {/* Details drawer. Closed by default so the screenshot keeps the screen. */}
-      <div className={`absolute inset-x-0 bottom-0 bg-gray-900/98 backdrop-blur border-t border-gray-700 max-h-[80vh] overflow-y-auto transition-transform duration-300 ${showInfo ? 'translate-y-0' : 'translate-y-full'}`}>
-        <div className="px-4 sm:px-8 py-5 sm:py-7 space-y-5 max-w-4xl mx-auto">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${badge}`}>
-              {STATUS_TEXT[project.status] || project.status}
-            </span>
-            {project.category && (
-              <span className="px-2.5 py-1 rounded-full text-xs bg-gray-800 text-gray-300 border border-gray-700">
-                {project.category}
+        {/* Description, permanently visible unless explicitly collapsed. */}
+        <div className={`bg-gray-900/95 backdrop-blur border-t border-gray-700/70 transition-all duration-300 ${showInfo ? 'max-h-[42vh] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+          <div className="overflow-y-auto px-4 sm:px-8 py-4 sm:py-5 max-w-4xl mx-auto space-y-4">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${badge}`}>
+                {STATUS_TEXT[project.status] || project.status}
               </span>
-            )}
-          </div>
+              {project.category && (
+                <span className="px-2.5 py-1 rounded-full text-xs bg-gray-800 text-gray-300 border border-gray-700">
+                  {project.category}
+                </span>
+              )}
+              {project.start_date && (
+                <span className="text-xs text-gray-400">
+                  {new Date(project.start_date).getFullYear()}
+                  {project.end_date ? ` - ${new Date(project.end_date).getFullYear()}` : ' - present'}
+                </span>
+              )}
+            </div>
 
-          {/* The description is shown in full here, never clamped. */}
-          {project.description && (
-            <div>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
-                Full description
-              </h3>
+            {/* Shown in full, never clamped. The collapsed state simply cuts the
+                height of this panel, and the text stays scrollable inside it. */}
+            {project.description && (
               <p className="text-gray-200 text-sm sm:text-base leading-relaxed whitespace-pre-wrap break-words">
                 {project.description}
               </p>
-            </div>
-          )}
+            )}
 
-          {project.tech_stack?.length > 0 && (
-            <div>
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Built with</h3>
+            {project.tech_stack?.length > 0 && (
               <div className="flex flex-wrap gap-1.5">
                 {project.tech_stack.map((tech, i) => (
                   <span
@@ -230,38 +224,71 @@ export default function ProjectLightbox({ project, images = [], onClose }) {
                   </span>
                 ))}
               </div>
-            </div>
-          )}
+            )}
 
-          <div className="flex flex-wrap gap-3 pt-1">
-            {project.github_url && (
-              <a
-                href={project.github_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gray-800 hover:bg-yellow-500 hover:text-slate-900 text-sm font-medium text-white transition"
+            <div className="flex flex-wrap gap-3">
+              {project.github_url && (
+                <a
+                  href={project.github_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 hover:bg-yellow-500 hover:text-slate-900 text-sm font-medium text-white transition"
+                >
+                  <FaGithub /> View code
+                </a>
+              )}
+              {project.live_demo_url && (
+                <a
+                  href={project.live_demo_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-800 hover:bg-yellow-500 hover:text-slate-900 text-sm font-medium text-white transition"
+                >
+                  <FaExternalLinkAlt /> Live demo
+                </a>
+              )}
+              <button
+                onClick={() => setExpanded(v => !v)}
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-700 text-xs font-medium text-gray-300 hover:text-white hover:border-gray-500 transition"
               >
-                <FaGithub /> View code
-              </a>
+                {expanded ? 'Fewer details' : 'More details'}
+              </button>
+            </div>
+
+            {expanded && (
+              <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-2 text-sm border-t border-gray-800 pt-4">
+                {project.client_name && (
+                  <div><dt className="text-gray-500 text-xs">Client</dt><dd className="text-gray-200">{project.client_name}</dd></div>
+                )}
+                {project.project_value && (
+                  <div><dt className="text-gray-500 text-xs">Value</dt><dd className="text-gray-200">{project.project_value}</dd></div>
+                )}
+                <div><dt className="text-gray-500 text-xs">Inquiry ID</dt><dd className="text-gray-200">{project.inquiry_id || '—'}</dd></div>
+                <div>
+                  <dt className="text-gray-500 text-xs">Added</dt>
+                  <dd className="text-gray-200">{new Date(project.created_at).toLocaleDateString()}</dd>
+                </div>
+              </dl>
             )}
-            {project.live_demo_url && (
-              <a
-                href={project.live_demo_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gray-800 hover:bg-yellow-500 hover:text-slate-900 text-sm font-medium text-white transition"
-              >
-                <FaExternalLinkAlt /> Live demo
-              </a>
-            )}
-            <button
-              onClick={() => setShowInfo(false)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-700 text-sm font-medium text-gray-300 hover:text-white hover:border-gray-500 transition"
-            >
-              Back to screenshot
-            </button>
           </div>
         </div>
+
+          {/* Collapse control sits directly under the description rather than
+              in a corner, so it is where a visitor already is looking. */}
+          <div className="flex justify-center">
+            <button
+              onClick={() => setShowInfo(v => !v)}
+              aria-label={showInfo ? 'Hide description' : 'Show description'}
+              title={showInfo ? 'Hide description (I)' : 'Show description (I)'}
+              className="flex items-center gap-1.5 px-5 py-2 rounded-t-xl bg-gray-800/95 hover:bg-gray-700 text-xs font-medium text-gray-200 transition"
+            >
+              {showInfo ? (
+                <>Hide description <FaChevronDown className="text-xs" /></>
+              ) : (
+                <><FaChevronUp className="text-xs" /> Show description</>
+              )}
+            </button>
+          </div>
       </div>
     </div>
   )
