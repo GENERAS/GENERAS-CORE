@@ -72,124 +72,224 @@ export default function ProjectLightbox({ project, images = [], onClose }) {
 
   return (
     <>
-      {/* Main screenshot viewer */}
-      <div className="fixed inset-0 z-50 bg-black" role="dialog" aria-modal="true" aria-label={`${project.title} gallery`}>
-        {/* Stage */}
-        <div className={`absolute inset-0 flex items-center justify-center ${zoomed ? 'overflow-auto' : ''}`}>
-          {current ? (
-            <img
-              src={current}
-              alt={`${project.title} screenshot ${safeIndex + 1}`}
-              className={zoomed ? 'max-w-none max-h-none' : 'max-w-full max-h-full object-contain'}
-            />
-          ) : (
-            <div className="text-center text-gray-300 px-6 max-w-lg">
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-3">{project.title}</h3>
-              <p className="text-gray-400 leading-relaxed whitespace-pre-wrap break-words max-h-[50vh] overflow-y-auto">
-                {project.description || 'No description or screenshots available for this project yet.'}
-              </p>
-              <button
-                onClick={() => setShowDesc(true)}
-                className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-slate-900 text-sm font-semibold transition"
-              >
-                <FaBookOpen /> View full project details
-              </button>
-            </div>
-          )}
+      {/* Main screenshot viewer with split layout: left = screenshots, right = description */}
+      <div className="fixed inset-0 z-50 bg-gray-950" role="dialog" aria-modal="true" aria-label={`${project.title} gallery`}>
+        <div className="absolute inset-0 flex flex-col lg:flex-row">
+          {/* Left: Screenshots */}
+          <div className="relative flex-1 h-1/2 lg:h-full bg-black">
+            <div className={`absolute inset-0 flex items-center justify-center ${zoomed ? 'overflow-auto' : ''}`}>
+              {current ? (
+                <img
+                  src={current}
+                  alt={`${project.title} screenshot ${safeIndex + 1}`}
+                  className={zoomed ? 'max-w-none max-h-none' : 'max-w-full max-h-full object-contain'}
+                />
+              ) : (
+                <div className="text-center text-gray-400 px-6 max-w-md">
+                  <h3 className="text-xl font-semibold text-gray-200 mb-2">{project.title}</h3>
+                  <p className="text-sm">No screenshots have been published for this project yet.</p>
+                </div>
+              )}
 
-          {/* Left arrow */}
-          {total > 1 && (
-            <button
-              onClick={() => go(-1)}
-              aria-label="Previous screenshot (Left arrow)"
-              title="Previous (←)"
-              className="absolute left-0 top-0 bottom-0 w-20 sm:w-28 flex items-center justify-start group"
-            >
-              <span className="ml-2 sm:ml-4 p-3 sm:p-4 rounded-full bg-black/70 text-white group-hover:bg-yellow-500 group-hover:text-slate-900 shadow-lg transition">
-                <FaChevronLeft className="text-2xl sm:text-3xl" />
-              </span>
-            </button>
-          )}
+              {total > 1 && (
+                <>
+                  <button
+                    onClick={() => go(-1)}
+                    aria-label="Previous screenshot (←)"
+                    title="Previous (←)"
+                    className="absolute left-0 top-0 bottom-0 w-16 sm:w-20 flex items-center justify-start group"
+                  >
+                    <span className="ml-2 sm:ml-3 p-3 rounded-full bg-black/70 text-white group-hover:bg-yellow-500 group-hover:text-slate-900 shadow-lg transition">
+                      <FaChevronLeft className="text-xl sm:text-2xl" />
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => go(1)}
+                    aria-label="Next screenshot (→)"
+                    title="Next (→)"
+                    className="absolute right-0 top-0 bottom-0 w-16 sm:w-20 flex items-center justify-end group"
+                  >
+                    <span className="mr-2 sm:mr-3 p-3 rounded-full bg-black/70 text-white group-hover:bg-yellow-500 group-hover:text-slate-900 shadow-lg transition">
+                      <FaChevronRight className="text-xl sm:text-2xl" />
+                    </span>
+                  </button>
+                </>
+              )}
 
-          {/* Right arrow */}
-          {total > 1 && (
-            <button
-              onClick={() => go(1)}
-              aria-label="Next screenshot (Right arrow)"
-              title="Next (→)"
-              className="absolute right-0 top-0 bottom-0 w-20 sm:w-28 flex items-center justify-end group"
-            >
-              <span className="mr-2 sm:mr-4 p-3 sm:p-4 rounded-full bg-black/70 text-white group-hover:bg-yellow-500 group-hover:text-slate-900 shadow-lg transition">
-                <FaChevronRight className="text-2xl sm:text-3xl" />
-              </span>
-            </button>
-          )}
-        </div>
+              {/* Count overlay */}
+              {total > 0 && (
+                <div className="absolute top-4 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-black/70 text-gray-200 text-xs font-medium shadow-lg">
+                  {safeIndex + 1} / {total}
+                </div>
+              )}
 
-        {/* Top bar */}
-        <div className="absolute top-0 inset-x-0 bg-gradient-to-b from-black/95 via-black/60 to-transparent p-4 sm:p-6 flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <h2 className="text-lg sm:text-2xl font-bold text-white truncate">{project.title}</h2>
-            {total > 0 && (
-              <p className="text-sm text-gray-300 mt-0.5">
-                Screenshot {safeIndex + 1} of {total}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center justify-end gap-2 shrink-0 max-w-[70vw]">
-            {current && (
-              <button
-                onClick={() => setZoomed(z => !z)}
-                aria-label={zoomed ? 'Fit to screen (Z)' : 'Full size (Z)'}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-black/70 text-gray-100 hover:text-slate-900 hover:bg-yellow-500 text-xs sm:text-sm font-medium transition"
-              >
-                {zoomed ? <FiMinimize2 /> : <FiMaximize2 />}
-                <span className="hidden sm:inline">{zoomed ? 'Fit' : 'Full size'}</span>
-              </button>
-            )}
-            <button
-              onClick={() => setShowDesc(true)}
-              aria-label="View project description (D)"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-black/70 text-gray-100 hover:text-slate-900 hover:bg-yellow-500 text-xs sm:text-sm font-medium transition"
-            >
-              <FaBookOpen />
-              <span className="hidden sm:inline">Description</span>
-            </button>
-            <button
-              onClick={onClose}
-              aria-label="Close gallery (Esc)"
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-black/70 text-gray-100 hover:text-slate-900 hover:bg-yellow-500 text-xs sm:text-sm font-medium transition"
-            >
-              <FaTimes />
-              <span className="hidden sm:inline">Close</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Thumbnails */}
-        {total > 1 && (
-          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent p-3 sm:p-5">
-            <div className="flex gap-2 overflow-x-auto justify-start sm:justify-center pb-1">
-              {images.map((src, i) => (
+              {/* Zoom */}
+              {current && (
                 <button
-                  key={src + i}
-                  onClick={() => setIndex(i)}
-                  aria-label={`Go to screenshot ${i + 1}`}
-                  aria-current={i === safeIndex}
-                  className={`w-20 h-14 sm:w-28 sm:h-20 rounded border-2 overflow-hidden shrink-0 transition shadow-lg ${
-                    i === safeIndex ? 'border-yellow-500 scale-105' : 'border-transparent opacity-60 hover:opacity-90'
-                  }`}
+                  onClick={() => setZoomed(z => !z)}
+                  aria-label={zoomed ? 'Fit to screen (Z)' : 'Full size (Z)'}
+                  className="absolute bottom-4 right-4 flex items-center gap-1.5 px-3 py-2 rounded-lg bg-black/70 text-gray-100 hover:text-slate-900 hover:bg-yellow-500 text-xs font-medium transition shadow-lg"
                 >
-                  <img src={src} alt="" loading="lazy" className="w-full h-full object-cover" />
+                  {zoomed ? <FiMinimize2 /> : <FiMaximize2 />}
+                  <span className="hidden sm:inline">{zoomed ? 'Fit' : 'Full size'}</span>
                 </button>
-              ))}
+              )}
             </div>
-            <p className="hidden sm:block text-center text-xs text-gray-400 mt-2">
-              Use ← and → to navigate screenshots • Press D to view description • Esc to close
-            </p>
+
+            {/* Thumbnails */}
+            {total > 1 && (
+              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/95 to-transparent px-3 sm:px-4 py-3">
+                <div className="flex gap-2 overflow-x-auto justify-start sm:justify-center">
+                  {images.map((src, i) => (
+                    <button
+                      key={src + i}
+                      onClick={() => setIndex(i)}
+                      aria-label={`Go to screenshot ${i + 1}`}
+                      aria-current={i === safeIndex}
+                      className={`w-16 h-11 sm:w-20 sm:h-14 rounded border-2 overflow-hidden shrink-0 transition shadow-lg ${
+                        i === safeIndex ? 'border-yellow-500 scale-105' : 'border-transparent opacity-60 hover:opacity-90'
+                      }`}
+                    >
+                      <img src={src} alt="" loading="lazy" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        )}
+
+          {/* Right: Description panel (modal-like, but side-by-side) */}
+          <div className="relative w-full lg:w-[480px] xl:w-[560px] h-1/2 lg:h-full flex flex-col bg-gray-950 border-t lg:border-t-0 lg:border-l border-gray-800/80">
+            {/* Header */}
+            <div className="flex items-start justify-between gap-3 p-4 sm:p-6 border-b border-gray-800/80 bg-gradient-to-b from-gray-950 to-gray-950/95">
+              <div className="min-w-0">
+                <h2 className="text-lg sm:text-2xl font-bold text-white line-clamp-2">{project.title}</h2>
+                <div className="flex flex-wrap items-center gap-2 mt-2">
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium border ${badge}`}>
+                    {STATUS_TEXT[project.status] || project.status}
+                  </span>
+                  {project.category && (
+                    <span className="px-2.5 py-0.5 rounded-full text-xs bg-gray-900 text-gray-300 border border-gray-800/80">
+                      {project.category}
+                    </span>
+                  )}
+                  {project.start_date && (
+                    <span className="text-xs text-gray-400">
+                      {new Date(project.start_date).getFullYear()}
+                      {project.end_date ? ` - ${new Date(project.end_date).getFullYear()}` : ' - present'}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={onClose}
+                aria-label="Close gallery (Esc)"
+                className="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-gray-900/80 transition"
+              >
+                <FaTimes className="text-xl" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+              {project.description && (
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">
+                    About this project
+                  </h3>
+                  <p className="text-gray-200 text-sm sm:text-base leading-relaxed whitespace-pre-wrap break-words">
+                    {project.description}
+                  </p>
+                </div>
+              )}
+
+              {project.tech_stack?.length > 0 && (
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">
+                    Built with
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tech_stack.map((tech, i) => (
+                      <span
+                        key={`${tech}-${i}`}
+                        className="px-3 py-1 rounded-full text-xs sm:text-sm bg-gray-900/90 text-gray-200 border border-gray-800/80"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {(project.client_name || project.project_value || project.inquiry_id || project.created_at) && (
+                <div>
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3">
+                    Project details
+                  </h3>
+                  <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm">
+                    {project.client_name && (
+                      <div>
+                        <dt className="text-gray-500 text-xs uppercase tracking-wide">Client</dt>
+                        <dd className="text-gray-200 mt-0.5">{project.client_name}</dd>
+                      </div>
+                    )}
+                    {project.project_value && (
+                      <div>
+                        <dt className="text-gray-500 text-xs uppercase tracking-wide">Value</dt>
+                        <dd className="text-gray-200 mt-0.5">{project.project_value}</dd>
+                      </div>
+                    )}
+                    {project.inquiry_id && (
+                      <div>
+                        <dt className="text-gray-500 text-xs uppercase tracking-wide">Inquiry ID</dt>
+                        <dd className="text-gray-200 mt-0.5">{project.inquiry_id}</dd>
+                      </div>
+                    )}
+                    {project.created_at && (
+                      <div>
+                        <dt className="text-gray-500 text-xs uppercase tracking-wide">Added</dt>
+                        <dd className="text-gray-200 mt-0.5">
+                          {new Date(project.created_at).toLocaleDateString()}
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
+                </div>
+              )}
+
+              {(project.github_url || project.live_demo_url) && (
+                <div className="flex flex-wrap gap-3 pt-2">
+                  {project.github_url && (
+                    <a
+                      href={project.github_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gray-900/95 hover:bg-yellow-500 hover:text-slate-900 text-sm font-medium text-white border border-gray-800/80 transition shadow-sm"
+                    >
+                      <FaGithub /> View code
+                    </a>
+                  )}
+                  {project.live_demo_url && (
+                    <a
+                      href={project.live_demo_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gray-900/95 hover:bg-yellow-500 hover:text-slate-900 text-sm font-medium text-white border border-gray-800/80 transition shadow-sm"
+                    >
+                      <FaExternalLinkAlt /> Live demo
+                    </a>
+                  )}
+                </div>
+              )}
+
+              {total > 0 && (
+                <p className="text-xs text-gray-500 pt-2">
+                  Use ← and → to navigate screenshots • Press Z to toggle full size • Esc to close
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Description modal */}
