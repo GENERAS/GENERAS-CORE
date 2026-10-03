@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { 
   Star, Play, Pause, ExternalLink, Image as ImageIcon, Mic, 
@@ -13,6 +14,7 @@ import TestimonialSubmissionForm from '../components/testimonials/TestimonialSub
 import Loader from '../components/common/Loader';
 
 export default function TestimonialsPage() {
+  const [searchParams] = useSearchParams();
   const [testimonials, setTestimonials] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showSubmissionForm, setShowSubmissionForm] = useState(false);
@@ -40,6 +42,15 @@ export default function TestimonialsPage() {
     }, 6000);
     return () => clearInterval(interval);
   }, [testimonials]);
+
+  useEffect(() => {
+    const action = searchParams.get('action');
+    const open = searchParams.get('open');
+    const submit = searchParams.get('submit');
+    if (action === 'submit' || open === 'submit' || submit === 'true') {
+      setShowSubmissionForm(true);
+    }
+  }, [searchParams]);
 
   const loadTestimonials = async () => {
     try {

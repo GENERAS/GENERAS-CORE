@@ -85,9 +85,16 @@ export default function ProjectLightbox({ project, images = [], onClose }) {
                   className={zoomed ? 'max-w-none max-h-none' : 'max-w-full max-h-full object-contain'}
                 />
               ) : (
-                <div className="text-center text-gray-400 px-6 max-w-md">
+                <div className="text-center text-gray-400 px-6 max-w-md flex flex-col items-center">
                   <h3 className="text-xl font-semibold text-gray-200 mb-2">{project.title}</h3>
-                  <p className="text-sm">No screenshots have been published for this project yet.</p>
+                  <p className="text-sm mb-4">No screenshots have been published for this project yet.</p>
+                  <a
+                    href="/contact"
+                    onClick={e => e.stopPropagation()}
+                    className="px-4 py-2 rounded-lg bg-yellow-600 text-slate-900 font-medium hover:bg-yellow-500 transition"
+                  >
+                    Contact us to see similar results
+                  </a>
                 </div>
               )}
 

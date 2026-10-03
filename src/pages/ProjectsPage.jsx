@@ -434,6 +434,11 @@ export default function ProjectsPage() {
                     <div className="absolute top-3 right-3">
                       {getStatusBadge(project.status)}
                     </div>
+                    {shots.length === 0 && (
+                      <div className="absolute left-2 right-2 bottom-2 bg-black/70 text-white text-xs px-2 py-1 rounded text-center">
+                        No screenshots yet — <Link to="/contact" onClick={e => e.stopPropagation()} className="underline hover:text-yellow-300">Contact us</Link> to see similar results
+                      </div>
+                    )}
                   </div>
 
                   {/* Content */}

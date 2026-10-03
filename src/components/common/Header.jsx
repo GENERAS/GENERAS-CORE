@@ -35,6 +35,7 @@ export default function Header() {
     { path: '/testimonials', label: t('nav.testimonials') },
     { path: '/service', label: t('nav.mentorship') },
     { path: '/business', label: 'Services' },
+    { path: '/contact', label: 'Contact' },
   ]
 
   return (

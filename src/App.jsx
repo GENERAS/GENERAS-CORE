@@ -28,6 +28,7 @@ const HiringPage = lazy(() => import('./pages/HiringPage'))
 const ServicePage = lazy(() => import('./pages/ServicePage'))
 const TestimonialsPage = lazy(() => import('./pages/TestimonialsPage'))
 const ClientDashboard = lazy(() => import('./pages/ClientDashboard'))
+const ContactPage = lazy(() => import('./pages/ContactPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
 function PageTitle() {
@@ -102,6 +103,7 @@ function App() {
           <Route path="/services/:slug" element={<Layout><Suspense fallback={<Loader />}><ServiceDetailPage /></Suspense></Layout>} />
           <Route path="/hire-me" element={<Layout><Suspense fallback={<Loader />}><HiringPage /></Suspense></Layout>} />
           <Route path="/testimonials" element={<Layout><Suspense fallback={<Loader />}><TestimonialsPage /></Suspense></Layout>} />
+          <Route path="/contact" element={<Layout><Suspense fallback={<Loader />}><ContactPage /></Suspense></Layout>} />
           <Route path="/dashboard" element={<Layout><Suspense fallback={<Loader />}><ClientDashboard /></Suspense></Layout>} />
 
           {/* REDIRECTS */}
