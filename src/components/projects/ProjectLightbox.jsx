@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
-import { FaChevronLeft, FaChevronRight, FaTimes, FaGithub, FaExternalLinkAlt } from 'react-icons/fa'
+import {
+  FaChevronLeft, FaChevronRight, FaTimes, FaGithub, FaExternalLinkAlt, FaInfoCircle
+} from 'react-icons/fa'
+import { FiMaximize2, FiMinimize2 } from 'react-icons/fi'
 
 const STATUS_BADGES = {
   completed: 'bg-green-500/20 text-green-300 border-green-500/40',
@@ -16,15 +19,25 @@ const STATUS_TEXT = {
 /**
  * Full-screen project viewer.
  *
- * The portfolio previously showed only projects.image_url with the description
- * clamped to two lines, so anything the admin uploaded into project_images was
- * invisible to visitors and the write-up could not be read in full. This opens
- * on click and steps through every screenshot with the arrow buttons or the
- * keyboard.
+ * Two things drove the redesign.
+ *
+ * Size: the first version laid the image out as a flex child between a header
+ * and a details panel that was open by default and capped at 45vh. On a normal
+ * laptop that left the screenshot roughly 430px tall, so a 1080p capture was
+ * displayed at a fraction of the size it was uploaded at. The image now takes
+ * the entire viewport and every control floats above it, so nothing competes
+ * with it for space. Details are a drawer that is closed until asked for.
+ *
+ * Legibility: object-contain everywhere. object-cover was cropping screenshots
+ * to the corners of a card, hiding most of what was actually built.
  */
 export default function ProjectLightbox({ project, images = [], onClose }) {
   const [index, setIndex] = useState(0)
-  const [showInfo, setShowInfo] = useState(true)
+  // ProjectsPage passes key={project.id}, so this initialiser runs once per
+  // project. Most portfolio rows have no screenshots yet, and an empty black
+  // screen tells a visitor nothing, so those open on the write-up instead.
+  const [showInfo, setShowInfo] = useState(images.length === 0)
+  const [zoomed, setZoomed] = useState(false)
 
   const total = images.length
   const safeIndex = total ? Math.min(index, total - 1) : 0
@@ -34,187 +47,221 @@ export default function ProjectLightbox({ project, images = [], onClose }) {
     setIndex(prev => (prev + delta + total) % total)
   }, [total])
 
-  // Arrow keys move between screenshots, Escape closes. Without this the only
-  // way to reach the later images was the small on-screen chevrons.
+  // Arrows step through the shots, Escape closes, I toggles the write-up and
+  // Z switches between fitting the image and showing it at 100%.
   useEffect(() => {
     const onKey = (e) => {
-      if (e.key === 'ArrowRight') { e.preventDefault(); go(1) }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1) }
-      else if (e.key === 'Escape') onClose()
-      else if (e.key.toLowerCase() === 'i') setShowInfo(v => !v)
+      switch (e.key) {
+        case 'ArrowRight': e.preventDefault(); go(1); break
+        case 'ArrowLeft': e.preventDefault(); go(-1); break
+        case 'Escape': onClose(); break
+        case 'Tab':
+          // Keep focus inside the viewer while it is open.
+          if (!e.shiftKey && document.activeElement === document.body) go(1)
+          break
+        default:
+          if (e.key.toLowerCase() === 'i') setShowInfo(v => !v)
+          if (e.key.toLowerCase() === 'z') setZoomed(v => !v)
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [go, onClose, total])
+  }, [go, onClose])
 
-  // Stop the page behind the overlay from scrolling underneath it.
+  // Stop the page scrolling behind the overlay.
   useEffect(() => {
     const previous = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => { document.body.style.overflow = previous }
   }, [])
 
-  // Reset when a different project is opened. ProjectsPage passes a key based
-  // on the project id, so React remounts this and the state starts fresh.
   if (!project) return null
 
   const current = images[safeIndex]
   const badge = STATUS_BADGES[project.status] || 'bg-slate-700 text-slate-200 border-slate-500'
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-black/95 flex flex-col"
-      role="dialog"
-      aria-modal="true"
-      aria-label={`${project.title} screenshots`}
-    >
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4 p-4 sm:p-5 shrink-0">
-        <div className="min-w-0">
+    <div className="fixed inset-0 z-50 bg-black" role="dialog" aria-modal="true" aria-label={`${project.title} screenshots`}>
+      {/* Stage: the image gets the whole viewport. Everything else floats. */}
+      <div className={`absolute inset-0 flex items-center justify-center ${zoomed ? 'overflow-auto' : ''}`}>
+        {current ? (
+          <img
+            src={current}
+            alt={`${project.title} screenshot ${safeIndex + 1}`}
+            className={zoomed ? 'max-w-none max-h-none' : 'max-w-full max-h-full object-contain'}
+          />
+        ) : (
+          <div className="text-center text-gray-400 px-6 max-w-md">
+            <p className="text-xl font-semibold text-gray-200 mb-2">{project.title}</p>
+            <p className="text-sm mb-4">
+              No screenshots have been published for this project yet. The full write-up is below.
+            </p>
+            <button
+              onClick={() => setShowInfo(true)}
+              className="px-4 py-2 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-slate-900 text-sm font-semibold transition"
+            >
+              Read the description
+            </button>
+          </div>
+        )}
+
+        {/* Arrows sit on the image edges so they never steal width. */}
+        {total > 1 && (
+          <>
+            <button
+              onClick={() => go(-1)}
+              aria-label="Previous screenshot"
+              className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 flex items-center justify-start group"
+            >
+              <span className="ml-2 sm:ml-4 p-3 rounded-full bg-black/60 text-white group-hover:bg-yellow-500 group-hover:text-slate-900 transition">
+                <FaChevronLeft className="text-xl" />
+              </span>
+            </button>
+            <button
+              onClick={() => go(1)}
+              aria-label="Next screenshot"
+              className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 flex items-center justify-end group"
+            >
+              <span className="mr-2 sm:mr-4 p-3 rounded-full bg-black/60 text-white group-hover:bg-yellow-500 group-hover:text-slate-900 transition">
+                <FaChevronRight className="text-xl" />
+              </span>
+            </button>
+          </>
+        )}
+      </div>
+
+      {/* Top bar */}
+      <div className="absolute top-0 inset-x-0 bg-gradient-to-b from-black/90 to-transparent p-4 sm:p-5 flex items-start justify-between gap-4 pointer-events-none">
+        <div className="min-w-0 pointer-events-auto">
           <h2 className="text-lg sm:text-2xl font-bold text-white truncate">{project.title}</h2>
-          <p className="text-sm text-gray-400 mt-0.5">
-            {total > 0
-              ? `Screenshot ${safeIndex + 1} of ${total}`
-              : 'No screenshots uploaded yet'}
+          <p className="text-sm text-gray-300 mt-0.5">
+            {total > 0 ? `Screenshot ${safeIndex + 1} of ${total}` : 'No screenshots yet'}
           </p>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          {total > 1 && (
-            <span className="hidden sm:inline text-xs text-gray-400 border border-gray-700 rounded px-2 py-1">
-              ← → to browse · Esc to close
-            </span>
+        <div className="flex items-center gap-2 shrink-0 pointer-events-auto">
+          {current && (
+            <button
+              onClick={() => setZoomed(z => !z)}
+              aria-label={zoomed ? 'Fit image to screen' : 'View at full size'}
+              title={zoomed ? 'Fit to screen (Z)' : 'Full size (Z)'}
+              className="p-2 rounded-lg text-gray-200 hover:text-slate-900 hover:bg-yellow-500 transition"
+            >
+              {zoomed ? <FiMinimize2 className="text-lg" /> : <FiMaximize2 className="text-lg" />}
+            </button>
           )}
+          <button
+            onClick={() => setShowInfo(v => !v)}
+            aria-label="Toggle project details"
+            title="Details (I)"
+            className={`p-2 rounded-lg transition ${showInfo ? 'bg-yellow-500 text-slate-900' : 'text-gray-200 hover:text-slate-900 hover:bg-yellow-500'}`}
+          >
+            <FaInfoCircle className="text-lg" />
+          </button>
           <button
             onClick={onClose}
             aria-label="Close"
-            className="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition"
+            className="p-2 rounded-lg text-gray-200 hover:text-slate-900 hover:bg-yellow-500 transition"
           >
             <FaTimes className="text-xl" />
           </button>
         </div>
       </div>
 
-      {/* Image */}
-      <div className="relative flex-1 min-h-0 flex items-center justify-center px-2 sm:px-16">
-        {current ? (
-          <img
-            src={current}
-            alt={`${project.title} screenshot ${safeIndex + 1}`}
-            className="max-w-full max-h-full object-contain rounded-lg"
-          />
-        ) : (
-          <div className="text-center text-gray-500 px-6">
-            <p className="text-lg mb-1">No screenshots for this project yet.</p>
-            <p className="text-sm">An admin can add them from Admin → Projects.</p>
+      {/* Thumbnail strip, floating over the bottom of the image */}
+      {total > 1 && !showInfo && (
+        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 to-transparent p-3 sm:p-4">
+          <div className="flex gap-2 overflow-x-auto justify-start sm:justify-center pb-1">
+            {images.map((src, i) => (
+              <button
+                key={src + i}
+                onClick={() => setIndex(i)}
+                aria-label={`Go to screenshot ${i + 1}`}
+                aria-current={i === safeIndex}
+                className={`w-20 h-14 sm:w-28 sm:h-20 rounded border-2 overflow-hidden shrink-0 transition ${
+                  i === safeIndex ? 'border-yellow-500 scale-105' : 'border-transparent opacity-50 hover:opacity-90'
+                }`}
+              >
+                <img src={src} alt="" loading="lazy" className="w-full h-full object-cover" />
+              </button>
+            ))}
           </div>
-        )}
-
-        {total > 1 && (
-          <>
-            <button
-              onClick={() => go(-1)}
-              aria-label="Previous screenshot"
-              className="absolute left-1 sm:left-3 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/70 text-white hover:bg-yellow-500 hover:text-slate-900 transition"
-            >
-              <FaChevronLeft className="text-xl" />
-            </button>
-            <button
-              onClick={() => go(1)}
-              aria-label="Next screenshot"
-              className="absolute right-1 sm:right-3 top-1/2 -translate-y-1/2 p-3 rounded-full bg-black/70 text-white hover:bg-yellow-500 hover:text-slate-900 transition"
-            >
-              <FaChevronRight className="text-xl" />
-            </button>
-          </>
-        )}
-      </div>
-
-      {/* Thumbnail strip */}
-      {total > 1 && (
-        <div className="flex gap-2 overflow-x-auto p-3 sm:p-4 shrink-0 justify-start sm:justify-center">
-          {images.map((src, i) => (
-            <button
-              key={src + i}
-              onClick={() => setIndex(i)}
-              aria-label={`Go to screenshot ${i + 1}`}
-              aria-current={i === safeIndex}
-              className={`w-16 h-11 sm:w-20 sm:h-14 rounded border-2 overflow-hidden shrink-0 transition ${
-                i === safeIndex ? 'border-yellow-500' : 'border-transparent opacity-50 hover:opacity-90'
-              }`}
-            >
-              <img src={src} alt="" loading="lazy" className="w-full h-full object-cover" />
-            </button>
-          ))}
+          <p className="hidden sm:block text-center text-xs text-gray-400 mt-2">
+            Use &larr; &rarr; to browse, Z for full size, Esc to close
+          </p>
         </div>
       )}
 
-      {/* Full details: the description is shown in full here, not clamped */}
-      <div className="shrink-0 border-t border-gray-800 bg-gray-900/95 max-h-[45vh] overflow-y-auto">
-        <button
-          onClick={() => setShowInfo(v => !v)}
-          className="w-full flex items-center justify-between px-4 sm:px-6 py-3 text-left"
-        >
-          <span className="text-sm font-semibold text-white">Project details</span>
-          <span className="text-xs text-gray-400">{showInfo ? 'Hide' : 'Show'}</span>
-        </button>
-
-        {showInfo && (
-          <div className="px-4 sm:px-6 pb-5 space-y-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className={`px-2 py-0.5 rounded-full text-xs font-medium border ${badge}`}>
-                {STATUS_TEXT[project.status] || project.status}
+      {/* Details drawer. Closed by default so the screenshot keeps the screen. */}
+      <div className={`absolute inset-x-0 bottom-0 bg-gray-900/98 backdrop-blur border-t border-gray-700 max-h-[80vh] overflow-y-auto transition-transform duration-300 ${showInfo ? 'translate-y-0' : 'translate-y-full'}`}>
+        <div className="px-4 sm:px-8 py-5 sm:py-7 space-y-5 max-w-4xl mx-auto">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${badge}`}>
+              {STATUS_TEXT[project.status] || project.status}
+            </span>
+            {project.category && (
+              <span className="px-2.5 py-1 rounded-full text-xs bg-gray-800 text-gray-300 border border-gray-700">
+                {project.category}
               </span>
-              {project.category && (
-                <span className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-300 border border-gray-700">
-                  {project.category}
-                </span>
-              )}
-            </div>
+            )}
+          </div>
 
-            {/* Whitespace preserved so pasted paragraphs keep their breaks. */}
-            {project.description && (
-              <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-wrap break-words">
+          {/* The description is shown in full here, never clamped. */}
+          {project.description && (
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">
+                Full description
+              </h3>
+              <p className="text-gray-200 text-sm sm:text-base leading-relaxed whitespace-pre-wrap break-words">
                 {project.description}
               </p>
-            )}
+            </div>
+          )}
 
-            {project.tech_stack?.length > 0 && (
+          {project.tech_stack?.length > 0 && (
+            <div>
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2">Built with</h3>
               <div className="flex flex-wrap gap-1.5">
                 {project.tech_stack.map((tech, i) => (
                   <span
                     key={`${tech}-${i}`}
-                    className="px-2 py-0.5 rounded-full text-xs bg-gray-800 text-gray-300 border border-gray-700"
+                    className="px-2.5 py-1 rounded-full text-xs bg-gray-800 text-gray-200 border border-gray-700"
                   >
                     {tech}
                   </span>
                 ))}
               </div>
-            )}
-
-            <div className="flex flex-wrap gap-3">
-              {project.github_url && (
-                <a
-                  href={project.github_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800 hover:bg-yellow-500 hover:text-slate-900 text-sm font-medium text-white transition"
-                >
-                  <FaGithub /> View code
-                </a>
-              )}
-              {project.live_demo_url && (
-                <a
-                  href={project.live_demo_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800 hover:bg-yellow-500 hover:text-slate-900 text-sm font-medium text-white transition"
-                >
-                  <FaExternalLinkAlt /> Live demo
-                </a>
-              )}
             </div>
+          )}
+
+          <div className="flex flex-wrap gap-3 pt-1">
+            {project.github_url && (
+              <a
+                href={project.github_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gray-800 hover:bg-yellow-500 hover:text-slate-900 text-sm font-medium text-white transition"
+              >
+                <FaGithub /> View code
+              </a>
+            )}
+            {project.live_demo_url && (
+              <a
+                href={project.live_demo_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gray-800 hover:bg-yellow-500 hover:text-slate-900 text-sm font-medium text-white transition"
+              >
+                <FaExternalLinkAlt /> Live demo
+              </a>
+            )}
+            <button
+              onClick={() => setShowInfo(false)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-700 text-sm font-medium text-gray-300 hover:text-white hover:border-gray-500 transition"
+            >
+              Back to screenshot
+            </button>
           </div>
-        )}
+        </div>
       </div>
     </div>
   )

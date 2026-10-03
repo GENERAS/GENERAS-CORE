@@ -174,11 +174,15 @@ export default function ImageUploader({
           <FaImages /> {single ? 'Nothing selected yet.' : 'No images attached yet.'}
         </p>
       ) : (
-        <ul className={`grid gap-3 mt-4 ${single ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'}`}>
+        <ul className={`grid gap-3 mt-4 ${single ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`}>
           {value.map((src, i) => (
-            <li key={src + i} className="bg-slate-900 border-2 border-slate-600 rounded-lg overflow-hidden">
+            <li key={src + i} className="bg-slate-900 border-2 border-slate-600 rounded-lg overflow-hidden relative">
+              {/* object-contain on a dark backdrop, and a real height. These are
+                  mostly screenshots, so object-cover at h-24 cropped them down
+                  to an unreadable strip and made them look far smaller than
+                  what was actually uploaded. */}
               <img src={src} alt={single ? 'Selected image' : `Image ${i + 1}`}
-                className={`w-full object-cover ${single ? 'h-40' : 'h-24'}`} />
+                className={`w-full object-contain bg-slate-950 ${single ? 'h-64' : 'h-52'}`} />
               {!single && i === 0 && (
                 <span className="absolute top-1 left-1 bg-yellow-500 text-slate-900 text-xs font-bold px-1.5 py-0.5 rounded">First</span>
               )}

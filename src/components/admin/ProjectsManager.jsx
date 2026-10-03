@@ -103,23 +103,40 @@ export default function ProjectsManager() {
         projectId = data.id
       }
 
-      // Sync the gallery: add anything new, drop anything removed. Rows whose
-      // URL is unchanged are left alone so their ids and sort_order are
-      // stable and the table is not rewritten on every save.
+      // Sync the gallery: add anything new, drop anything removed, and rewrite
+      // sort_order so a reorder made in the form survives the save. Rows whose
+      // URL is unchanged keep their id, so nothing else on the row is disturbed.
       const { data: existing } = await supabase
-        .from('project_images').select('id, image_url').eq('project_id', projectId)
+        .from('project_images').select('id, image_url, sort_order').eq('project_id', projectId)
 
       const removed = (existing || []).filter(row => !images.includes(row.image_url)).map(row => row.id)
       if (removed.length) await supabase.from('project_images').delete().in('id', removed)
 
-      const known = new Set((existing || []).map(row => row.image_url))
-      const additions = images
-        .filter(url => !known.has(url))
-        .map((url, idx) => ({
-          project_id: projectId,
-          image_url: url,
-          sort_order: (existing?.length || 0) + idx
-        }))
+      // Previously existing rows were left untouched, which meant their
+      // sort_order still reflected the order they were first uploaded in and
+      // any reordering was lost as soon as the page reloaded.
+      const idByUrl = new Map((existing || []).map(row => [row.image_url, row.id]))
+      const additions = []
+      const reorders = []
+
+      images.forEach((url, idx) => {
+        const id = idByUrl.get(url)
+        const row = id === undefined ? null : (existing || []).find(r => r.id === id)
+        if (!row) {
+          additions.push({ project_id: projectId, image_url: url, sort_order: idx })
+        } else if (row.sort_order !== idx) {
+          reorders.push({ id, sort_order: idx })
+        }
+      })
+
+      if (reorders.length) {
+        const results = await Promise.all(
+          reorders.map(r => supabase.from('project_images').update({ sort_order: r.sort_order }).eq('id', r.id))
+        )
+        const failure = results.find(r => r.error)
+        if (failure) throw failure.error
+      }
+
       if (additions.length) {
         const { error } = await supabase.from('project_images').insert(additions)
         if (error) throw error

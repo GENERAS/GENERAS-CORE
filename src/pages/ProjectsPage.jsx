@@ -352,9 +352,9 @@ export default function ProjectsPage() {
                       onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), openProject(project))}
                       className="group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
                     >
-                      <div className="relative h-40 overflow-hidden">
+                      <div className="relative h-56 overflow-hidden bg-slate-900">
                         {project.image_url ? (
-                          <img src={project.image_url} alt={project.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                          <img src={project.image_url} alt={project.title} loading="lazy" className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                         ) : (
                           <div className="w-full h-full bg-gradient-to-br from-yellow-100 to-yellow-100 flex items-center justify-center">
                             <IconCode className="text-4xl text-yellow-600" />
@@ -401,16 +401,16 @@ export default function ProjectsPage() {
                   onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), openProject(project))}
                   className={`group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer ${viewMode === 'grid' ? '' : 'flex flex-col md:flex-row'}`}
                 >
-                  {/* Image */}
-                  <div className={`relative overflow-hidden ${viewMode === 'list' ? 'md:w-72 h-48 md:h-auto shrink-0' : ''}`}>
+                  {/* object-contain letterboxes against the dark backdrop rather than cropping */}
+                  <div className={`relative overflow-hidden bg-slate-900 ${viewMode === 'list' ? 'md:w-80 h-56 md:h-auto md:min-h-[280px] shrink-0' : ''}`}>
                     {project.image_url ? (
                       <img
                         src={project.image_url}
                         alt={project.title}
-                        loading="lazy" className={`w-full object-cover transition-transform duration-700 group-hover:scale-110 ${viewMode === 'grid' ? 'h-48' : 'h-full'}`}
+                        loading="lazy" className={`w-full object-contain transition-transform duration-700 group-hover:scale-105 ${viewMode === 'grid' ? 'h-56' : 'h-full'}`}
                       />
                     ) : (
-                      <div className={`bg-gradient-to-br from-yellow-100 to-yellow-100 flex items-center justify-center ${viewMode === 'grid' ? 'h-48' : 'h-full min-h-[200px]'}`}>
+                      <div className={`bg-gradient-to-br from-yellow-100 to-yellow-100 flex items-center justify-center ${viewMode === 'grid' ? 'h-56' : 'h-full min-h-[200px]'}`}>
                         <IconCode className="text-5xl text-yellow-600 group-hover:text-yellow-700 transition-colors duration-200" />
                       </div>
                     )}
