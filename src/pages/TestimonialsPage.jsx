@@ -1,745 +1,441 @@
-import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
-import { 
-  Star, Play, Pause, ExternalLink, Image as ImageIcon, Mic, 
-  TrendingUp, Users, CheckCircle, Plus, X,
-  MessageSquare, Building2, Briefcase, Globe,
-  ChevronLeft, ChevronRight, Quote, Trophy, Target,
-  Zap, Crown, ThumbsUp, Share2, Bell, Filter,
-  Search, ChevronDown, Sparkles, Award, Rocket,
-  Heart
-} from 'lucide-react';
-import TestimonialSubmissionForm from '../components/testimonials/TestimonialSubmissionForm';
-import Loader from '../components/common/Loader';
+import { useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase'
+import Loader from '../components/common/Loader'
+import {
+  Star, ExternalLink, Image as ImageIcon, Mic, Play, Pause,
+  Building2, Globe, ArrowRight, ChevronLeft, ChevronRight,
+  BadgeCheck, Quote, Sparkles, Filter, Search, X, Maximize2
+} from 'lucide-react'
 
 export default function TestimonialsPage() {
-  const [testimonials, setTestimonials] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showSubmissionForm, setShowSubmissionForm] = useState(false);
-  const [playingAudio, setPlayingAudio] = useState(null);
-  const [selectedTestimonial, setSelectedTestimonial] = useState(null);
-  const [filter, setFilter] = useState('all');
-  const [featuredIndex, setFeaturedIndex] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
-  const [recentSubmissions, setRecentSubmissions] = useState([]);
-  const [hoveredCard, setHoveredCard] = useState(null);
+  const [testimonials, setTestimonials] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [playingAudio, setPlayingAudio] = useState(null)
+  const [filter, setFilter] = useState('all')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [lightbox, setLightbox] = useState({ open: false, images: [], index: 0 })
 
   useEffect(() => {
-    loadTestimonials();
-    loadRecentActivity();
-  }, [filter]);
-
-  // Auto-rotate featured testimonials
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const featured = testimonials.filter(t => t.is_featured);
-      if (featured.length > 1) {
-        setFeaturedIndex(prev => (prev + 1) % featured.length);
-      }
-    }, 6000);
-    return () => clearInterval(interval);
-  }, [testimonials]);
+    loadTestimonials()
+  }, [filter])
 
   const loadTestimonials = async () => {
     try {
+      setLoading(true)
       let query = supabase
         .from('testimonials')
         .select('*')
         .eq('status', 'approved')
         .order('is_featured', { ascending: false })
-        .order('submitted_at', { ascending: false });
+        .order('rating', { ascending: false })
+        .order('submitted_at', { ascending: false })
 
       if (filter !== 'all') {
-        query = query.eq('project_type', filter);
+        query = query.eq('project_type', filter)
       }
 
-      const { data, error } = await query;
-
-      if (error) throw error;
-      setTestimonials(data || []);
+      const { data, error } = await query
+      if (error) throw error
+      setTestimonials(data || [])
     } catch (error) {
-      console.error('Error loading testimonials:', error);
+      console.error('Error loading testimonials:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
-
-  const loadRecentActivity = async () => {
-    const { data } = await supabase
-      .from('testimonials')
-      .select('client_name, submitted_at, project_type')
-      .eq('status', 'approved')
-      .order('submitted_at', { ascending: false })
-      .limit(5);
-    setRecentSubmissions(data || []);
-  };
+  }
 
   const toggleAudio = (audioUrl, lang) => {
     if (playingAudio?.url === audioUrl) {
-      playingAudio.audio.pause();
-      setPlayingAudio(null);
-    } else {
-      if (playingAudio) {
-        playingAudio.audio.pause();
-      }
-      const audio = new Audio(audioUrl);
-      audio.play();
-      setPlayingAudio({ url: audioUrl, audio, lang });
-      audio.onended = () => setPlayingAudio(null);
+      playingAudio.audio.pause()
+      setPlayingAudio(null)
+      return
     }
-  };
-
-  const calculateGrowth = (before, after) => {
-    if (!before || !after) return null;
-    const growth = ((after - before) / before) * 100;
-    return growth.toFixed(1);
-  };
-
-  const projectTypes = [
-    { id: 'all', label: 'All Projects', icon: Briefcase, count: testimonials.length },
-    { id: 'website', label: 'Websites', icon: Globe, count: testimonials.filter(t => t.project_type === 'website').length },
-    { id: 'web_app', label: 'Web Apps', icon: Rocket, count: testimonials.filter(t => t.project_type === 'web_app').length },
-    { id: 'mobile_app', label: 'Mobile Apps', icon: Globe, count: testimonials.filter(t => t.project_type === 'mobile_app').length },
-    { id: 'trading_bot', label: 'Trading Bots', icon: TrendingUp, count: testimonials.filter(t => t.project_type === 'trading_bot').length },
-    { id: 'other', label: 'Other', icon: Briefcase, count: testimonials.filter(t => t.project_type === 'other').length },
-  ];
-
-  // Quick Actions
-  const quickActions = [
-    { icon: Plus, label: 'Add Review', color: 'blue', onClick: () => setShowSubmissionForm(true) },
-    { icon: Share2, label: 'Share', color: 'purple', onClick: () => handleShare() },
-    { icon: MessageSquare, label: 'WhatsApp', color: 'green', onClick: () => window.open('https://wa.me/0794144738?text=Hi! I saw your testimonials page.', '_blank') },
-  ];
-
-  // Stats calculation
-  const avgRating = testimonials.length > 0 
-    ? (testimonials.reduce((acc, t) => acc + (t.rating || 5), 0) / testimonials.length).toFixed(1)
-    : '0.0';
-  const growthCount = testimonials.filter(t => t.clients_after > t.clients_before).length;
-  const voiceCount = testimonials.filter(t => t.voice_message_en || t.voice_message_rw).length;
-  const featuredCount = testimonials.filter(t => t.is_featured).length;
-
-  // Filter testimonials based on search
-  const filteredTestimonials = testimonials.filter(t => 
-    t.client_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.project_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.testimonial_text.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Featured testimonials for carousel
-  const featuredTestimonials = testimonials.filter(t => t.is_featured);
-  const currentFeatured = featuredTestimonials[featuredIndex] || featuredTestimonials[0];
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: 'Client Success Stories',
-        text: 'Check out these amazing client testimonials!',
-        url: window.location.href
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Link copied to clipboard!');
+    if (playingAudio?.audio) {
+      playingAudio.audio.pause()
     }
-  };
-
-  if (loading) {
-    return <Loader />;
+    const audio = new Audio(audioUrl)
+    audio.play()
+    setPlayingAudio({ url: audioUrl, audio, lang })
+    audio.onended = () => setPlayingAudio(null)
   }
 
+  const getAllImages = (t) => {
+    const imgs = []
+    if (t.project_screenshot) imgs.push(t.project_screenshot)
+    if (Array.isArray(t.project_screenshots)) {
+      t.project_screenshots.forEach(s => { if (s && !imgs.includes(s)) imgs.push(s) })
+    }
+    return imgs
+  }
+
+  const openLightbox = (images, start = 0) => {
+    if (images.length === 0) return
+    setLightbox({ open: true, images, index: start })
+  }
+
+  const closeLightbox = () => setLightbox({ open: false, images: [], index: 0 })
+  const nextImg = () => setLightbox(l => ({ ...l, index: (l.index + 1) % l.images.length }))
+  const prevImg = () => setLightbox(l => ({ ...l, index: (l.index - 1 + l.images.length) % l.images.length }))
+
+  useEffect(() => {
+    if (!lightbox.open) return
+    const onKey = (e) => {
+      if (e.key === 'Escape') closeLightbox()
+      if (e.key === 'ArrowRight') nextImg()
+      if (e.key === 'ArrowLeft') prevImg()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [lightbox.open])
+
+  const filtered = testimonials.filter(t => {
+    if (!searchQuery) return true
+    const q = searchQuery.toLowerCase()
+    return (
+      t.client_name?.toLowerCase().includes(q) ||
+      t.client_company?.toLowerCase().includes(q) ||
+      t.project_title?.toLowerCase().includes(q) ||
+      t.testimonial_text?.toLowerCase().includes(q)
+    )
+  })
+
+  const categories = [
+    { id: 'all', label: 'All', count: testimonials.length },
+    { id: 'website', label: 'Websites', count: testimonials.filter(t => t.project_type === 'website').length },
+    { id: 'web_app', label: 'Web Apps', count: testimonials.filter(t => t.project_type === 'web_app').length },
+    { id: 'mobile', label: 'Mobile', count: testimonials.filter(t => t.project_type === 'mobile').length },
+    { id: 'ecommerce', label: 'E-commerce', count: testimonials.filter(t => t.project_type === 'ecommerce').length },
+    { id: 'branding', label: 'Branding', count: testimonials.filter(t => t.project_type === 'branding').length },
+  ]
+
+  if (loading) return <Loader />
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* TOP NAVIGATION BAR */}
-      <div className="sticky top-20 z-50 bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            {/* Logo/Brand */}
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[yellow-600] rounded-xl flex items-center justify-center">
-                <Trophy className="w-5 h-5 text-white" />
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero */}
+      <section className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-16 sm:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-4xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-yellow-500/10 border border-yellow-500/30 mb-6">
+              <Sparkles className="w-4 h-4 text-yellow-400" />
+              <span className="text-sm font-medium text-yellow-300">Trusted by growing brands</span>
+            </div>
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight">
+              What My Clients <span className="text-yellow-400">Say</span>
+            </h1>
+            <p className="mt-6 text-lg sm:text-xl text-gray-300 leading-relaxed">
+              Real results from real businesses. Explore the work, hear their voices, and see the impact delivered.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-6 text-sm text-gray-400">
+              <div className="flex items-center gap-2">
+                <BadgeCheck className="w-5 h-5 text-yellow-400" />
+                <span>Verified testimonials</span>
               </div>
-              <div>
-                <h1 className="font-bold text-lg text-gray-900">
-                  Success Stories
-                </h1>
-                <p className="text-xs text-gray-600">{testimonials.length} happy clients</p>
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-5 h-5 text-yellow-400" />
+                <span>Live project previews</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mic className="w-5 h-5 text-yellow-400" />
+                <span>Voice testimonials</span>
               </div>
             </div>
-
-            {/* Quick Stats Row */}
-            <div className="hidden md:flex items-center gap-6">
-              <div className="flex items-center gap-2 text-sm">
-                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                <span className="text-gray-600">Rating:</span>
-                <span className="font-bold text-gray-800">{avgRating}/5</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <TrendingUp className="w-4 h-4 text-green-600" />
-                <span className="text-gray-600">Growth:</span>
-                <span className="font-bold text-gray-800">{growthCount}</span>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <Crown className="w-4 h-4 text-yellow-600" />
-                <span className="text-gray-600">Featured:</span>
-                <span className="font-bold text-gray-800">{featuredCount}</span>
-              </div>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              onClick={() => setShowSubmissionForm(true)}
-              className="px-4 py-2 bg-[yellow-600] hover:bg-[#8a5c7f] rounded-lg flex items-center gap-2 text-sm font-medium transition-colors duration-200 text-white"
-            >
-              <Plus className="w-4 h-4" />
-              Share Your Story
-            </button>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
-          {/* LEFT SIDEBAR - Sticky Navigation */}
-          <div className="hidden lg:block lg:col-span-2">
-            <div className="sticky top-24 space-y-4">
-              {/* Project Type Filter */}
-              <div className="bg-white rounded-2xl p-4 border border-gray-200">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <Filter className="w-3 h-3" /> Categories
-                </h3>
-                <div className="space-y-1">
-                  {projectTypes.map((type) => {
-                    const Icon = type.icon;
-                    return (
-                      <button
-                        key={type.id}
-                        onClick={() => setFilter(type.id)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors duration-200 ${
-                          filter === type.id
-                            ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
-                            : 'hover:bg-gray-100 text-gray-600'
-                        }`}
-                      >
-                        <span className="flex items-center gap-2">
-                          <Icon className="w-4 h-4" />
-                          {type.label}
-                        </span>
-                        <span className="text-xs bg-gray-200 px-2 py-0.5 rounded-full">{type.count}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Quick Actions */}
-              <div className="bg-white rounded-2xl p-4 border border-gray-200">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                  Quick Actions
-                </h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {quickActions.map((action, i) => (
-                    <button
-                      key={i}
-                      onClick={action.onClick}
-                      className={`p-3 rounded-xl border transition-colors duration-200 group ${
-                        action.color === 'blue' ? 'bg-yellow-100 border-yellow-200 hover:bg-yellow-200' :
-                        action.color === 'purple' ? 'bg-yellow-100 border-yellow-200 hover:bg-yellow-200' :
-                        'bg-green-100 border-green-200 hover:bg-green-200'
-                      }`}
-                    >
-                      <action.icon className={`mx-auto mb-1 ${
-                        action.color === 'blue' ? 'text-yellow-600' :
-                        action.color === 'purple' ? 'text-yellow-600' :
-                        'text-green-600'
-                      }`} />
-                      <span className="text-xs text-gray-700">{action.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Trending Tags */}
-              <div className="bg-white rounded-2xl p-4 border border-gray-200">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-gray-600" /> Trending
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {['Growth', 'Success', 'Trading', 'Website', 'App', 'Revenue'].map(tag => (
-                    <span key={tag} className="px-2 py-1 bg-gray-100 rounded-lg text-xs text-gray-600 hover:bg-gray-200 cursor-pointer transition-colors duration-200">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* MAIN CONTENT AREA */}
-          <div className="lg:col-span-7 space-y-6">
-
-            {/* FEATURED TESTIMONIAL CAROUSEL */}
-            {currentFeatured && (
-              <div className="relative bg-white rounded-3xl p-6 border border-gray-300 overflow-hidden">
-                <div className="absolute top-4 right-4 flex items-center gap-2">
-                  <span className="px-3 py-1 bg-yellow-500 text-white rounded-full text-xs font-medium flex items-center gap-1">
-                    <Sparkles className="w-3 h-3" /> Featured Story
-                  </span>
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-6 items-center">
-                  {/* Screenshot */}
-                  {currentFeatured.project_screenshot ? (
-                    <div 
-                      className="relative rounded-2xl overflow-hidden aspect-video cursor-pointer group"
-                      onClick={() => setSelectedTestimonial(currentFeatured)}
-                    >
-                      <img 
-                        src={currentFeatured.project_screenshot} 
-                        alt={currentFeatured.project_title}
-                        loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent" />
-                      <button className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                        <div className="w-16 h-16 bg-white/20 backdrop-blur rounded-full flex items-center justify-center">
-                          <ImageIcon className="w-6 h-6" />
-                        </div>
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="rounded-2xl aspect-video bg-gradient-to-br from-yellow-100 tyelrowle-100 flex items-center justify-center">
-                      <Quote className="w-16 h-16 text-yellow-400" />
-                    </div>
-                  )}
-                  
-                  {/* Content */}
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-14 h-14 bg-[yellow-600] rounded-full flex items-center justify-center text-xl font-bold text-white">
-                        {currentFeatured.client_name.charAt(0).toUpperCase()}
-                      </div>
-                      <div>
-                        <h3 className="font-bold text-lg break-words">{currentFeatured.client_name}</h3>
-                        {currentFeatured.client_company && (
-                          <p className="text-sm text-gray-600 break-words">{currentFeatured.client_company}</p>
-                        )}
-                        <div className="flex items-center gap-1 mt-1">
-                          {[...Array(currentFeatured.rating || 5)].map((_, i) => (
-                            <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div>
-                      <h4 className="text-xl font-bold text-yellow-600 mb-2">{currentFeatured.project_title}</h4>
-                      <p className="text-gray-700 line-clamp-4 break-words">"{currentFeatured.testimonial_text}"</p>
-                    </div>
-                    
-                    {/* Impact Stats */}
-                    {(currentFeatured.clients_before !== null || currentFeatured.revenue_before !== null) && (
-                      <div className="flex gap-4">
-                        {currentFeatured.clients_before !== null && (
-                          <div className="bg-green-100 px-4 py-2 rounded-lg">
-                            <span className="text-green-600 font-bold text-lg">+{calculateGrowth(currentFeatured.clients_before, currentFeatured.clients_after)}%</span>
-                            <p className="text-xs text-green-700">Client Growth</p>
-                          </div>
-                        )}
-                        {currentFeatured.revenue_before !== null && (
-                          <div className="bg-yellow-100 px-4 py-2 rounded-lg">
-                            <span className="text-yellow-600 font-bold text-lg">+{calculateGrowth(currentFeatured.revenue_before, currentFeatured.revenue_after)}%</span>
-                            <p className="text-xs text-yellow-700">Revenue Impact</p>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                    
-                    {/* Carousel Navigation */}
-                    {featuredTestimonials.length > 1 && (
-                      <div className="flex items-center gap-2">
-                        <button 
-                          onClick={() => setFeaturedIndex(prev => prev === 0 ? featuredTestimonials.length - 1 : prev - 1)}
-                          className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors duration-200"
-                        >
-                          <ChevronLeft className="w-4 h-4" />
-                        </button>
-                        <div className="flex gap-1">
-                          {featuredTestimonials.map((_, idx) => (
-                            <button
-                              key={idx}
-                              onClick={() => setFeaturedIndex(idx)}
-                              className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-                                idx === featuredIndex ? 'bg-yellow-600' : 'bg-gray-300'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <button 
-                          onClick={() => setFeaturedIndex(prev => (prev + 1) % featuredTestimonials.length)}
-                          className="p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors duration-200"
-                        >
-                          <ChevronRight className="w-4 h-4" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Search Bar */}
-            <div className="sticky top-20 z-40">
-              <div className="bg-white rounded-2xl p-4 border border-gray-200">
-                <div className="flex gap-4">
-                  <div className="flex-1 relative">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search testimonials by client, project, or keyword..."
-                      className="w-full bg-gray-100 border border-gray-200 rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:border-yellow-500 text-gray-900 placeholder:text-gray-500"
-                    />
-                  </div>
-                  <button 
-                    onClick={() => setShowFilters(!showFilters)}
-                    className="px-4 py-2 bg-gray-100 border border-gray-200 rounded-xl hover:bg-gray-200 transition-colors duration-200 flex items-center gap-2"
-                  >
-                    <Filter className="w-4 h-4" />
-                    <span className="hidden sm:inline">Filters</span>
-                  </button>
-                </div>
-                
-                {/* Expandable Filters */}
-                {showFilters && (
-                  <div className="mt-4 pt-4 border-t border-gray-200">
-                    <p className="text-sm text-gray-600 mb-3">Filter by project type:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {projectTypes.map((type) => {
-                        const Icon = type.icon;
-                        return (
-                          <button
-                            key={type.id}
-                            onClick={() => setFilter(type.id)}
-                            className={`px-3 py-1.5 rounded-lg text-sm transition-colors duration-200 flex items-center gap-2 ${
-                              filter === type.id
-                                ? 'bg-yellow-600 text-white'
-                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            }`}
-                          >
-                            <Icon className="w-4 h-4" />
-                            {type.label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Results Count */}
-            <div className="flex items-center justify-between">
-              <p className="text-gray-600">
-                Showing <span className="text-gray-900 font-semibold">{filteredTestimonials.length}</span> of {testimonials.length} testimonials
-              </p>
-              {filter !== 'all' && (
-                <button 
-                  onClick={() => setFilter('all')}
-                  className="text-sm text-yellow-600 hover:text-yellow-700 transition-colors duration-200"
+      {/* Filters */}
+      <section className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+            <div className="flex flex-wrap items-center gap-2">
+              {categories.map(cat => (
+                <button
+                  key={cat.id}
+                  onClick={() => setFilter(cat.id)}
+                  className={`inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full text-sm font-medium transition ${
+                    filter === cat.id
+                      ? 'bg-slate-900 text-white shadow-sm'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
                 >
-                  Clear filter
+                  {cat.label}
+                  {cat.count > 0 && (
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${filter === cat.id ? 'bg-white/20' : 'bg-gray-200'}`}>
+                      {cat.count}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+            <div className="relative w-full lg:w-80">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                placeholder="Search client, company, project..."
+                className="w-full pl-9 pr-9 py-2.5 rounded-full border border-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-yellow-500/40 focus:border-yellow-500 transition"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <X className="w-4 h-4 text-gray-400 hover:text-gray-600" />
                 </button>
               )}
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Testimonials Feed */}
-            <div className="space-y-4">
-              {filteredTestimonials.map((testimonial, index) => (
-                <div
-                  key={testimonial.id}
-                  onMouseEnter={() => setHoveredCard(testimonial.id)}
-                  onMouseLeave={() => setHoveredCard(null)}
-                  className={`bg-white rounded-2xl p-5 border transition-colors duration-200 ${
-                    hoveredCard === testimonial.id 
-                      ? 'border-yellow-400' 
-                      : 'border-gray-300'
-                  } ${testimonial.is_featured ? 'ring-1 ring-yellow-400' : ''}`}
+      {/* Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+        {filtered.length === 0 ? (
+          <div className="text-center py-20">
+            <div className="w-20 h-20 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-6">
+              <Filter className="w-8 h-8 text-gray-400" />
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No testimonials found</h3>
+            <p className="text-gray-600">Try adjusting your filters or search term.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+            {filtered.map((t) => {
+              const images = getAllImages(t)
+              const hasVoice = t.voice_message_en || t.voice_message_rw
+              const voiceUrl = t.voice_message_en || t.voice_message_rw
+              const voiceLang = t.voice_message_en ? 'EN' : 'RW'
+
+              return (
+                <article
+                  key={t.id}
+                  className="group bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300"
                 >
-                  <div className="flex gap-4">
-                    {/* Avatar */}
-                    <div className="flex-shrink-0">
-                      <div className="w-14 h-14 bg-[yellow-600] rounded-2xl flex items-center justify-center text-xl font-bold text-white">
-                        {testimonial.client_name.charAt(0).toUpperCase()}
-                      </div>
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      {/* Header */}
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="font-bold text-lg break-words">{testimonial.client_name}</h3>
-                            {testimonial.is_featured && (
-                              <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded-full text-xs flex items-center gap-1 whitespace-nowrap">
-                                <Sparkles className="w-3 h-3" /> Featured
-                              </span>
-                            )}
-                          </div>
-                          {testimonial.client_company && (
-                            <p className="text-sm text-gray-600 break-words">{testimonial.client_company}</p>
-                          )}
+                  {/* Project preview */}
+                  {images.length > 0 && (
+                    <div className="relative aspect-[16/9] sm:aspect-[16/10] bg-slate-950 overflow-hidden">
+                      <img
+                        src={images[0]}
+                        alt={`${t.project_title} screenshot`}
+                        loading="lazy"
+                        className="w-full h-full object-contain group-hover:scale-[1.02] transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                      {images.length > 1 && (
+                        <button
+                          onClick={() => openLightbox(images, 0)}
+                          className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/70 text-white text-xs font-medium hover:bg-black/80 transition shadow-lg"
+                        >
+                          <Maximize2 className="w-3.5 h-3.5" />
+                          {images.length} screenshots
+                        </button>
+                      )}
+                      {t.is_featured && (
+                        <div className="absolute top-3 left-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-yellow-500 text-slate-900 text-xs font-semibold shadow-lg">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          Featured
                         </div>
-                        <div className="flex items-center gap-1">
-                          {[...Array(testimonial.rating || 5)].map((_, i) => (
-                            <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                      )}
+                    </div>
+                  )}
+
+                  {/* Content */}
+                  <div className="p-5 sm:p-6 space-y-5">
+                    {/* Header */}
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-lg sm:text-xl font-bold text-gray-900 truncate">
+                            {t.project_title || 'Project'}
+                          </h3>
+                          <BadgeCheck className="w-5 h-5 text-yellow-600 shrink-0" />
+                        </div>
+                        <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-gray-600">
+                          {t.client_company && (
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <Building2 className="w-4 h-4 shrink-0" />
+                              <span className="truncate font-medium">{t.client_company}</span>
+                            </div>
+                          )}
+                          {t.client_name && <span className="text-gray-400">— {t.client_name}</span>}
+                          {t.client_position && <span className="text-gray-400">({t.client_position})</span>}
+                        </div>
+                        {t.project_link && (
+                          <a
+                            href={t.project_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-yellow-700 hover:text-yellow-800"
+                          >
+                            <Globe className="w-4 h-4" />
+                            Visit website
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                      </div>
+                      {t.rating && (
+                        <div className="flex items-center gap-1 shrink-0 px-2.5 py-1 rounded-full bg-yellow-50 border border-yellow-200">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-4 h-4 ${i < t.rating ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}`}
+                            />
                           ))}
                         </div>
-                      </div>
-                      
-                      {/* Project Info */}
-                      <div className="mb-3">
-                        <span className="text-yellow-600 font-medium break-words">{testimonial.project_title}</span>
-                        <p className="text-sm text-gray-600 break-words">{testimonial.project_description}</p>
-                      </div>
-                      
-                      {/* Testimonial Text */}
-                      <p className="text-gray-700 mb-4 break-words whitespace-pre-wrap">"{testimonial.testimonial_text}"</p>
-                      
-                      {/* Screenshot & Actions Row */}
-                      <div className="flex items-start gap-4">
-                        {testimonial.project_screenshot && (
-                          <div 
-                            className="relative w-24 sm:w-32 h-20 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer group"
-                            onClick={() => setSelectedTestimonial(testimonial)}
+                      )}
+                    </div>
+
+                    {/* Quote */}
+                    {t.testimonial_text && (
+                      <blockquote className="relative pl-5 sm:pl-6">
+                        <Quote className="absolute left-0 top-0 w-5 h-5 sm:w-6 sm:h-6 text-yellow-400 -scale-x-100" />
+                        <p className="text-gray-700 leading-relaxed text-sm sm:text-base whitespace-pre-wrap break-words">
+                          {t.testimonial_text}
+                        </p>
+                      </blockquote>
+                    )}
+
+                    {/* Voice */}
+                    {hasVoice && (
+                      <div className="flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl bg-gray-50 border border-gray-200">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <button
+                            onClick={() => toggleAudio(voiceUrl, voiceLang)}
+                            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-slate-900 text-white flex items-center justify-center hover:bg-slate-800 transition shadow-sm shrink-0"
+                            aria-label="Play voice testimonial"
                           >
-                            <img
-                              src={testimonial.project_screenshot}
-                              alt={testimonial.project_title}
-                              loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition duration-300"
-                            />
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                              <ImageIcon className="w-5 h-5" />
+                            {playingAudio?.url === voiceUrl ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
+                          </button>
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-gray-900 truncate">Voice testimonial</p>
+                            <p className="text-xs text-gray-500">{voiceLang === 'EN' ? 'English' : 'Kinyarwanda'}</p>
+                          </div>
+                        </div>
+                        <Mic className="w-5 h-5 text-gray-400 shrink-0" />
+                      </div>
+                    )}
+
+                    {/* Results */}
+                    {((t.clients_before !== null && t.clients_after !== null) || (t.revenue_before !== null && t.revenue_after !== null)) && (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {t.clients_before !== null && t.clients_after !== null && (
+                          <div className="p-3 rounded-xl border border-gray-200 bg-white">
+                            <p className="text-xs uppercase tracking-wide text-gray-500 mb-1">Clients</p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-600">{t.clients_before}</span>
+                              <ArrowRight className="w-4 h-4 text-yellow-600" />
+                              <span className="text-base font-semibold text-gray-900">{t.clients_after}</span>
                             </div>
                           </div>
                         )}
-                        
-                        <div className="flex-1 flex flex-wrap items-center gap-2">
-                          {/* Voice Messages */}
-                          {(testimonial.voice_message_en || testimonial.voice_message_rw) && (
-                            <>
-                              {testimonial.voice_message_en && (
-                                <button
-                                  onClick={() => toggleAudio(testimonial.voice_message_en, 'en')}
-                                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-colors duration-200 ${
-                                    playingAudio?.url === testimonial.voice_message_en
-                                      ? 'bg-red-100 text-red-600'
-                                      : 'bg-yellow-100 text-yellow-600 hover:bg-yellow-200'
-                                  }`}
-                                >
-                                  {playingAudio?.url === testimonial.voice_message_en ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
-                                  <Mic className="w-3 h-3" /> EN
-                                </button>
-                              )}
-                              {testimonial.voice_message_rw && (
-                                <button
-                                  onClick={() => toggleAudio(testimonial.voice_message_rw, 'rw')}
-                                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs transition-colors duration-200 ${
-                                    playingAudio?.url === testimonial.voice_message_rw
-                                      ? 'bg-red-100 text-red-600'
-                                      : 'bg-green-100 text-green-600 hover:bg-green-200'
-                                  }`}
-                                >
-                                  {playingAudio?.url === testimonial.voice_message_rw ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />}
-                                  <Mic className="w-3 h-3" /> RW
-                                </button>
-                              )}
-                            </>
-                          )}
-                          
-                          {/* Impact Stats */}
-                          {testimonial.clients_before !== null && (
-                            <span className="px-2 py-1 bg-green-100 text-green-600 rounded-lg text-xs flex items-center gap-1">
-                              <TrendingUp className="w-3 h-3" /> +{calculateGrowth(testimonial.clients_before, testimonial.clients_after)}% Clients
-                            </span>
-                          )}
-                          {testimonial.revenue_before !== null && (
-                            <span className="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-lg text-xs flex items-center gap-1">
-                              <TrendingUp className="w-3 h-3" /> +{calculateGrowth(testimonial.revenue_before, testimonial.revenue_after)}% Revenue
-                            </span>
-                          )}
-                          
-                          {/* Links */}
-                          {testimonial.project_link && (
-                            <a
-                              href={testimonial.project_link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1 text-xs text-yellow-600 hover:text-yellow-700 transition-colors duration-200"
-                            >
-                              <Globe className="w-3 h-3" /> Live Site
-                            </a>
-                          )}
-                        </div>
+                        {t.revenue_before !== null && t.revenue_after !== null && (
+                          <div className="p-3 rounded-xl border border-gray-200 bg-white">
+                            <p className="text-xs uppercase tracking-wide text-gray-500 mb-1">Revenue</p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-gray-600">{t.revenue_before}</span>
+                              <ArrowRight className="w-4 h-4 text-yellow-600" />
+                              <span className="text-base font-semibold text-gray-900">{t.revenue_after}</span>
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                    )}
 
-            {/* Empty State */}
-            {filteredTestimonials.length === 0 && (
-              <div className="text-center py-16">
-                <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Search className="w-8 h-8 text-gray-500" />
-                </div>
-                <h3 className="text-xl font-bold mb-2 text-gray-800">No testimonials found</h3>
-                <p className="text-gray-600">Try adjusting your search or filter criteria</p>
-                <button 
-                  onClick={() => {setSearchQuery(''); setFilter('all');}}
-                  className="mt-4 px-6 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg transition-colors duration-200"
+                    {/* Links */}
+                    {(t.project_link || t.demo_link || images.length > 1) && (
+                      <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-gray-100">
+                        {t.project_link && (
+                          <a
+                            href={t.project_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-medium transition shadow-sm"
+                          >
+                            <Globe className="w-4 h-4" />
+                            Live site
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                        {t.demo_link && (
+                          <a
+                            href={t.demo_link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-400 text-gray-700 text-xs sm:text-sm font-medium transition"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                            Demo
+                          </a>
+                        )}
+                        {images.length > 1 && (
+                          <button
+                            onClick={() => openLightbox(images)}
+                            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-gray-300 hover:border-gray-400 text-gray-700 text-xs sm:text-sm font-medium transition"
+                          >
+                            <ImageIcon className="w-4 h-4" />
+                            View all screenshots
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </article>
+              )
+            })}
+          </div>
+        )}
+      </section>
+
+      {/* Lightbox */}
+      {lightbox.open && (
+        <div className="fixed inset-0 z-50 bg-black/95 flex flex-col">
+          <div className="flex items-center justify-between p-4 sm:p-5">
+            <div className="text-white text-sm sm:text-base">
+              Screenshot {lightbox.index + 1} of {lightbox.images.length}
+            </div>
+            <button onClick={closeLightbox} className="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition">
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+          <div className="relative flex-1 flex items-center justify-center px-2 sm:px-16">
+            <img
+              src={lightbox.images[lightbox.index]}
+              alt={`Screenshot ${lightbox.index + 1}`}
+              className="max-w-full max-h-full object-contain"
+            />
+            {lightbox.images.length > 1 && (
+              <>
+                <button
+                  onClick={prevImg}
+                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-3 sm:p-4 rounded-full bg-black/70 text-white hover:bg-yellow-500 hover:text-slate-900 transition"
                 >
-                  Clear Filters
+                  <ChevronLeft className="w-6 h-6" />
                 </button>
-              </div>
+                <button
+                  onClick={nextImg}
+                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-3 sm:p-4 rounded-full bg-black/70 text-white hover:bg-yellow-500 hover:text-slate-900 transition"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </>
             )}
           </div>
-
-          {/* RIGHT SIDEBAR - Sticky */}
-          <div className="hidden lg:block lg:col-span-3">
-            <div className="sticky top-24 space-y-4">
-              {/* Live Activity Feed */}
-              <div className="bg-white rounded-2xl p-4 border border-gray-200">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                  </span>
-                  Live Activity
-                </h3>
-                <div className="space-y-3">
-                  {recentSubmissions.map((sub, idx) => (
-                    <div key={idx} className="flex items-center gap-3 text-sm">
-                      <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-xs font-bold text-gray-700">
-                        {sub.client_name.charAt(0)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-gray-700 truncate">{sub.client_name} shared a story</p>
-                        <p className="text-xs text-gray-500">{sub.project_type}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Quick Stats */}
-              <div className="bg-white rounded-2xl p-4 border border-gray-200">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                  Impact Overview
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Avg Rating</span>
-                    <span className="font-bold text-yellow-600">{avgRating}/5</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Growth Stories</span>
-                    <span className="font-bold text-green-600">{growthCount}</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-600">Voice Reviews</span>
-                    <span className="font-bold text-yellow-600">{voiceCount}</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Submit CTA */}
-              <div className="bg-yellow-50 rounded-2xl p-4 border border-yellow-200">
-                <h3 className="font-bold mb-2 flex items-center gap-2 text-gray-800">
-                  <Plus className="w-4 h-4 text-yellow-600" />
-                  Share Your Story
-                </h3>
-                <p className="text-sm text-gray-600 mb-3">Have you worked with me? Share your experience!</p>
+          {lightbox.images.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto justify-center p-3 sm:p-4">
+              {lightbox.images.map((img, i) => (
                 <button
-                  onClick={() => setShowSubmissionForm(true)}
-                  className="w-full py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg text-sm font-medium transition-colors duration-200"
+                  key={img + i}
+                  onClick={() => setLightbox(l => ({ ...l, index: i }))}
+                  className={`w-16 h-11 sm:w-20 sm:h-14 rounded border-2 overflow-hidden shrink-0 transition ${
+                    i === lightbox.index ? 'border-yellow-500' : 'border-transparent opacity-50 hover:opacity-90'
+                  }`}
                 >
-                  Submit Testimonial
+                  <img src={img} alt="" className="w-full h-full object-cover" />
                 </button>
-              </div>
-
-              {/* Top Industries */}
-              <div className="bg-white rounded-2xl p-4 border border-gray-200">
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-                  Top Industries
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {['Website', 'Trading', 'Mobile App', 'Web App'].map((industry) => (
-                    <span key={industry} className="px-2 py-1 bg-gray-100 rounded-lg text-xs text-gray-600 hover:bg-gray-200 cursor-pointer transition-colors duration-200">
-                      {industry}
-                    </span>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile FAB for Submit */}
-      <button
-        onClick={() => setShowSubmissionForm(true)}
-        className="md:hidden fixed bottom-6 right-6 z-50 w-14 h-14 bg-yellow-600 hover:bg-yellow-700 rounded-full shadow-lg flex items-center justify-center transition hover:scale-110"
-      >
-        <Plus className="w-6 h-6" />
-      </button>
-
-      {/* Submission Form Modal */}
-      {showSubmissionForm && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-slate-900 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-slate-900 border-b border-slate-800 p-4 flex items-center justify-between">
-              <h2 className="text-xl font-bold">Share Your Success Story</h2>
-              <button
-                onClick={() => setShowSubmissionForm(false)}
-                className="p-2 hover:bg-slate-800 rounded-lg transition"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-6">
-              <TestimonialSubmissionForm 
-                onSuccess={() => {
-                  setShowSubmissionForm(false);
-                  loadTestimonials();
-                }}
-                onCancel={() => setShowSubmissionForm(false)}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Image Modal */}
-      {selectedTestimonial && (
-        <div 
-          className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4"
-          onClick={() => setSelectedTestimonial(null)}
-        >
-          <div className="max-w-4xl max-h-[90vh]">
-            <img
-              src={selectedTestimonial.project_screenshot}
-              alt={selectedTestimonial.project_title}
-              loading="lazy" className="max-w-full max-h-[85vh] rounded-lg"
-            />
-            <p className="text-center mt-4 text-gray-300">
-              {selectedTestimonial.project_title} - {selectedTestimonial.client_name}
-            </p>
-          </div>
+          )}
         </div>
       )}
     </div>
-  );
+  )
 }
