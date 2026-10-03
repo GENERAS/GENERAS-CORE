@@ -1,27 +1,48 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { FaPlus, FaEdit, FaTrash, FaSave, FaTimes, FaAward, FaLink, FaBox, FaFileAlt, FaUpload, FaImage } from 'react-icons/fa'
+import { FaPlus, FaEdit, FaTrash, FaSave, FaAward, FaBox, FaFileAlt } from 'react-icons/fa'
+import ImageUploader, {
+  inputCls, labelCls, panelCls, btnPrimary, btnGhost, Notice, pickFields, deleteStoredFiles
+} from './AdminUI'
+
+const BUCKET = 'certificates'
+
+const EMPTY_FORM = {
+  title: '',
+  issuer: '',
+  issue_date: '',
+  expiry_date: '',
+  certificate_url: '',
+  credential_id: '',
+  verification_url: '',
+  category: 'development',
+  certificate_type: 'digital',
+  has_hard_copy: false,
+  hard_copy_location: '',
+  hard_copy_notes: '',
+  hard_copy_image_url: ''
+}
+
+// id, likes and created_at are server-owned. The old code updated with the
+// entire form object, which put a stale likes value back over the real count.
+const FORM_FIELDS = [
+  'title', 'issuer', 'issue_date', 'expiry_date', 'certificate_url',
+  'credential_id', 'verification_url', 'category', 'certificate_type',
+  'has_hard_copy', 'hard_copy_location', 'hard_copy_notes', 'hard_copy_image_url'
+]
 
 export default function CertificatesManager() {
   const [certificates, setCertificates] = useState([])
   const [editing, setEditing] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [uploading, setUploading] = useState(false)
-  const [form, setForm] = useState({
-    title: '',
-    issuer: '',
-    issue_date: '',
-    expiry_date: '',
-    certificate_url: '',
-    credential_id: '',
-    verification_url: '',
-    category: 'development',
-    certificate_type: 'digital',
-    has_hard_copy: false,
-    hard_copy_location: '',
-    hard_copy_notes: '',
-    hard_copy_image_url: ''  // NEW: URL for uploaded hard copy image
-  })
+  const [saving, setSaving] = useState(false)
+  const [notice, setNotice] = useState({ type: '', text: '' })
+  const [form, setForm] = useState(EMPTY_FORM)
+
+  const flash = (type, text) => {
+    setNotice({ type, text })
+    if (type !== 'error') setTimeout(() => setNotice({ type: '', text: '' }), 4000)
+  }
 
   useEffect(() => {
     loadCertificates()
@@ -29,74 +50,64 @@ export default function CertificatesManager() {
 
   const loadCertificates = async () => {
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('certificates')
         .select('*')
         .order('issue_date', { ascending: false })
 
+      if (error) throw error
       setCertificates(data || [])
     } catch (error) {
-      console.error('Error loading certificates:', error)
+      flash('error', 'Could not load certificates: ' + error.message)
     } finally {
       setLoading(false)
     }
   }
 
-  // Upload image to Supabase Storage
-  const uploadHardCopyImage = async (file) => {
-    setUploading(true)
-    
-    try {
-      const fileExt = file.name.split('.').pop()
-      const fileName = `hard_cert_${Date.now()}.${fileExt}`
-      const filePath = `hard_certificates/${fileName}`
-
-      const { error: uploadError } = await supabase.storage
-        .from('certificates')
-        .upload(filePath, file)
-
-      if (uploadError) throw uploadError
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('certificates')
-        .getPublicUrl(filePath)
-
-      setForm({ ...form, hard_copy_image_url: publicUrl })
-      alert('Image uploaded successfully!')
-    } catch (error) {
-      console.error('Error uploading image:', error)
-      alert('Error uploading image: ' + error.message)
-    } finally {
-      setUploading(false)
-    }
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
+    if (!form.title.trim()) return flash('error', 'Please enter a title')
+    if (!form.issuer.trim()) return flash('error', 'Please enter an issuer')
+
+    setSaving(true)
+    setNotice({ type: '', text: '' })
+
+    const payload = {
+      ...pickFields(form, FORM_FIELDS),
+      title: form.title.trim(),
+      issuer: form.issuer.trim(),
+      issue_date: form.issue_date || null,
+      expiry_date: form.expiry_date || null,
+      certificate_url: form.certificate_url || null,
+      verification_url: form.verification_url || null,
+      hard_copy_image_url: form.hard_copy_image_url || null
+    }
+
     try {
       if (editing && editing !== 'new') {
         const { error } = await supabase
           .from('certificates')
-          .update(form)
+          .update(payload)
           .eq('id', editing)
 
         if (error) throw error
-        alert('Certificate updated successfully!')
+        flash('success', 'Certificate updated')
       } else {
         const { error } = await supabase
           .from('certificates')
-          .insert([{...form, created_at: new Date().toISOString()}])
+          .insert([payload])
 
         if (error) throw error
-        alert('Certificate added successfully!')
+        flash('success', 'Certificate added')
       }
 
       resetForm()
       loadCertificates()
     } catch (error) {
-      console.error('Error saving certificate:', error)
-      alert('Error: ' + error.message)
+      flash('error', 'Save failed: ' + error.message)
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -117,43 +128,36 @@ export default function CertificatesManager() {
       hard_copy_notes: cert.hard_copy_notes || '',
       hard_copy_image_url: cert.hard_copy_image_url || ''
     })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (cert) => {
     if (!confirm('Are you sure you want to delete this certificate?')) return
+
+    // Clear the stored hard copy file too, otherwise replacing it repeatedly
+    // leaves orphans in the bucket.
+    if (cert.hard_copy_image_url) {
+      await deleteStoredFiles([cert.hard_copy_image_url])
+    }
 
     try {
       const { error } = await supabase
         .from('certificates')
         .delete()
-        .eq('id', id)
+        .eq('id', cert.id)
 
       if (error) throw error
-      alert('Certificate deleted successfully!')
+      flash('success', 'Certificate deleted')
       loadCertificates()
     } catch (error) {
-      console.error('Error deleting certificate:', error)
-      alert('Error: ' + error.message)
+      flash('error', 'Delete failed: ' + error.message)
     }
   }
 
   const resetForm = () => {
     setEditing(null)
-    setForm({
-      title: '',
-      issuer: '',
-      issue_date: '',
-      expiry_date: '',
-      certificate_url: '',
-      credential_id: '',
-      verification_url: '',
-      category: 'development',
-      certificate_type: 'digital',
-      has_hard_copy: false,
-      hard_copy_location: '',
-      hard_copy_notes: '',
-      hard_copy_image_url: ''
-    })
+    setForm(EMPTY_FORM)
+    setNotice({ type: '', text: '' })
   }
 
   if (loading) {
@@ -179,15 +183,18 @@ export default function CertificatesManager() {
 
       {/* Certificate Form */}
       {editing !== null && (
-        <form onSubmit={handleSubmit} className="bg-slate-800 p-6 rounded-lg mb-8 space-y-4 max-h-[70vh] overflow-y-auto">
-          <div className="flex justify-between items-center mb-4 sticky top-0 bg-slate-800 py-2">
-            <h3 className="text-xl font-semibold">
+        <form onSubmit={handleSubmit} className={panelCls + ' mb-8 space-y-5 max-h-[70vh] overflow-y-auto'}>
+          <div className="flex justify-between items-center mb-4 sticky top-0 bg-slate-900 py-2 z-10">
+            <h3 className="text-xl font-semibold text-white">
               {editing === 'new' ? 'Add New Certificate' : 'Edit Certificate'}
             </h3>
-            <button type="button" onClick={resetForm} className="text-gray-400 hover:text-white">
-              <FaTimes />
+            <button type="button" onClick={resetForm} aria-label="Close form"
+              className="text-slate-400 hover:text-white">
+              Cancel
             </button>
           </div>
+
+          <Notice notice={notice} />
 
           <div className="grid grid-cols-2 gap-4">
             {/* Basic Info */}
@@ -198,7 +205,7 @@ export default function CertificatesManager() {
                 required
                 value={form.title}
                 onChange={e => setForm({...form, title: e.target.value})}
-                className="w-full bg-slate-700 rounded-lg px-4 py-2"
+                className={inputCls}
                 placeholder="e.g., Web Development Fundamentals"
               />
             </div>
@@ -209,7 +216,7 @@ export default function CertificatesManager() {
                 required
                 value={form.issuer}
                 onChange={e => setForm({...form, issuer: e.target.value})}
-                className="w-full bg-slate-700 rounded-lg px-4 py-2"
+                className={inputCls}
                 placeholder="e.g., Coursera, Binance Academy"
               />
             </div>
@@ -218,7 +225,7 @@ export default function CertificatesManager() {
               <select
                 value={form.category}
                 onChange={e => setForm({...form, category: e.target.value})}
-                className="w-full bg-slate-700 rounded-lg px-4 py-2"
+                className={inputCls}
               >
                 <option value="development">Development</option>
                 <option value="trading">Trading</option>
@@ -234,7 +241,7 @@ export default function CertificatesManager() {
                 type="date"
                 value={form.issue_date}
                 onChange={e => setForm({...form, issue_date: e.target.value})}
-                className="w-full bg-slate-700 rounded-lg px-4 py-2"
+                className={inputCls}
               />
             </div>
             <div>
@@ -243,7 +250,7 @@ export default function CertificatesManager() {
                 type="date"
                 value={form.expiry_date}
                 onChange={e => setForm({...form, expiry_date: e.target.value})}
-                className="w-full bg-slate-700 rounded-lg px-4 py-2"
+                className={inputCls}
               />
             </div>
 
@@ -289,7 +296,7 @@ export default function CertificatesManager() {
                     type="url"
                     value={form.certificate_url}
                     onChange={e => setForm({...form, certificate_url: e.target.value})}
-                    className="w-full bg-slate-700 rounded-lg px-4 py-2"
+                    className={inputCls}
                     placeholder="https://..."
                   />
                 </div>
@@ -299,7 +306,7 @@ export default function CertificatesManager() {
                     type="url"
                     value={form.verification_url}
                     onChange={e => setForm({...form, verification_url: e.target.value})}
-                    className="w-full bg-slate-700 rounded-lg px-4 py-2"
+                    className={inputCls}
                     placeholder="https://verify.example.com/..."
                   />
                 </div>
@@ -309,7 +316,7 @@ export default function CertificatesManager() {
                     type="text"
                     value={form.credential_id}
                     onChange={e => setForm({...form, credential_id: e.target.value})}
-                    className="w-full bg-slate-700 rounded-lg px-4 py-2"
+                    className={inputCls}
                     placeholder="e.g., ABC123DEF"
                   />
                 </div>
@@ -320,54 +327,16 @@ export default function CertificatesManager() {
             {(form.certificate_type === 'physical') && (
               <>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium mb-1 flex items-center gap-2">
-                    <FaImage className="text-amber-500" />
-                    Upload Photo of Hard Copy Certificate
-                  </label>
-                  <div className="border-2 border-dashed border-slate-600 rounded-lg p-4 text-center">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        if (e.target.files[0]) uploadHardCopyImage(e.target.files[0])
-                      }}
-                      className="hidden"
-                      id="hard-copy-upload"
-                      disabled={uploading}
-                    />
-                    <label
-                      htmlFor="hard-copy-upload"
-                      className="cursor-pointer block"
-                    >
-                      {uploading ? (
-                        <div className="flex flex-col items-center">
-                          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500 mb-2"></div>
-                          <p className="text-sm text-gray-400">Uploading...</p>
-                        </div>
-                      ) : form.hard_copy_image_url ? (
-                        <div className="relative">
-                          <img 
-                            src={form.hard_copy_image_url} 
-                            alt="Hard copy preview"
-                            loading="lazy" className="max-h-32 mx-auto rounded-lg"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => setForm({...form, hard_copy_image_url: ''})}
-                            className="absolute top-0 right-0 bg-red-600 rounded-full p-1 text-xs"
-                          >
-                            <FaTimes />
-                          </button>
-                        </div>
-                      ) : (
-                        <>
-                          <FaUpload className="text-3xl text-gray-500 mx-auto mb-2" />
-                          <p className="text-sm text-gray-400">Click to upload photo of physical certificate</p>
-                          <p className="text-xs text-gray-500 mt-1">JPG, PNG, GIF up to 5MB</p>
-                        </>
-                      )}
-                    </label>
-                  </div>
+                  <ImageUploader
+                    bucket={BUCKET}
+                    prefix="hard-copies"
+                    single
+                    id="cert-hard-copy"
+                    label="Photo of Hard Copy Certificate"
+                    hint="A photo of the physical certificate, up to 5MB. Optional."
+                    value={form.hard_copy_image_url ? [form.hard_copy_image_url] : []}
+                    onChange={list => setForm({ ...form, hard_copy_image_url: list[0] || '' })}
+                  />
                 </div>
                 <div className="col-span-2">
                   <label className="block text-sm font-medium mb-1">Hard Copy Location</label>
@@ -375,7 +344,7 @@ export default function CertificatesManager() {
                     type="text"
                     value={form.hard_copy_location}
                     onChange={e => setForm({...form, hard_copy_location: e.target.value})}
-                    className="w-full bg-slate-700 rounded-lg px-4 py-2"
+                    className={inputCls}
                     placeholder="e.g., Filing cabinet, Portfolio folder, Safe"
                   />
                 </div>
@@ -384,7 +353,7 @@ export default function CertificatesManager() {
                   <textarea
                     value={form.hard_copy_notes}
                     onChange={e => setForm({...form, hard_copy_notes: e.target.value})}
-                    className="w-full bg-slate-700 rounded-lg px-4 py-2"
+                    className={inputCls}
                     rows="2"
                     placeholder="Condition, frame, special markings, etc."
                   />
@@ -395,7 +364,7 @@ export default function CertificatesManager() {
                       type="checkbox"
                       checked={form.has_hard_copy}
                       onChange={e => setForm({...form, has_hard_copy: e.target.checked})}
-                      className="rounded bg-slate-700"
+                      className="w-5 h-5 accent-yellow-500"
                     />
                     <span className="flex items-center gap-1">
                       <FaFileAlt /> I have the physical certificate in my possession
@@ -406,11 +375,11 @@ export default function CertificatesManager() {
             )}
           </div>
 
-          <div className="flex gap-2 pt-4 sticky bottom-0 bg-slate-800 py-2">
-            <button type="submit" className="bg-yellow-600 hover:bg-yellow-700 px-6 py-2 rounded-lg flex items-center gap-2">
-              <FaSave /> {editing === 'new' ? 'Add Certificate' : 'Update Certificate'}
+          <div className="flex gap-2 pt-4 sticky bottom-0 bg-slate-900 py-3 border-t-2 border-slate-700">
+            <button type="submit" disabled={saving} className={btnPrimary}>
+              <FaSave /> {saving ? 'Saving...' : editing === 'new' ? 'Add Certificate' : 'Update Certificate'}
             </button>
-            <button type="button" onClick={resetForm} className="bg-gray-600 hover:bg-gray-700 px-6 py-2 rounded-lg">
+            <button type="button" onClick={resetForm} className={btnGhost}>
               Cancel
             </button>
           </div>
@@ -492,7 +461,7 @@ export default function CertificatesManager() {
               <button onClick={() => handleEdit(cert)} className="text-yellow-600 hover:text-yellow-500 dark:text-yellow-400 dark:hover:text-yellow-300">
                 <FaEdit />
               </button>
-              <button onClick={() => handleDelete(cert.id)} className="text-red-400 hover:text-red-300">
+              <button onClick={() => handleDelete(cert)} className="text-red-400 hover:text-red-300">
                 <FaTrash />
               </button>
             </div>

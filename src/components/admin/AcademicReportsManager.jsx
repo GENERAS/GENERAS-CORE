@@ -1,6 +1,18 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
-import { FaPlus, FaEdit, FaTrash, FaSave, FaTimes, FaUpload, FaFilePdf, FaImages, FaUserTie } from 'react-icons/fa'
+import { FaPlus, FaEdit, FaTrash, FaSave, FaFilePdf, FaImages, FaUserTie } from 'react-icons/fa'
+import ImageUploader, {
+  inputCls, labelCls, panelCls, btnPrimary, btnGhost, Notice,
+  FileOrUrlField, pickFields, deleteStoredFiles
+} from './AdminUI'
+
+const BUCKET = 'photos'
+
+// id and created_at are server-owned; the old update sent the whole form row.
+const FORM_FIELDS = [
+  'level_id', 'report_type', 'title', 'description', 'file_url',
+  'thumbnail_url', 'academic_year', 'display_order', 'is_featured'
+]
 
 export default function AcademicReportsManager() {
   const [levels, setLevels] = useState([])
@@ -8,7 +20,13 @@ export default function AcademicReportsManager() {
   const [selectedLevel, setSelectedLevel] = useState('')
   const [editing, setEditing] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [uploading, setUploading] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [notice, setNotice] = useState({ type: '', text: '' })
+
+  const flash = (type, text) => {
+    setNotice({ type, text })
+    if (type !== 'error') setTimeout(() => setNotice({ type: '', text: '' }), 4000)
+  }
   
   const [form, setForm] = useState({
     level_id: '',
@@ -55,70 +73,46 @@ export default function AcademicReportsManager() {
     }
   }
 
-  const handleFileUpload = async (e, type = 'file') => {
-    const file = e.target.files[0]
-    if (!file) return
-
-    setUploading(true)
-    try {
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
-      const filePath = `academic-reports/${fileName}`
-
-      const { error: uploadError } = await supabase.storage
-        .from('photos')
-        .upload(filePath, file)
-
-      if (uploadError) throw uploadError
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('photos')
-        .getPublicUrl(filePath)
-
-      if (type === 'thumbnail') {
-        setForm({ ...form, thumbnail_url: publicUrl })
-      } else {
-        setForm({ ...form, file_url: publicUrl })
-      }
-    } catch (error) {
-      console.error('Upload error:', error)
-      alert('Upload failed: ' + error.message)
-    } finally {
-      setUploading(false)
-    }
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    if (!form.level_id || !form.file_url) {
-      alert('Please select a level and upload a file')
-      return
+
+    if (!form.level_id) return flash('error', 'Please select a level')
+    if (!form.file_url) return flash('error', 'Please upload a file or paste a link')
+
+    setSaving(true)
+    setNotice({ type: '', text: '' })
+
+    const payload = {
+      ...pickFields(form, FORM_FIELDS),
+      title: form.title.trim(),
+      level_id: Number(form.level_id),
+      display_order: Number(form.display_order) || 0
     }
 
     try {
       if (editing) {
         const { error } = await supabase
           .from('academic_level_reports')
-          .update(form)
+          .update(payload)
           .eq('id', editing)
-        
+
         if (error) throw error
-        alert('Report updated successfully')
+        flash('success', 'Report updated')
       } else {
         const { error } = await supabase
           .from('academic_level_reports')
-          .insert([form])
-        
+          .insert([payload])
+
         if (error) throw error
-        alert('Report added successfully')
+        flash('success', 'Report added')
       }
-      
+
       resetForm()
       loadData()
     } catch (error) {
-      console.error('Error saving:', error)
-      alert('Error: ' + error.message)
+      flash('error', 'Save failed: ' + error.message)
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -135,22 +129,27 @@ export default function AcademicReportsManager() {
       display_order: report.display_order || 0,
       is_featured: report.is_featured || false
     })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (report) => {
     if (!confirm('Delete this report/photo?')) return
+
+    // Clear the stored files as well, otherwise they stay in the bucket after
+    // the row is gone.
+    await deleteStoredFiles([report.file_url, report.thumbnail_url])
 
     try {
       const { error } = await supabase
         .from('academic_level_reports')
         .delete()
-        .eq('id', id)
-      
+        .eq('id', report.id)
+
       if (error) throw error
+      flash('success', 'Report deleted')
       loadData()
     } catch (error) {
-      console.error('Delete error:', error)
-      alert('Error deleting: ' + error.message)
+      flash('error', 'Delete failed: ' + error.message)
     }
   }
 
@@ -167,6 +166,7 @@ export default function AcademicReportsManager() {
       display_order: 0,
       is_featured: false
     })
+    setNotice({ type: '', text: '' })
   }
 
   const getTypeIcon = (type) => {
@@ -206,7 +206,7 @@ export default function AcademicReportsManager() {
         <select 
           value={selectedLevel} 
           onChange={(e) => setSelectedLevel(e.target.value)}
-          className="bg-slate-700 rounded px-3 py-2 flex-1"
+          className={inputCls}
         >
           <option value="">All Levels</option>
           {levels.map(level => (
@@ -218,7 +218,8 @@ export default function AcademicReportsManager() {
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-slate-800 p-4 rounded-lg space-y-4">
+      <form onSubmit={handleSubmit} className={panelCls + ' space-y-5'}>
+          <Notice notice={notice} />
         <h3 className="font-bold text-lg mb-4">
           {editing ? 'Edit Report/Photo' : 'Add New Report/Photo'}
         </h3>
@@ -229,7 +230,7 @@ export default function AcademicReportsManager() {
             <select 
               value={form.level_id} 
               onChange={e => setForm({...form, level_id: e.target.value})}
-              className="bg-slate-700 rounded px-3 py-2 w-full"
+              className={inputCls}
               required
             >
               <option value="">Select Level</option>
@@ -246,7 +247,7 @@ export default function AcademicReportsManager() {
             <select 
               value={form.report_type} 
               onChange={e => setForm({...form, report_type: e.target.value})}
-              className="bg-slate-700 rounded px-3 py-2 w-full"
+              className={inputCls}
             >
               <option value="school_report">School Report</option>
               <option value="uniform_photo">Uniform Photo</option>
@@ -261,7 +262,7 @@ export default function AcademicReportsManager() {
               placeholder="e.g., Grade 7 Report Card"
               value={form.title} 
               onChange={e => setForm({...form, title: e.target.value})}
-              className="bg-slate-700 rounded px-3 py-2 w-full"
+              className={inputCls}
               required
             />
           </div>
@@ -273,7 +274,7 @@ export default function AcademicReportsManager() {
               placeholder="e.g., 2023-2024"
               value={form.academic_year} 
               onChange={e => setForm({...form, academic_year: e.target.value})}
-              className="bg-slate-700 rounded px-3 py-2 w-full"
+              className={inputCls}
             />
           </div>
         </div>
@@ -284,60 +285,36 @@ export default function AcademicReportsManager() {
             placeholder="Brief description..."
             value={form.description} 
             onChange={e => setForm({...form, description: e.target.value})}
-            className="bg-slate-700 rounded px-3 py-2 w-full"
+            className={inputCls}
             rows="2"
           />
         </div>
         
         {/* File Upload */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="text-gray-400 text-sm block mb-1">File Upload *</label>
-            <div className="flex gap-2">
-              <input 
-                type="text" 
-                placeholder="File URL or upload..."
-                value={form.file_url} 
-                onChange={e => setForm({...form, file_url: e.target.value})}
-                className="bg-slate-700 rounded px-3 py-2 flex-1"
-                required
-              />
-              <label className="bg-yellow-600 hover:bg-yellow-700 px-3 py-2 rounded cursor-pointer flex items-center">
-                <FaUpload />
-                <input 
-                  type="file" 
-                  className="hidden" 
-                  onChange={(e) => handleFileUpload(e, 'file')}
-                  accept=".pdf,.jpg,.jpeg,.png,.webp"
-                />
-              </label>
-            </div>
-            {uploading && <p className="text-blue-400 text-sm mt-1">Uploading...</p>}
-          </div>
-          
-          <div>
-            <label className="text-gray-400 text-sm block mb-1">Thumbnail (optional)</label>
-            <div className="flex gap-2">
-              <input 
-                type="text" 
-                placeholder="Thumbnail URL or upload..."
-                value={form.thumbnail_url} 
-                onChange={e => setForm({...form, thumbnail_url: e.target.value})}
-                className="bg-slate-700 rounded px-3 py-2 flex-1"
-              />
-              <label className="bg-green-600 hover:bg-green-700 px-3 py-2 rounded cursor-pointer flex items-center">
-                <FaUpload />
-                <input 
-                  type="file" 
-                  className="hidden" 
-                  onChange={(e) => handleFileUpload(e, 'thumbnail')}
-                  accept=".jpg,.jpeg,.png,.webp"
-                />
-              </label>
-            </div>
-          </div>
+          <FileOrUrlField
+            bucket={BUCKET}
+            prefix="academic-reports"
+            id="report-file"
+            label="Report file *"
+            accept=".pdf,.jpg,.jpeg,.png,.webp"
+            hint="A PDF of the report, or an image if it is a photo report."
+            value={form.file_url}
+            onChange={url => setForm({ ...form, file_url: url })}
+          />
+
+          <ImageUploader
+            bucket={BUCKET}
+            prefix="academic-reports"
+            single
+            id="report-thumbnail"
+            label="Thumbnail (optional)"
+            hint="Shown on the public reports page."
+            value={form.thumbnail_url ? [form.thumbnail_url] : []}
+            onChange={list => setForm({ ...form, thumbnail_url: list[0] || '' })}
+          />
         </div>
-        
+
         <div className="flex gap-4 items-center">
           <div className="flex items-center gap-2">
             <input 
@@ -345,7 +322,7 @@ export default function AcademicReportsManager() {
               id="featured"
               checked={form.is_featured} 
               onChange={e => setForm({...form, is_featured: e.target.checked})}
-              className="w-4 h-4"
+              className="w-5 h-5 accent-yellow-500"
             />
             <label htmlFor="featured" className="text-sm">Featured</label>
           </div>
@@ -356,7 +333,7 @@ export default function AcademicReportsManager() {
               type="number" 
               value={form.display_order} 
               onChange={e => setForm({...form, display_order: parseInt(e.target.value) || 0})}
-              className="bg-slate-700 rounded px-2 py-1 w-20"
+              className={inputCls + ' w-24'}
             />
           </div>
         </div>
@@ -364,8 +341,7 @@ export default function AcademicReportsManager() {
         <div className="flex gap-2">
           <button 
             type="submit" 
-            className="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded flex items-center gap-2"
-            disabled={uploading}
+            className={btnPrimary} disabled={saving}
           >
             <FaSave /> {editing ? 'Update' : 'Add'}
           </button>
@@ -455,7 +431,7 @@ export default function AcademicReportsManager() {
                     <FaEdit /> Edit
                   </button>
                   <button 
-                    onClick={() => handleDelete(report.id)}
+                    onClick={() => handleDelete(report)}
                     className="bg-red-600/50 hover:bg-red-600 px-3 py-1 rounded text-sm flex items-center gap-1"
                   >
                     <FaTrash /> Delete

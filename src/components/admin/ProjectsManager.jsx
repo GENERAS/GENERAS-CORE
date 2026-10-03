@@ -1,9 +1,11 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import {
-  FaEdit, FaTrash, FaSave, FaTimes, FaGithub, FaExternalLinkAlt,
-  FaUpload, FaLink, FaArrowUp, FaArrowDown, FaImages
+  FaEdit, FaTrash, FaSave, FaTimes, FaGithub, FaExternalLinkAlt, FaImages
 } from 'react-icons/fa'
+import ImageUploader, {
+  inputCls, labelCls, panelCls, btnPrimary, btnGhost, Notice, pickFields
+} from './AdminUI'
 
 const BUCKET = 'project-images'
 
@@ -19,25 +21,15 @@ const EMPTY_FORM = {
   display_order: 1
 }
 
-// Inputs used to sit at bg-slate-700 on a bg-slate-800 panel, one shade
-// apart, with no border and no labels, so the form read as a flat grey
-// block. These are deliberately high contrast: visible border, brighter
-// surface than the panel behind it, and a labelled wrapper everywhere.
-const inputCls =
-  'w-full bg-slate-800 border-2 border-slate-500 rounded-lg px-3 py-2.5 text-white ' +
-  'placeholder-slate-400 outline-none transition-colors focus:border-yellow-400 ' +
-  'focus:ring-2 focus:ring-yellow-400/40'
-const labelCls = 'block text-sm font-semibold text-slate-200 mb-1.5'
-const panelCls = 'bg-slate-900 border-2 border-slate-700 rounded-xl p-5'
+const FORM_FIELDS = [
+  'title', 'category', 'description', 'github_url', 'live_demo_url',
+  'tech_stack', 'image_url', 'status', 'display_order'
+]
 
-const safeFileName = (name) =>
-  name.replace(/[^a-zA-Z0-9._-]/g, '-').replace(/-+/g, '-').slice(-80)
-
-const uniquePath = (fileName) => {
-  const rand = typeof crypto !== 'undefined' && crypto.randomUUID
-    ? crypto.randomUUID().slice(0, 8)
-    : Math.random().toString(36).slice(2, 10)
-  return `${Date.now()}-${rand}-${safeFileName(fileName)}`
+const STATUS_BADGES = {
+  completed: 'bg-green-500/20 text-green-300 border-green-500/40',
+  building: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+  planned: 'bg-blue-500/20 text-blue-300 border-blue-500/40'
 }
 
 export default function ProjectsManager() {
@@ -46,11 +38,9 @@ export default function ProjectsManager() {
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState(EMPTY_FORM)
   const [images, setImages] = useState([])
-  const [urlInput, setUrlInput] = useState('')
   const [techInput, setTechInput] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [uploading, setUploading] = useState(false)
   const [notice, setNotice] = useState({ type: '', text: '' })
 
   useEffect(() => { loadProjects() }, [])
@@ -92,14 +82,12 @@ export default function ProjectsManager() {
     // Only the columns the form owns. Previously the whole row was spread
     // into the update, which sent id, created_at and views back as well.
     const projectData = {
+      ...pickFields(form, FORM_FIELDS),
       title: form.title.trim(),
-      category: form.category,
-      description: form.description,
       github_url: form.github_url || null,
       live_demo_url: form.live_demo_url || null,
       tech_stack: form.tech_stack.filter(t => t.trim() !== ''),
-      image_url: form.image_url || images[0]?.image_url || null,
-      status: form.status,
+      image_url: form.image_url || images[0] || null,
       display_order: Number(form.display_order) || 1
     }
 
@@ -115,21 +103,22 @@ export default function ProjectsManager() {
         projectId = data.id
       }
 
-      // Sync the gallery: insert anything new, drop anything removed.
-      // Existing rows are left alone so their ids and sort_order are stable.
-      const keptIds = images.filter(i => i.id).map(i => i.id)
+      // Sync the gallery: add anything new, drop anything removed. Rows whose
+      // URL is unchanged are left alone so their ids and sort_order are
+      // stable and the table is not rewritten on every save.
       const { data: existing } = await supabase
-        .from('project_images').select('id').eq('project_id', projectId)
-      const removed = (existing || []).filter(row => !keptIds.includes(row.id)).map(row => row.id)
+        .from('project_images').select('id, image_url').eq('project_id', projectId)
+
+      const removed = (existing || []).filter(row => !images.includes(row.image_url)).map(row => row.id)
       if (removed.length) await supabase.from('project_images').delete().in('id', removed)
 
+      const known = new Set((existing || []).map(row => row.image_url))
       const additions = images
-        .filter(i => !i.id)
-        .map((i, idx) => ({
+        .filter(url => !known.has(url))
+        .map((url, idx) => ({
           project_id: projectId,
-          image_url: i.image_url,
-          caption: i.caption || null,
-          sort_order: keptIds.length + idx
+          image_url: url,
+          sort_order: (existing?.length || 0) + idx
         }))
       if (additions.length) {
         const { error } = await supabase.from('project_images').insert(additions)
@@ -160,11 +149,10 @@ export default function ProjectsManager() {
       display_order: project.display_order ?? 1
     })
     setTechInput('')
-    setUrlInput('')
 
     const { data: gallery } = await supabase
-      .from('project_images').select('*').eq('project_id', project.id).order('sort_order')
-    setImages(gallery || [])
+      .from('project_images').select('image_url').eq('project_id', project.id).order('sort_order')
+    setImages((gallery || []).map(row => row.image_url))
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -175,66 +163,6 @@ export default function ProjectsManager() {
     if (editing === id) resetForm()
     flash('success', 'Project deleted')
     loadProjects()
-  }
-
-  // Upload screenshots from the admin's own machine.
-  const handleFiles = async (e) => {
-    const files = Array.from(e.target.files || [])
-    if (!files.length) return
-    setUploading(true)
-
-    for (const file of files) {
-      if (!file.type.startsWith('image/')) {
-        flash('error', `${file.name} is not an image`)
-        continue
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        flash('error', `${file.name} is over 5MB`)
-        continue
-      }
-
-      // Compute the object path once. uniquePath is randomised, so calling
-      // it again for getPublicUrl would produce a URL pointing at a
-      // different, non-existent object.
-      const path = uniquePath(file.name)
-
-      const { error } = await supabase.storage
-        .from(BUCKET)
-        .upload(path, file, { cacheControl: '3600', upsert: false })
-
-      if (error) {
-        flash('error', `Upload failed for ${file.name}: ${error.message}`)
-        continue
-      }
-
-      const { data: { publicUrl } } = supabase.storage.from(BUCKET).getPublicUrl(path)
-      setImages(prev => [...prev, { image_url: publicUrl, caption: '' }])
-    }
-
-    setUploading(false)
-    e.target.value = ''
-  }
-
-  const addImageByUrl = () => {
-    const url = urlInput.trim()
-    if (!url) return
-    if (!/^https?:\/\//i.test(url)) {
-      return flash('error', 'That does not look like a URL. It should start with http:// or https://')
-    }
-    setImages(prev => [...prev, { image_url: url, caption: '' }])
-    setUrlInput('')
-  }
-
-  const removeImage = (index) => setImages(prev => prev.filter((_, i) => i !== index))
-
-  const moveImage = (index, direction) => {
-    setImages(prev => {
-      const target = index + direction
-      if (target < 0 || target >= prev.length) return prev
-      const copy = [...prev]
-      ;[copy[index], copy[target]] = [copy[target], copy[index]]
-      return copy
-    })
   }
 
   const addTech = () => {
@@ -251,8 +179,6 @@ export default function ProjectsManager() {
     setEditing(null)
     setForm(EMPTY_FORM)
     setImages([])
-    setTechInput('')
-    setUrlInput('')
     setNotice({ type: '', text: '' })
   }
 
@@ -360,60 +286,15 @@ export default function ProjectsManager() {
         </div>
 
         {/* Screenshots: upload from this computer, or paste a URL */}
-        <div className="border-2 border-dashed border-slate-600 rounded-lg p-4 bg-slate-800/40">
-          <label className={labelCls}>Screenshots</label>
-
-          <div className="flex flex-col sm:flex-row gap-3">
-            <label htmlFor="p-upload"
-              className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-slate-800 border-2 border-slate-500 text-white font-semibold hover:border-yellow-400 hover:bg-slate-700 transition-colors cursor-pointer">
-              <FaUpload />
-              {uploading ? 'Uploading...' : 'Upload from this computer (multiple)'}
-            </label>
-            <input id="p-upload" type="file" accept="image/*" multiple onChange={handleFiles} className="hidden" disabled={uploading} />
-          </div>
-
-          <div className="flex gap-2 mt-3">
-            <input type="url" value={urlInput} onChange={e => setUrlInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addImageByUrl())}
-              placeholder="...or paste an image URL and press Add" className={inputCls} />
-            <button type="button" onClick={addImageByUrl} className="shrink-0 flex items-center gap-2 bg-slate-700 hover:bg-slate-600 border-2 border-slate-500 text-white font-semibold px-5 rounded-lg transition-colors">
-              <FaLink /> Add
-            </button>
-          </div>
-
-          <p className="text-sm text-slate-400 mt-2">JPEG, PNG, WebP or GIF up to 5MB each. First image becomes the cover if no cover URL is set.</p>
-
-          {images.length === 0 ? (
-            <p className="text-sm text-slate-400 mt-4 flex items-center gap-2"><FaImages /> No screenshots attached yet.</p>
-          ) : (
-            <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mt-4">
-              {images.map((img, index) => (
-                <li key={img.id || `${img.image_url}-${index}`}
-                  className="bg-slate-900 border-2 border-slate-600 rounded-lg overflow-hidden relative group">
-                  <img src={img.image_url} alt={img.caption || `Screenshot ${index + 1}`}
-                    className="w-full h-24 object-cover" />
-                  {index === 0 && (
-                    <span className="absolute top-1 left-1 bg-yellow-500 text-slate-900 text-xs font-bold px-1.5 py-0.5 rounded">First</span>
-                  )}
-                  <div className="p-1.5 flex items-center justify-between gap-1">
-                    <button type="button" onClick={() => moveImage(index, -1)} disabled={index === 0}
-                      aria-label="Move earlier" className="p-1 rounded hover:bg-slate-700 disabled:opacity-30 disabled:hover:bg-transparent text-slate-300">
-                      <FaArrowUp />
-                    </button>
-                    <button type="button" onClick={() => moveImage(index, 1)} disabled={index === images.length - 1}
-                      aria-label="Move later" className="p-1 rounded hover:bg-slate-700 disabled:opacity-30 disabled:hover:bg-transparent text-slate-300">
-                      <FaArrowDown />
-                    </button>
-                    <button type="button" onClick={() => removeImage(index)}
-                      aria-label="Remove screenshot" className="p-1 rounded hover:bg-red-500/20 text-red-400">
-                      <FaTrash />
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <ImageUploader
+          bucket={BUCKET}
+          prefix="projects"
+          value={images}
+          onChange={setImages}
+          id="project-screenshots"
+          label="Screenshots"
+          hint="JPEG, PNG, WebP or GIF up to 5MB each. First image becomes the cover if no cover URL is set."
+        />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>

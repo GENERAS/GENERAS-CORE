@@ -1,6 +1,7 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { FaPlus, FaEdit, FaTrash, FaSave, FaTimes, FaUpload } from 'react-icons/fa'
+import { inputCls } from './AdminUI'
 import { usdToRwf } from '../../utils/currency'
 
 export default function TradingManager() {
@@ -231,7 +232,7 @@ export default function TradingManager() {
               <select
                 value={form.platform}
                 onChange={e => setForm({...form, platform: e.target.value})}
-                className="w-full bg-slate-700 rounded px-3 py-2"
+                className={inputCls}
               >
                 <option>Binance</option><option>MT4</option><option>MT5</option><option>Other</option>
               </select>
@@ -243,7 +244,7 @@ export default function TradingManager() {
                 required
                 value={form.pair}
                 onChange={e => setForm({...form, pair: e.target.value})}
-                className="w-full bg-slate-700 rounded px-3 py-2"
+                className={inputCls}
                 placeholder="BTC/USDT"
               />
             </div>
@@ -254,7 +255,7 @@ export default function TradingManager() {
                 step="any"
                 value={form.entry_price}
                 onChange={e => setForm({...form, entry_price: e.target.value})}
-                className="w-full bg-slate-700 rounded px-3 py-2"
+                className={inputCls}
               />
             </div>
             <div>
@@ -264,7 +265,7 @@ export default function TradingManager() {
                 step="any"
                 value={form.exit_price}
                 onChange={e => setForm({...form, exit_price: e.target.value})}
-                className="w-full bg-slate-700 rounded px-3 py-2"
+                className={inputCls}
               />
             </div>
             <div>
@@ -274,7 +275,7 @@ export default function TradingManager() {
                 step="any"
                 value={form.quantity}
                 onChange={e => setForm({...form, quantity: e.target.value})}
-                className="w-full bg-slate-700 rounded px-3 py-2"
+                className={inputCls}
               />
             </div>
             <div>
@@ -283,7 +284,7 @@ export default function TradingManager() {
                 type="date"
                 value={form.trade_date}
                 onChange={e => setForm({...form, trade_date: e.target.value})}
-                className="w-full bg-slate-700 rounded px-3 py-2"
+                className={inputCls}
               />
             </div>
             <div>
@@ -292,7 +293,7 @@ export default function TradingManager() {
                 type="text"
                 value={form.strategy}
                 onChange={e => setForm({...form, strategy: e.target.value})}
-                className="w-full bg-slate-700 rounded px-3 py-2"
+                className={inputCls}
                 placeholder="e.g., Breakout, Scalping"
               />
             </div>
@@ -302,7 +303,7 @@ export default function TradingManager() {
                 type="url"
                 value={form.screenshot_url}
                 onChange={e => setForm({...form, screenshot_url: e.target.value})}
-                className="w-full bg-slate-700 rounded px-3 py-2"
+                className={inputCls}
                 placeholder="https://..."
               />
             </div>
@@ -317,7 +318,7 @@ export default function TradingManager() {
                 value={tagInput}
                 onChange={e => setTagInput(e.target.value)}
                 onKeyPress={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                className="flex-1 bg-slate-700 rounded px-3 py-2"
+                className={inputCls + " flex-1"}
                 placeholder="Add tag (e.g., Scalping, Day Trading)"
               />
               <button type="button" onClick={addTag} className="bg-yellow-600 px-4 py-2 rounded">
@@ -342,7 +343,7 @@ export default function TradingManager() {
             <textarea
               value={form.lessons}
               onChange={e => setForm({...form, lessons: e.target.value})}
-              className="w-full bg-slate-700 rounded px-3 py-2"
+              className={inputCls}
               rows="3"
               placeholder="What did you learn from this trade?"
             />

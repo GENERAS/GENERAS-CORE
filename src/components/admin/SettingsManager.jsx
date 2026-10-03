@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import { uploadFile } from './AdminUI'
 import { useTheme } from '../../context/ThemeContext'
 import { FaUser, FaGlobe, FaLock, FaSave, FaCheck, FaUpload, FaPalette, FaExclamationTriangle, FaSpinner, FaGithub, FaLinkedin, FaTwitter, FaYoutube, FaInstagram, FaWhatsapp } from 'react-icons/fa'
 
@@ -8,6 +9,7 @@ export default function SettingsManager() {
   const [activeTab, setActiveTab] = useState('public')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
   const [message, setMessage] = useState({ type: '', text: '' })
   const [user, setUser] = useState(null)
 
@@ -92,20 +94,19 @@ export default function SettingsManager() {
     const file = e.target.files[0]
     if (!file || !user) return
     try {
-      setSaving(true)
-      const fileExt = file.name.split('.').pop()
-      const fileName = `${user.id}-${Date.now()}.${fileExt}`
-      const { error: uploadError } = await supabase.storage.from('avatars').upload(fileName, file)
-      if (uploadError) {
-        setMessage({ type: 'error', text: 'Storage bucket "avatars" not found. Create it in Supabase Dashboard > Storage.' })
-        return
-      }
-      const { data: { publicUrl } } = supabase.storage.from('avatars').getPublicUrl(fileName)
+      setUploadingAvatar(true)
+      const publicUrl = await uploadFile('avatars', file, 'avatars')
       setProfile(prev => ({ ...prev, avatar_url: publicUrl }))
-      setMessage({ type: 'success', text: 'Avatar uploaded! Click Save to update profile.' })
+      setMessage({ type: 'success', text: 'Avatar uploaded. Click Save Profile to keep it.' })
     } catch (error) {
-      console.error('Upload error:', error); setMessage({ type: 'error', text: 'Failed to upload avatar' })
-    } finally { setSaving(false) }
+      // Previously every failure reported "Storage bucket avatars not found",
+      // which hid the real cause (the bucket had no INSERT policy at all).
+      console.error('Avatar upload error:', error)
+      setMessage({ type: 'error', text: 'Avatar upload failed: ' + error.message })
+    } finally {
+      setUploadingAvatar(false)
+      e.target.value = ''
+    }
   }
 
   const bg = isDark ? 'bg-gray-800' : 'bg-white'
@@ -183,11 +184,22 @@ export default function SettingsManager() {
                 </div>
               )}
               <div>
-                <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" id="avatar-upload" />
-                <label htmlFor="avatar-upload" className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg cursor-pointer transition text-sm font-medium">
-                  <FaUpload /> Upload Photo
-                </label>
-                <p className={`text-xs mt-1.5 ${textMuted}`}>Recommended: 400x400px, max 2MB</p>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" id="avatar-upload" disabled={uploadingAvatar} />
+                  <label htmlFor="avatar-upload" className={`inline-flex items-center gap-2 px-4 py-2 ${isDark ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-100 hover:bg-gray-200'} rounded-lg cursor-pointer transition text-sm font-medium ${uploadingAvatar ? 'opacity-60' : ''}`}>
+                    <FaUpload /> {uploadingAvatar ? 'Uploading...' : 'Upload Photo'}
+                  </label>
+                  {profile.avatar_url && (
+                    <button type="button" onClick={() => setProfile({ ...profile, avatar_url: '' })}
+                      className="text-sm text-red-400 hover:text-red-300 underline">Remove</button>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 mt-2">
+                  <input type="url" value={profile.avatar_url} onChange={e => setProfile({ ...profile, avatar_url: e.target.value })}
+                    placeholder="...or paste an image URL"
+                    className={`text-sm px-3 py-1.5 rounded-lg border ${inputBg}`} />
+                </div>
+                <p className={`text-xs mt-1.5 ${textMuted}`}>Recommended: 400x400px, up to 5MB</p>
               </div>
             </div>
 

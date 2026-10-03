@@ -2,59 +2,69 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 
+// contentType -> real table. This mapping used to be
+// `contentType === 'certificate' ? 'certificates' : 'photos'`, which sent
+// blog likes to the photos table and silently corrupted photo counters.
+const TABLE_FOR = {
+  photo: 'photos',
+  certificate: 'certificates',
+  blog: 'blog_posts'
+}
+
 export default function LikeButton({ contentType, contentId, initialLikes = 0 }) {
   const [likes, setLikes] = useState(initialLikes)
   const [liked, setLiked] = useState(false)
   const [loading, setLoading] = useState(false)
 
-  // Check localStorage to see if user already liked this item
+  const table = TABLE_FOR[contentType]
+
   useEffect(() => {
-    const storageKey = `${contentType}_${contentId}_liked` 
-    const hasLiked = localStorage.getItem(storageKey) === 'true'
-    setLiked(hasLiked)
+    const storageKey = `${contentType}_${contentId}_liked`
+    setLiked(localStorage.getItem(storageKey) === 'true')
   }, [contentType, contentId])
 
+  // Keep in step when the parent re-fetches a different record.
+  useEffect(() => { setLikes(initialLikes) }, [initialLikes])
+
   const handleLike = async () => {
-    if (loading) return
+    if (loading || !table) return
     setLoading(true)
 
-    try {
-      const tableName = contentType === 'certificate' ? 'certificates' : 'photos'
-      const storageKey = `${contentType}_${contentId}_liked` 
-      const newLikeCount = liked ? Math.max(0, likes - 1) : likes + 1
-      
-      // Update database - direct UPDATE, no SQL functions needed
-      const { error } = await supabase
-        .from(tableName)
-        .update({ likes: newLikeCount })
-        .eq('id', contentId)
+    const storageKey = `${contentType}_${contentId}_liked`
+    const nextLiked = !liked
+    const delta = nextLiked ? 1 : -1
 
-      if (!error) {
-        setLikes(newLikeCount)
-        setLiked(!liked)
-        localStorage.setItem(storageKey, (!liked).toString())
-      } else {
-        console.error('Database error (ignored):', error)
-        // Still update UI even if DB fails
-        setLikes(newLikeCount)
-        setLiked(!liked)
-        localStorage.setItem(storageKey, (!liked).toString())
-      }
+    try {
+      // The count is now computed on the server. The browser used to read the
+      // current value and write back newLikeCount, which lost updates when two
+      // visitors clicked at once and required a policy that let anyone rewrite
+      // the whole row.
+      const { data, error } = await supabase.rpc('increment_content_likes', {
+        p_table: table,
+        p_id: contentId,
+        p_delta: delta
+      })
+
+      if (error) throw error
+
+      setLikes(data)
+      setLiked(nextLiked)
+      localStorage.setItem(storageKey, String(nextLiked))
     } catch (error) {
-      console.error('Error (ignored):', error)
-      // Still update UI even if DB fails
-      const newLikeCount = liked ? Math.max(0, likes - 1) : likes + 1
-      setLikes(newLikeCount)
-      setLiked(!liked)
+      console.error('Could not save like:', error)
     } finally {
       setLoading(false)
     }
   }
 
+  if (!table) return null
+
   return (
     <button
       onClick={handleLike}
       disabled={loading}
+      aria-label={liked ? 'Remove like' : 'Like'}
+      aria-pressed={liked}
       className={`flex items-center gap-1 transition ${
         liked ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
       } ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}

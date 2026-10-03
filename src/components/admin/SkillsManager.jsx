@@ -1,6 +1,7 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { FaEdit, FaTrash, FaSave, FaPlus } from 'react-icons/fa'
+import { inputCls } from './AdminUI'
 
 export default function SkillsManager() {
   const [skills, setSkills] = useState([])
@@ -116,7 +117,7 @@ export default function SkillsManager() {
         <select 
           value={form.category} 
           onChange={e => setForm({...form, category: e.target.value})} 
-          className="bg-slate-700 rounded px-3 py-2"
+          className={inputCls + " "}
         >
           <option value="development">Development</option>
           <option value="trading">Trading</option>
@@ -128,7 +129,7 @@ export default function SkillsManager() {
           placeholder="Skill Name" 
           value={form.skill_name} 
           onChange={e => setForm({...form, skill_name: e.target.value})} 
-          className="bg-slate-700 rounded px-3 py-2 w-48" 
+          className={inputCls + " w-48"} 
           required 
         />
         
@@ -137,7 +138,7 @@ export default function SkillsManager() {
           placeholder="Progress %" 
           value={form.progress} 
           onChange={e => setForm({...form, progress: parseInt(e.target.value)})} 
-          className="bg-slate-700 rounded px-3 py-2 w-24" 
+          className={inputCls + " w-24"} 
           min="0" 
           max="100"
         />
@@ -147,7 +148,7 @@ export default function SkillsManager() {
           placeholder="Order" 
           value={form.display_order} 
           onChange={e => setForm({...form, display_order: parseInt(e.target.value)})} 
-          className="bg-slate-700 rounded px-3 py-2 w-20" 
+          className={inputCls + " w-20"} 
           min="1"
         />
         

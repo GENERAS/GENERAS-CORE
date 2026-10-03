@@ -1,6 +1,7 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
 import { FaPlus, FaEdit, FaTrash, FaSave, FaTimes, FaYoutube, FaVimeo, FaPlay } from 'react-icons/fa'
+import { inputCls } from './AdminUI'
 
 export default function VideoManager() {
   const [videos, setVideos] = useState([])
@@ -199,7 +200,7 @@ export default function VideoManager() {
               <select 
                 value={form.category} 
                 onChange={e => setForm({...form, category: e.target.value})} 
-                className="w-full bg-slate-700 rounded px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                className={inputCls}
               >
                 <option value="trading">Trading</option>
                 <option value="coding">Coding</option>

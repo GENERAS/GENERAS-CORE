@@ -1,5 +1,6 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabase'
+import { inputCls } from './AdminUI'
 import { 
   FaCrown, FaSearch, FaEdit, FaTrash, FaDownload, FaStar, 
   FaCheckCircle, FaClock, FaEye, FaImage, FaTimes 
@@ -198,7 +199,9 @@ export default function SupporterManager() {
 
       <div className="relative mb-4">
         <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-        <input type="text" placeholder="Search supporters..." value={search} onChange={e => setSearch(e.target.value)} className="w-full bg-slate-700 rounded-lg pl-10 pr-4 py-2" />
+<input type="text" placeholder="Search supporters..." value={search}
+          onChange={e => setSearch(e.target.value)}
+          className={inputCls + ' pl-10'} />
       </div>
 
       <div className="space-y-2">
