@@ -11,7 +11,7 @@ export const checkPendingPayments = async () => {
     
     const { data: pendingApps, error } = await supabase
       .from('mentorship_applications')
-      .select('*')
+      .select('id, email, full_name, service_title, payment_amount, application_id')
       .eq('payment_status', 'pending_payment')
       .lt('submitted_at', twentyFourHoursAgo.toISOString())
       .eq('email_sent', false);

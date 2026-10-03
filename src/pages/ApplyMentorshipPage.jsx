@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { usdToRwf } from '../utils/currency';
+import { generateTrackingToken } from '../utils/trackingToken';
 import { 
   User, Mail, Phone, Target, Award, Clock, DollarSign,
   ChevronLeft, ChevronRight, Upload, Copy, Check,
@@ -168,6 +168,7 @@ const ApplyMentorshipPage = () => {
       // Prepare the data for insertion
       const applicationData = {
         application_id: referenceCode,
+        tracking_token: generateTrackingToken(),
         service_id: service?.id,
         service_title: service?.title,
         package_type: selectedPackageParam || 'hourly',
@@ -195,10 +196,9 @@ const ApplyMentorshipPage = () => {
       console.log('Inserting application with data:', applicationData);
       
       // Insert application
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('mentorship_applications')
-        .insert([applicationData])
-        .select();
+        .insert([applicationData]);
       
       if (error) {
         console.error('Supabase insert error DETAILS:', error);
@@ -217,16 +217,9 @@ const ApplyMentorshipPage = () => {
         return;
       }
       
-      console.log('Insert successful! Response:', data);
-      
-      if (data && data[0]) {
-        setApplicationId(data[0].id);
-        setSubmitted(true);
-        console.log('Application submitted successfully. ID:', data[0].id);
-      } else {
-        console.error('No data returned from insert');
-        setErrorMessage('Application was saved but no ID returned. Please contact support.');
-      }
+      console.log('Application submitted successfully');
+      setApplicationId(applicationData.application_id);
+      setSubmitted(true);
       
     } catch (error) {
       console.error('CRITICAL - Submission error:', error);

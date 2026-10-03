@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { usdToRwf } from '../utils/currency';
-import { normalizeTrackingToken, looksLikeTrackingToken } from '../utils/trackingToken';
+import { normalizeTrackingToken, looksLikeTrackingToken, generateTrackingToken } from '../utils/trackingToken';
 import { 
   TrendingUp, Code, Briefcase, Edit, Star, Clock, Shield, CreditCard,
   ChevronRight, CheckCircle, Award, Users, Zap, Globe, Search,
@@ -189,6 +189,10 @@ const ServicePage = () => {
       
       const applicationData = {
         application_id: referenceCode,
+        // The applicant keeps this to check progress. It is generated here
+        // rather than by the database because anonymous reads are no longer
+        // permitted on this table, so there is no way to read the token back.
+        tracking_token: generateTrackingToken(),
         service_id: selectedService?.id,
         service_title: selectedService?.title,
         package_type: 'hourly',
@@ -213,17 +217,17 @@ const ServicePage = () => {
         submitted_at: new Date().toISOString()
       };
       
-      const { data, error } = await supabase
+      // No .select() here. RLS no longer allows anonymous reads on this table, so
+      // reading the row back would fail. The tracking token is generated above
+      // and is what the applicant uses to check progress.
+      const { error } = await supabase
         .from('mentorship_applications')
-        .insert([applicationData])
-        .select();
-      
+        .insert([applicationData]);
+
       if (error) throw error;
-      
-      if (data && data[0]) {
-        setApplicationId(data[0].id);
-        setSubmitted(true);
-      }
+
+      setApplicationId(applicationData.application_id);
+      setSubmitted(true);
     } catch (error) {
       setApplyError(`Error: ${error.message || 'Unknown error occurred'}`);
     } finally {
@@ -264,14 +268,14 @@ const ServicePage = () => {
           })
         : { data: [] };
 
-      // Mentorship applications are still matched on email for now; that
-      // table has not been moved to tokens yet.
-      const { data: mentorshipData } = !isToken
-        ? await supabase
-            .from('mentorship_applications')
-            .select('*')
-            .eq('email', query)
-            .order('submitted_at', { ascending: false })
+      // Mentorship applications are tracked by token as well. The previous
+      // .eq('email', query) lookup meant anyone could type an address into a
+      // public box and read that applicant's phone number, goals, budget and
+      // payment details. See database-mentorship-applications-rls.sql.
+      const { data: mentorshipData } = isToken
+        ? await supabase.rpc('get_mentorship_application_by_tracking_token', {
+            p_token: normalizeTrackingToken(query)
+          })
         : { data: [] };
 
       setApplications(mentorshipData || []);

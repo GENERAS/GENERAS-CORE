@@ -33,7 +33,10 @@ export default function SocialProof() {
       const [projects, testimonials, mentees] = await Promise.all([
         supabase.from('projects').select('*', { count: 'exact', head: true }),
         supabase.from('testimonials').select('*', { count: 'exact', head: true }).eq('is_approved', true),
-        supabase.from('mentorship_applications').select('*', { count: 'exact', head: true }).eq('payment_status', 'verified'),
+        // Aggregate RPC. Querying mentorship_applications directly is no longer
+        // possible for anonymous visitors, and it never should have been: the
+        // table holds phone numbers, budgets and payment references.
+        supabase.rpc('verified_mentorship_count'),
       ])
 
       const analytics = getAnalyticsSummary()
@@ -41,7 +44,7 @@ export default function SocialProof() {
       setCounts({
         projects: projects.count || 0,
         testimonials: testimonials.count || 0,
-        mentees: mentees.count || 0,
+        mentees: mentees.data || 0,
         visitors: analytics.totalViews || 0,
       })
     } catch (err) {

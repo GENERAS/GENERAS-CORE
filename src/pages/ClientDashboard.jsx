@@ -39,23 +39,18 @@ const ClientDashboard = () => {
       // issued at submission rather than by email address.
       const isToken = looksLikeTrackingToken(query);
 
-      // Mentorship applications are still matched on email for now.
-      let mentorshipData = [];
-      if (!isToken) {
-        const { data, error: mentorshipError } = await supabase
-          .from('mentorship_applications')
-          .select('*')
-          .eq('email', query)
-          .order('submitted_at', { ascending: false });
-
-        if (mentorshipError) throw mentorshipError;
-        mentorshipData = data || [];
-      }
+      // Both lookups go through scoped RPCs. RLS blocks anonymous reads on
+      // project_inquiries and mentorship_applications, and the previous
+      // .eq('email', query) on the latter exposed an applicant's phone number,
+      // goals and payment details to anyone who typed their address.
+      const { data: mentorshipData, error: mentorshipError } = await supabase.rpc(
+        'get_mentorship_application_by_tracking_token',
+        { p_token: normalizeTrackingToken(query) }
+      );
+      if (mentorshipError) throw mentorshipError;
 
       let projectData = [];
       if (isToken) {
-        // See database-inquiry-tracking-rpc.sql: RLS blocks anonymous reads on
-        // project_inquiries, so the lookup has to go through the RPC.
         const { data, error: projectError } = await supabase.rpc(
           'get_project_inquiry_by_tracking_token',
           { p_token: normalizeTrackingToken(query) }
@@ -66,7 +61,7 @@ const ClientDashboard = () => {
         projectData = data || [];
       }
 
-      setApplications(mentorshipData);
+      setApplications(mentorshipData ? [mentorshipData] : []);
       setInquiries(projectData);
 
       if (!mentorshipData.length && !projectData.length) {
