@@ -67,28 +67,157 @@ const IconLayer = () => (
   </svg>
 )
 
-// Tech colors only - no icons
-const getTechColor = (tech) => {
-  const techLower = tech.toLowerCase()
-  const colors = [
-    { match: ['react', 'tailwind'], style: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-    { match: ['next'], style: 'bg-gray-100 text-gray-700 border-gray-200' },
-    { match: ['node', 'mongo'], style: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-    { match: ['python', 'sql', 'database'], style: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-    { match: ['javascript', 'ts'], style: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-    { match: ['aws'], style: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-    { match: ['docker'], style: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
-  ]
-  
-  const match = colors.find(c => c.match.some(m => techLower.includes(m)))
-  return match ? match.style : 'bg-gray-100 text-gray-700 border-gray-200'
-}
+const IconClose = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+  </svg>
+)
 
 // Force scroll to top
 const useScrollToTop = () => {
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
+}
+
+// Presentation layer for each project: the accent gradient doubles as the
+// "type" banner so cards read like case studies instead of plain thumbnails.
+const ACCENTS = [
+  { match: /clinic/i, type: 'Clinic Management System', gradient: 'from-purple-500 to-pink-600' },
+  { match: /duk(a|)linka|marketplace|multi-?vendor|vendor/i, type: 'Multi-Vendor Marketplace', gradient: 'from-emerald-500 to-teal-600' },
+  { match: /e-?commerce|shop|store|market/i, type: 'E-commerce Platform', gradient: 'from-emerald-500 to-teal-600' },
+  { match: /trading|trader|journal/i, type: 'Trading Systems', gradient: 'from-amber-500 to-orange-600' },
+  { match: /lake|kivu/i, type: 'Mobile Application', gradient: 'from-cyan-500 to-blue-600' },
+  { match: /portfolio|website/i, type: 'Web Application', gradient: 'from-sky-500 to-indigo-600' },
+  { match: /legacy/i, type: 'Platform Rebuild', gradient: 'from-slate-500 to-slate-600' },
+]
+
+const CATEGORY_ACCENTS = {
+  web: { type: 'Web Application', gradient: 'from-sky-500 to-indigo-600' },
+  mobile: { type: 'Mobile Application', gradient: 'from-cyan-500 to-blue-600' },
+  trading: { type: 'Trading Systems', gradient: 'from-amber-500 to-orange-600' },
+  ai: { type: 'AI Solution', gradient: 'from-fuchsia-500 to-rose-600' },
+}
+
+const accentFor = (project) => {
+  const title = project.title || ''
+  const hit = ACCENTS.find(a => a.match.test(title))
+  if (hit) return hit
+  return CATEGORY_ACCENTS[project.category] || { type: 'Digital Solution', gradient: 'from-yellow-500 to-yellow-600' }
+}
+
+// Compact "read more" popup: full description + a peek at the screenshots,
+// without pushing the cards on the page any taller.
+function ProjectQuickView({ project, images, onClose, onOpenGallery }) {
+  useEffect(() => {
+    const onKey = e => e.key === 'Escape' && onClose()
+    document.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [onClose])
+
+  if (!project) return null
+  const accent = accentFor(project)
+
+  return (
+    <div
+      className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${project.title} details`}
+    >
+      <div
+        className="w-full max-w-2xl max-h-[85vh] overflow-hidden bg-gray-900 border border-gray-700 rounded-2xl shadow-2xl flex flex-col"
+        onClick={e => e.stopPropagation()}
+      >
+        <div className={`bg-gradient-to-br ${accent.gradient} px-5 sm:px-6 py-5 flex items-start justify-between gap-4`}>
+          <div className="min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-wider text-white/85">{accent.type}</p>
+            <h3 className="text-2xl font-bold text-white mt-0.5 break-words">{project.title}</h3>
+            <p className="text-xs text-white/85 mt-1 flex items-center gap-3 flex-wrap">
+              {project.client_name && <span>Built for {project.client_name}</span>}
+              <span className="inline-flex items-center gap-1"><IconEye /> {project.views ?? 0} views</span>
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="shrink-0 w-9 h-9 rounded-full bg-black/25 hover:bg-black/40 text-white flex items-center justify-center transition"
+          >
+            <IconClose />
+          </button>
+        </div>
+
+        <div className="overflow-y-auto px-5 sm:px-6 py-5">
+          {images.length > 0 && (
+            <div className="flex gap-3 overflow-x-auto pb-3 mb-4">
+              {images.map((src, i) => (
+                <button
+                  key={src + i}
+                  onClick={() => onOpenGallery(i)}
+                  className="shrink-0 h-24 w-36 rounded-lg overflow-hidden bg-slate-900 ring-1 ring-gray-700 hover:ring-yellow-500 transition"
+                >
+                  <img src={src} alt={`${project.title} screenshot ${i + 1}`} loading="lazy" className="w-full h-full object-contain" />
+                </button>
+              ))}
+            </div>
+          )}
+
+          <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line">{project.description}</p>
+
+          {project.tech_stack && project.tech_stack.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              {project.tech_stack.map((tech, i) => (
+                <span key={i} className="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-xs font-medium">{tech}</span>
+              ))}
+            </div>
+          )}
+
+          {(project.github_url || project.live_demo_url) && (
+            <div className="flex flex-wrap gap-4 mt-5 text-sm font-medium">
+              {project.live_demo_url && (
+                <a href={project.live_demo_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-yellow-500 hover:text-yellow-400">
+                  <IconExternal /> Live demo
+                </a>
+              )}
+              {project.github_url && (
+                <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-gray-300 hover:text-yellow-500">
+                  <IconGithub /> Source code
+                </a>
+              )}
+            </div>
+          )}
+
+          <div className="mt-5 pt-4 border-t border-gray-800">
+            <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">Questions about this system?</p>
+            <CommentsSection contentType="project" contentId={project.id} compact />
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 px-5 sm:px-6 py-4 border-t border-gray-800 bg-gray-900/80">
+          {images.length > 0 && (
+            <button
+              onClick={() => onOpenGallery(0)}
+              className="sm:flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-yellow-600 hover:bg-yellow-500 text-gray-900 text-sm font-bold transition-colors duration-200"
+            >
+              See all {images.length} screenshots <IconArrowRight />
+            </button>
+          )}
+          <Link
+            to="/contact"
+            onClick={onClose}
+            className={`${images.length > 0 ? 'sm:flex-1' : ''} inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-gray-700 text-gray-200 hover:border-yellow-500 hover:text-yellow-500 text-sm font-semibold transition-colors duration-200`}
+          >
+            Request a similar system
+          </Link>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default function ProjectsPage() {
@@ -106,6 +235,7 @@ export default function ProjectsPage() {
   const [viewMode, setViewMode] = useState('grid') // 'grid' or 'list'
   const [imagesByProject, setImagesByProject] = useState({})
   const [activeProject, setActiveProject] = useState(null)
+  const [quickView, setQuickView] = useState(null)
 
   useEffect(() => {
     loadProjects()
@@ -183,13 +313,13 @@ export default function ProjectsPage() {
 
   const getStatusBadge = (status) => {
     const badges = {
-      completed: { bg: 'bg-yellow-100 text-yellow-700 border-yellow-200', text: 'Completed', icon: <IconCheck /> },
-      building: { bg: 'bg-yellow-100 text-yellow-700 border-yellow-200', text: 'In Progress', icon: <IconRocket /> },
-      planned: { bg: 'bg-yellow-100 text-yellow-700 border-yellow-200', text: 'Planned', icon: <IconLayer /> }
+      completed: { bg: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40', text: 'Completed', icon: <IconCheck /> },
+      building: { bg: 'bg-yellow-500/20 text-yellow-300 border-yellow-400/40', text: 'In Progress', icon: <IconRocket /> },
+      planned: { bg: 'bg-white/10 text-gray-300 border-white/20', text: 'Planned', icon: <IconLayer /> }
     }
     const s = badges[status] || badges.planned
     return (
-      <span className={`${s.bg} border px-2 py-1 rounded-full text-xs flex items-center gap-1`}>
+      <span className={`${s.bg} border px-2 py-1 rounded-full text-xs flex items-center gap-1 whitespace-nowrap backdrop-blur-sm`}>
         {s.icon} {s.text}
       </span>
     )
@@ -343,28 +473,30 @@ export default function ProjectsPage() {
                 <div className="grid md:grid-cols-3 gap-4">
                   {featuredProjects.map(project => {
                     const shots = imagesFor(project)
+                    const accent = accentFor(project)
                     return (
-                    <div 
+                    <div
                       key={project.id}
                       onClick={() => openProject(project)}
                       role="button"
                       tabIndex={0}
                       onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), openProject(project))}
-                      className="group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer"
+                      className="group flex flex-col bg-gray-900 rounded-2xl overflow-hidden border border-gray-700 hover:border-yellow-500/50 hover:shadow-2xl hover:-translate-y-1 shadow-xl transition-all duration-300 cursor-pointer"
                     >
-                      <div className="relative h-56 overflow-hidden bg-slate-900">
+                      <div className="relative h-44 bg-slate-900 overflow-hidden">
                         {project.image_url ? (
-                          <img src={project.image_url} alt={project.title} loading="lazy" className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
+                          <img src={project.image_url} alt={project.title} loading="lazy" className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105" />
                         ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-yellow-100 to-yellow-100 flex items-center justify-center">
-                            <IconCode className="text-4xl text-yellow-600" />
+                          <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                            <IconCode className="text-4xl text-yellow-500" />
                           </div>
                         )}
+
                         <div className="absolute top-2 right-2">
                           {getStatusBadge(project.status)}
                         </div>
                         {shots.length > 1 && (
-                          <span className="absolute bottom-2 left-2 bg-black/80 text-white text-xs font-medium px-2 py-1 rounded">
+                          <span className="absolute bottom-2 left-2 bg-black/70 text-white text-xs font-medium px-2 py-1 rounded backdrop-blur-sm">
                             {shots.length} screenshots
                           </span>
                         )}
@@ -374,9 +506,27 @@ export default function ProjectsPage() {
                           </span>
                         </span>
                       </div>
-                      <div className="p-4">
-                        <h3 className="font-bold text-lg mb-1 group-hover:text-yellow-600 transition-colors duration-200 text-gray-800">{project.title}</h3>
-                        <p className="text-gray-600 text-sm line-clamp-4">{project.description}</p>
+
+                      <div className={`bg-gradient-to-br ${accent.gradient} px-5 py-4`}>
+                        <div className="text-xs font-semibold uppercase tracking-wider text-white/85">{accent.type}</div>
+                        <h3 className="text-xl font-bold text-white mt-0.5">{project.title}</h3>
+                      </div>
+
+                      <div className="p-5 flex-1 flex flex-col">
+                        <p className="text-gray-300 text-sm leading-relaxed line-clamp-3 mb-3">{project.description}</p>
+                        <button
+                          onClick={e => { e.stopPropagation(); setQuickView(project) }}
+                          className="self-start inline-flex items-center gap-1.5 text-sm font-semibold text-yellow-500 hover:text-yellow-400 mb-4 transition-colors duration-200"
+                        >
+                          Read more <IconArrowRight />
+                        </button>
+                        {project.tech_stack && project.tech_stack.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {project.tech_stack.slice(0, 3).map((tech, i) => (
+                              <span key={i} className="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-xs font-medium">{tech}</span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                     )
@@ -385,108 +535,146 @@ export default function ProjectsPage() {
               </div>
             )}
 
-            {/* Projects Grid/List */}
+{/* Projects Grid/List */}
             <div className={viewMode === 'grid' 
               ? "grid grid-cols-1 md:grid-cols-2 gap-6"
               : "space-y-4"
             }>
               {filteredProjects.map(project => {
                 const shots = imagesFor(project)
+                const accent = accentFor(project)
+                const techLimit = viewMode === 'grid' ? 4 : 6
                 return (
-                <div 
-                  key={project.id} 
+                <div
+                  key={project.id}
                   onClick={() => openProject(project)}
                   role="button"
                   tabIndex={0}
                   onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && (e.preventDefault(), openProject(project))}
-                  className={`group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer ${viewMode === 'grid' ? '' : 'flex flex-col md:flex-row'}`}
+                  className={`group flex flex-col bg-gray-900 rounded-2xl overflow-hidden border border-gray-700 hover:border-yellow-500/50 hover:shadow-2xl shadow-xl transition-all duration-300 cursor-pointer ${viewMode === 'grid' ? '' : 'md:flex-row'}`}
                 >
-                  {/* object-contain letterboxes against the dark backdrop rather than cropping */}
-                  <div className={`relative overflow-hidden bg-slate-900 ${viewMode === 'list' ? 'md:w-80 h-56 md:h-auto md:min-h-[280px] shrink-0' : ''}`}>
-                    {project.image_url ? (
-                      <img
-                        src={project.image_url}
-                        alt={project.title}
-                        loading="lazy" className={`w-full object-contain transition-transform duration-700 group-hover:scale-105 ${viewMode === 'grid' ? 'h-56' : 'h-full'}`}
-                      />
-                    ) : (
-                      <div className={`bg-gradient-to-br from-yellow-100 to-yellow-100 flex items-center justify-center ${viewMode === 'grid' ? 'h-56' : 'h-full min-h-[200px]'}`}>
-                        <IconCode className="text-5xl text-yellow-600 group-hover:text-yellow-700 transition-colors duration-200" />
-                      </div>
-                    )}
+                  {/* Screenshot cover: object-contain letterboxes against the dark backdrop rather than cropping */}
+                  <div className={`relative bg-slate-900 shrink-0 ${viewMode === 'list' ? 'md:w-80' : ''}`}>
+                    <div className={`relative w-full overflow-hidden ${viewMode === 'list' ? 'h-56 md:h-full md:min-h-[320px]' : 'h-56'}`}>
+                      {project.image_url ? (
+                        <img
+                          src={project.image_url}
+                          alt={project.title}
+                          loading="lazy"
+                          className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                          <IconCode className="text-5xl text-yellow-500 group-hover:text-yellow-400 transition-colors duration-200" />
+                        </div>
+                      )}
 
-                    {shots.length > 1 && (
-                      <span className="absolute bottom-3 right-3 bg-black/80 text-white text-xs font-medium px-2 py-1 rounded">
-                        {shots.length} screenshots
+                      {/* Screenshot count + hover veil */}
+                      {shots.length > 1 && (
+                        <span className="absolute bottom-3 right-3 bg-black/70 text-white text-xs font-medium px-2 py-1 rounded backdrop-blur-sm">
+                          {shots.length} screenshots
+                        </span>
+                      )}
+                      <span className="absolute inset-0 bg-black/0 group-hover:bg-black/40 flex items-center justify-center transition-colors duration-300">
+                        <span className="text-white text-sm font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                          View project
+                        </span>
                       </span>
-                    )}
-                    
+                      {shots.length === 0 && (
+                        <span className="absolute left-3 right-3 bottom-3 bg-black/70 text-white/90 text-[11px] px-2 py-1.5 rounded text-center leading-snug backdrop-blur-sm">
+                          No screenshots yet
+                        </span>
+                      )}
+                    </div>
+
                     {/* Favorite Button */}
                     <button
                       onClick={e => { e.stopPropagation(); toggleFavorite(project.id) }}
                       aria-label="Favourite"
-                      className={`absolute top-3 left-3 p-2 rounded-full transition-colors duration-200 ${favorites.includes(project.id) ? 'text-yellow-600 bg-yellow-100' : 'text-gray-600 bg-white hover:bg-gray-100'}`}
+                      className={`absolute top-3 left-3 p-2 rounded-full transition-colors duration-200 ${favorites.includes(project.id) ? 'text-yellow-500 bg-yellow-500/15 ring-1 ring-yellow-400/40' : 'text-gray-300 bg-black/50 hover:bg-black/70'}`}
                     >
                       <IconHeart filled={favorites.includes(project.id)} />
                     </button>
-                    
+
                     {/* Status */}
                     <div className="absolute top-3 right-3">
                       {getStatusBadge(project.status)}
                     </div>
-                    {shots.length === 0 && (
-                      <div className="absolute left-2 right-2 bottom-2 bg-black/70 text-white text-xs px-2 py-1 rounded text-center">
-                        No screenshots yet â€” <Link to="/contact" onClick={e => e.stopPropagation()} className="underline hover:text-yellow-300">Contact us</Link> to see similar results
+                  </div>
+
+                  {/* Accent banner + body share one column so list mode stays readable */}
+                  <div className={`flex flex-col flex-1 min-w-0 ${viewMode === 'list' ? 'md:flex-1' : ''}`}>
+                  {/* Accent banner: project type + title */}
+                  <div className={`bg-gradient-to-br ${accent.gradient} px-5 py-4`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="text-xs font-semibold uppercase tracking-wider text-white/85">
+                        {accent.type}
                       </div>
+                      <div className="flex items-center gap-1 text-[11px] font-medium text-white/90">
+                        <IconEye />
+                        <span>{project.views ?? 0}</span>
+                      </div>
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mt-1">
+                      {project.title}
+                    </h3>
+                    {project.client_name && (
+                      <p className="text-xs text-white/85 mt-1">Built for {project.client_name}</p>
                     )}
                   </div>
 
                   {/* Content */}
-                  <div className="p-5 flex-1">
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-yellow-600 transition-colors duration-200 text-gray-800">
-                      {project.title}
-                    </h3>
-                    
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-5">
+                  <div className="p-5 flex-1 flex flex-col">
+                    <p className="text-gray-300 text-sm leading-relaxed mb-3 line-clamp-3">
                       {project.description}
                     </p>
-                    
+
+                    <button
+                      onClick={e => { e.stopPropagation(); setQuickView(project) }}
+                      className="self-start inline-flex items-center gap-1.5 text-sm font-semibold text-yellow-500 hover:text-yellow-400 mb-4 transition-colors duration-200"
+                    >
+                      Read more <IconArrowRight />
+                    </button>
+
                     {/* Tech Stack */}
                     {project.tech_stack && project.tech_stack.length > 0 && (
                       <div className="mb-4">
-                        <div className="flex flex-wrap gap-1.5">
-                          {project.tech_stack.slice(0, viewMode === 'grid' ? 4 : 6).map((tech, i) => {
-                            const colorClass = getTechColor(tech)
-                            return (
-                              <span
-                                key={i}
-                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs border ${colorClass}`}
-                              >
-                                {tech}
-                              </span>
-                            )
-                          })}
-                          {project.tech_stack.length > (viewMode === 'grid' ? 4 : 6) && (
-                            <span className="text-xs text-gray-600 px-2 py-0.5">+{project.tech_stack.length - (viewMode === 'grid' ? 4 : 6)}</span>
+                        <div className="flex flex-wrap gap-2">
+                          {project.tech_stack.slice(0, techLimit).map((tech, i) => (
+                            <span key={i} className="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-xs font-medium">
+                              {tech}
+                            </span>
+                          ))}
+                          {project.tech_stack.length > techLimit && (
+                            <span className="text-xs text-gray-400 px-2 py-1 self-center">+{project.tech_stack.length - techLimit}</span>
                           )}
                         </div>
                       </div>
                     )}
-                    
+
+                    {shots.length === 0 && (
+                      <p className="text-xs text-gray-400 mb-4">
+                        Screenshots coming soon —{' '}
+                        <Link to="/contact" onClick={e => e.stopPropagation()} className="text-yellow-500 hover:underline font-semibold">
+                          contact us
+                        </Link>{' '}
+                        to see similar results.
+                      </p>
+                    )}
+
                     {/* Actions */}
-                    <div className="flex items-center justify-between pt-3 border-t border-gray-200">
-                      <div className="flex gap-3">
+                    <div className="mt-auto flex items-center justify-between gap-3 pt-4 border-t border-gray-800">
+                      <div className="flex gap-4">
                         {project.github_url && (
                           <a
                             href={project.github_url}
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={e => e.stopPropagation()}
-                            className="flex items-center gap-1.5 text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                            className="flex items-center gap-1.5 text-sm font-medium text-gray-300 hover:text-yellow-500 transition-colors duration-200"
                           >
                             <IconGithub />
-                            <span className="sm:hidden text-[10px]">Code</span>
-                            <span className="hidden sm:inline">Code</span>
+                            <span>Code</span>
                           </a>
                         )}
                         {project.live_demo_url && (
@@ -495,36 +683,37 @@ export default function ProjectsPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={e => e.stopPropagation()}
-                            className="flex items-center gap-1.5 text-sm text-yellow-600 hover:text-yellow-700 transition-colors duration-200"
+                            className="flex items-center gap-1.5 text-sm font-medium text-yellow-500 hover:text-yellow-400 transition-colors duration-200"
                           >
                             <IconExternal />
-                            <span className="sm:hidden text-[10px]">Live</span>
-                            <span className="hidden sm:inline">Live</span>
+                            <span>Live</span>
                           </a>
                         )}
                       </div>
-                      
-                      {/* Views */}
-                      <div className="flex items-center gap-1 text-xs text-gray-600">
-                        <IconEye />
-                        <span>{project.views ?? 0}</span>
-                      </div>
+
+                      {project.project_value && (
+                        <span className="text-xs text-gray-400">{project.project_value}</span>
+                      )}
                     </div>
 
-                    {/* Opens the full description and every screenshot */}
-                    <button
-                      onClick={e => { e.stopPropagation(); openProject(project) }}
-                      className="mt-4 w-full text-center px-3 py-2 rounded-lg bg-gray-100 hover:bg-yellow-500 hover:text-slate-900 text-sm font-semibold text-gray-700 transition-colors duration-200"
-                    >
-                      View details{shots.length > 1 ? ` (${shots.length} screenshots)` : ''}
-                    </button>
-                    
-                    {/* Comments - Only in grid mode */}
-                    {viewMode === 'grid' && (
-                      <div className="mt-4 pt-3 border-t border-gray-200" onClick={e => e.stopPropagation()}>
-                        <CommentsSection contentType="project" contentId={project.id} compact />
-                      </div>
+                    {/* Opens the gallery viewer; the card itself stays compact */}
+                    {shots.length > 0 ? (
+                      <button
+                        onClick={e => { e.stopPropagation(); openProject(project) }}
+                        className="mt-auto w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-yellow-600 hover:bg-yellow-500 text-gray-900 text-sm font-bold transition-colors duration-200"
+                      >
+                        View {shots.length > 1 ? `${shots.length} screenshots` : 'screenshot'} <IconArrowRight />
+                      </button>
+                    ) : (
+                      <Link
+                        to="/contact"
+                        onClick={e => e.stopPropagation()}
+                        className="mt-auto w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-yellow-600 hover:bg-yellow-500 text-gray-900 text-sm font-bold transition-colors duration-200"
+                      >
+                        Request similar system <IconArrowRight />
+                      </Link>
                     )}
+                  </div>
                   </div>
                 </div>
                 )
@@ -621,6 +810,18 @@ export default function ProjectsPage() {
           </div>
         </div>
       </div>
+
+      {quickView && (
+        <ProjectQuickView
+          project={quickView}
+          images={imagesFor(quickView)}
+          onClose={() => setQuickView(null)}
+          onOpenGallery={() => {
+            setActiveProject(quickView)
+            setQuickView(null)
+          }}
+        />
+      )}
 
       {activeProject && (
         <ProjectLightbox
