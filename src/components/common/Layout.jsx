@@ -61,7 +61,7 @@ export default function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900">
       <Header />
-      <main className="flex-1 max-w-7xl mx-auto px-6 py-12 w-full relative pt-20 md:pb-8 pb-20">
+      <main className="flex-1 max-w-7xl mx-auto px-6 py-12 w-full relative pt-28 md:pb-8 pb-20">
         {!isHomePage && (
           <div className="flex justify-end items-center gap-4 mb-8">
             <SimpleCTA />

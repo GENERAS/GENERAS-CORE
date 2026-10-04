@@ -362,7 +362,7 @@ const ServicePage = () => {
 
   // Render Functions
   const renderHero = () => (
-    <div className="sticky top-20 z-50 bg-white border-b border-gray-200">
+    <div className="sticky top-24 z-50 bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Logo/Brand */}
@@ -1130,7 +1130,7 @@ const ServicePage = () => {
               onClick={() => setActiveTab('browse')}
               className="mt-4 text-blue-600 hover:underline font-medium"
             >
-              Apply for Mentorship →
+              Apply for Mentorship â†’
             </button>
           </div>
         ) : trackTab === 'projects' && inquiries.length === 0 ? (
@@ -1141,7 +1141,7 @@ const ServicePage = () => {
               onClick={() => navigate('/hire-me')}
               className="mt-4 text-blue-600 hover:underline font-medium"
             >
-              Hire for a Project →
+              Hire for a Project â†’
             </button>
           </div>
         ) : (
@@ -1296,7 +1296,7 @@ const ServicePage = () => {
                             onClick={() => handleServiceSelect(services.find(s => s.id === app.service_id))}
                             className="mt-2 text-sm text-blue-600 font-semibold hover:underline"
                           >
-                            Complete Payment →
+                            Complete Payment â†’
                           </button>
                         </div>
                       </div>

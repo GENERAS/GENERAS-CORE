@@ -321,7 +321,7 @@ const ServiceDetailPage = () => {
                 {content.testimonials.map((testimonial, idx) => (
                   <div key={idx} className="bg-gray-50 rounded-xl p-4">
                     <p className="text-gray-700 italic mb-3">"{testimonial.text}"</p>
-                    <p className="text-sm text-gray-500 font-medium">— {testimonial.author}</p>
+                    <p className="text-sm text-gray-500 font-medium">â€” {testimonial.author}</p>
                   </div>
                 ))}
               </div>
@@ -390,7 +390,7 @@ const ServiceDetailPage = () => {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             {/* Pricing Card */}
-            <div className="bg-white rounded-2xl shadow-xl sticky top-24 p-6">
+            <div className="bg-white rounded-2xl shadow-xl sticky top-28 p-6">
               <h3 className="text-xl font-bold text-gray-800 mb-4">Choose Your Plan</h3>
               
               {/* Package Selector */}

@@ -219,7 +219,7 @@ export default function CommunityPage() {
   // Share functionality
   const handleShare = async (platform) => {
     const url = window.location.href
-    const text = 'Check out this amazing Community Hub! 🚀'
+    const text = 'Check out this amazing Community Hub! ðŸš€'
     
     const shareUrls = {
       whatsapp: `https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`,
@@ -280,7 +280,7 @@ export default function CommunityPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* TOP NAVIGATION BAR */}
-      <div className="sticky top-20 z-50 bg-white border-b border-gray-200">
+      <div className="sticky top-24 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo/Brand */}
@@ -323,7 +323,7 @@ export default function CommunityPage() {
           
           {/* LEFT SIDEBAR - Sticky Navigation */}
           <div className="hidden lg:block lg:col-span-3">
-            <div className="sticky top-24 space-y-4">
+            <div className="sticky top-28 space-y-4">
               {/* Main Navigation */}
               <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
@@ -636,7 +636,7 @@ export default function CommunityPage() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-800">{s.name}</p>
-                        <p className="text-xs text-yellow-600">{s.cups || s.amount || 0} ☕</p>
+                        <p className="text-xs text-yellow-600">{s.cups || s.amount || 0} â˜•</p>
                       </div>
                     </div>
                   ))}
@@ -675,7 +675,7 @@ export default function CommunityPage() {
 
           {/* RIGHT SIDEBAR - Activity & Stats */}
           <div className="hidden lg:block lg:col-span-3">
-            <div className="sticky top-24 space-y-4">
+            <div className="sticky top-28 space-y-4">
               
               {/* Stats Cards */}
               <div className="grid grid-cols-2 gap-3">
@@ -743,13 +743,13 @@ export default function CommunityPage() {
                   <div className="space-y-2">
                     {supporters.slice(0, 3).map((s, i) => (
                       <div key={s.id} className="flex items-center gap-3">
-                        <span className="text-lg">{i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}</span>
+                        <span className="text-lg">{i === 0 ? 'ðŸ¥‡' : i === 1 ? 'ðŸ¥ˆ' : 'ðŸ¥‰'}</span>
                         <div className="w-8 h-8 bg-gradient-to-br from-yellow-500 to-yellow-700 rounded-full flex items-center justify-center text-xs font-bold">
                           {s.name?.charAt(0) || '?'}
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-medium">{s.name}</p>
-                          <p className="text-xs text-yellow-400">{s.cups || s.amount || 0} ☕</p>
+                          <p className="text-xs text-yellow-400">{s.cups || s.amount || 0} â˜•</p>
                         </div>
                       </div>
                     ))}
@@ -927,7 +927,7 @@ export default function CommunityPage() {
                   onClick={() => handleShare('native')}
                   className="p-4 bg-slate-800 rounded-xl hover:bg-slate-700 transition flex flex-col items-center gap-2"
                 >
-                  <span className="text-2xl">📱</span>
+                  <span className="text-2xl">ðŸ“±</span>
                   <span className="text-xs">Native</span>
                 </button>
               )}
@@ -935,35 +935,35 @@ export default function CommunityPage() {
                 onClick={() => handleShare('whatsapp')}
                 className="p-4 bg-green-900/30 border border-green-600/30 rounded-xl hover:bg-green-900/50 transition flex flex-col items-center gap-2"
               >
-                <span className="text-2xl">💬</span>
+                <span className="text-2xl">ðŸ’¬</span>
                 <span className="text-xs text-green-400">WhatsApp</span>
               </button>
               <button 
                 onClick={() => handleShare('twitter')}
                 className="p-4 bg-sky-900/30 border border-sky-600/30 rounded-xl hover:bg-sky-900/50 transition flex flex-col items-center gap-2"
               >
-                <span className="text-2xl">🐦</span>
+                <span className="text-2xl">ðŸ¦</span>
                 <span className="text-xs text-sky-400">Twitter</span>
               </button>
               <button 
                 onClick={() => handleShare('facebook')}
                 className="p-4 bg-blue-900/30 border border-blue-600/30 rounded-xl hover:bg-blue-900/50 transition flex flex-col items-center gap-2"
               >
-                <span className="text-2xl">📘</span>
+                <span className="text-2xl">ðŸ“˜</span>
                 <span className="text-xs text-blue-400">Facebook</span>
               </button>
               <button 
                 onClick={() => handleShare('linkedin')}
                 className="p-4 bg-indigo-900/30 border border-indigo-600/30 rounded-xl hover:bg-indigo-900/50 transition flex flex-col items-center gap-2"
               >
-                <span className="text-2xl">💼</span>
+                <span className="text-2xl">ðŸ’¼</span>
                 <span className="text-xs text-indigo-400">LinkedIn</span>
               </button>
               <button 
                 onClick={() => handleShare('telegram')}
                 className="p-4 bg-yellow-900/30 border border-yellow-600/30 rounded-xl hover:bg-yellow-900/50 transition flex flex-col items-center gap-2"
               >
-                <span className="text-2xl">✈️</span>
+                <span className="text-2xl">âœˆï¸</span>
                 <span className="text-xs text-yellow-400">Telegram</span>
               </button>
             </div>

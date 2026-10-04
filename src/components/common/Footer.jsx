@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { MapPin, Mail } from 'lucide-react'
+import { MapPin, Mail, Phone } from 'lucide-react'
 
 const GithubIcon = (props) => (
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" {...props}>
@@ -82,15 +82,46 @@ export default function Footer() {
           <div>
             <h3 className="text-sm font-semibold text-gray-300 mb-5 uppercase tracking-wider">Contact</h3>
             <ul className="space-y-3 mb-6">
-              <li className="flex items-center gap-3 text-gray-400 text-sm">
-                <Mail className="text-yellow-500 flex-shrink-0" size={16} />
-                <span>generaskagiraneza@gmail.com</span>
+              <li>
+                <a
+                  href="mailto:generaskagiraneza@gmail.com"
+                  className="flex items-center gap-3 text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm break-all"
+                >
+                  <Mail className="text-yellow-500 flex-shrink-0" size={16} />
+                  <span>generaskagiraneza@gmail.com</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="tel:0794144738"
+                  className="flex items-center gap-3 text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm"
+                >
+                  <Phone className="text-yellow-500 flex-shrink-0" size={16} />
+                  <span>0794144738</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="tel:0781281207"
+                  className="flex items-center gap-3 text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm"
+                >
+                  <Phone className="text-yellow-500 flex-shrink-0" size={16} />
+                  <span>0781281207</span>
+                </a>
               </li>
               <li className="flex items-center gap-3 text-gray-400 text-sm">
                 <MapPin className="text-yellow-500 flex-shrink-0" size={16} />
                 <span>Kigali, Rwanda</span>
               </li>
             </ul>
+
+            <Link
+              to="/contact"
+              className="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-lg bg-yellow-600 hover:bg-yellow-500 text-gray-900 text-sm font-bold transition-colors duration-200 mb-6"
+            >
+              Send a message
+            </Link>
+
             <div>
               <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Follow</h4>
               <div className="flex gap-3">

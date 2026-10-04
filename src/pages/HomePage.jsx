@@ -186,7 +186,7 @@ export default function HomePage() {
           
           {/* LEFT SIDEBAR - Quick Navigation */}
           <div className="hidden lg:block lg:col-span-3">
-            <div className="sticky top-24 space-y-4">
+            <div className="sticky top-28 space-y-4">
               {/* Main Navigation */}
               <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
@@ -250,7 +250,7 @@ export default function HomePage() {
                       <>
                         <img
                           src={heroImages[heroImageIndex]}
-                          alt={`Generas Kagiraneza — photo ${heroImageIndex + 1} of ${heroImages.length}`}
+                          alt={`Generas Kagiraneza â€” photo ${heroImageIndex + 1} of ${heroImages.length}`}
                           loading={heroImageIndex === 0 ? 'eager' : 'lazy'}
                           fetchPriority={heroImageIndex === 0 ? 'high' : 'auto'}
                           decoding="async"
@@ -289,7 +289,7 @@ export default function HomePage() {
                   {/* Small Badge */}
                   <div className="inline-flex items-center gap-2 bg-yellow-500/20 border border-yellow-500/30 rounded-full px-4 py-2 mb-5 self-start">
                     <span className="text-xs font-semibold text-yellow-400 uppercase tracking-wider">
-                      SOFTWARE • AI • DIGITAL SYSTEMS
+                      SOFTWARE â€¢ AI â€¢ DIGITAL SYSTEMS
                     </span>
                   </div>
 
@@ -553,7 +553,7 @@ export default function HomePage() {
 
           {/* RIGHT SIDEBAR - Stats & Quick Actions */}
           <div className="hidden lg:block lg:col-span-3">
-            <div className="sticky top-24 space-y-4">
+            <div className="sticky top-28 space-y-4">
               
               {/* Stats Cards */}
               <div className="grid grid-cols-2 gap-3">

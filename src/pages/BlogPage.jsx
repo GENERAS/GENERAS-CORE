@@ -137,7 +137,7 @@ export default function BlogPage() {
         )}
 
         {/* Search & Filter Bar */}
-        <div className="sticky top-20 z-40 mb-8">
+        <div className="sticky top-24 z-40 mb-8">
           <div className="bg-white rounded-2xl p-4 border border-gray-200">
             <div className="flex flex-col md:flex-row gap-4">
               {/* Search */}

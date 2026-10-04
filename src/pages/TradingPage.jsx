@@ -194,7 +194,7 @@ export default function TradingPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* TOP NAVIGATION BAR */}
-      <div className="sticky top-20 z-50 bg-white border-b border-gray-200">
+      <div className="sticky top-24 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo/Brand */}
@@ -232,7 +232,7 @@ export default function TradingPage() {
           
           {/* LEFT SIDEBAR - Sticky Navigation */}
           <div className="hidden lg:block lg:col-span-3">
-            <div className="sticky top-24 space-y-4">
+            <div className="sticky top-28 space-y-4">
               {/* Main Navigation */}
               <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2">
@@ -368,7 +368,7 @@ export default function TradingPage() {
                 <div>
                   <h2 className="text-lg font-bold text-gray-800">Recent Trades</h2>
                   <p className="text-xs text-gray-600">
-                    {stats.winningTrades} wins / {stats.losingTrades} losses • Click to view comments
+                    {stats.winningTrades} wins / {stats.losingTrades} losses â€¢ Click to view comments
                   </p>
                 </div>
                 {trades.length > 5 && (
@@ -510,7 +510,7 @@ export default function TradingPage() {
 
           {/* RIGHT SIDEBAR - Stats */}
           <div className="hidden lg:block lg:col-span-3">
-            <div className="sticky top-24 space-y-4">
+            <div className="sticky top-28 space-y-4">
               
               {/* Stats Cards */}
               <div className="grid grid-cols-2 gap-3">

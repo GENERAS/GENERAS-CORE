@@ -162,7 +162,7 @@ export default function TestimonialsPage() {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* TOP NAVIGATION BAR */}
-      <div className="sticky top-20 z-50 bg-white border-b border-gray-200">
+      <div className="sticky top-24 z-50 bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo/Brand */}
@@ -214,7 +214,7 @@ export default function TestimonialsPage() {
           
           {/* LEFT SIDEBAR - Sticky Navigation */}
           <div className="hidden lg:block lg:col-span-2">
-            <div className="sticky top-24 space-y-4">
+            <div className="sticky top-28 space-y-4">
               {/* Project Type Filter */}
               <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
@@ -400,7 +400,7 @@ export default function TestimonialsPage() {
             )}
 
             {/* Search Bar */}
-            <div className="sticky top-20 z-40">
+            <div className="sticky top-24 z-40">
               <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <div className="flex gap-4">
                   <div className="flex-1 relative">
@@ -620,7 +620,7 @@ export default function TestimonialsPage() {
 
           {/* RIGHT SIDEBAR - Sticky */}
           <div className="hidden lg:block lg:col-span-3">
-            <div className="sticky top-24 space-y-4">
+            <div className="sticky top-28 space-y-4">
               {/* Live Activity Feed */}
               <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">

@@ -32,10 +32,10 @@ const serviceCategories = [
     ],
     exampleOffer: 'I build fast, mobile-first websites that help businesses get customers and present their services professionally.',
     pricing: [
-      { name: 'Starter', price: '150k–250k RWF', features: ['1–3 pages', 'Mobile-first', 'WhatsApp/call buttons', 'Contact form', 'Basic SEO', 'Deployment'] },
-      { name: 'Business', price: '300k–500k RWF', features: ['5–8 pages', 'Custom design', 'Gallery & testimonials', 'Google Maps', 'Analytics'], popular: true },
-      { name: 'Professional', price: '600k–900k RWF', features: ['8–15 pages', 'CMS & blog', 'Advanced SEO', 'Multilingual', 'Custom UI'] },
-      { name: 'Corporate', price: '1M–1.5M+ RWF', features: ['Custom architecture', 'Advanced CMS', 'Integrations', 'Dashboards'] },
+      { name: 'Starter', price: '150kâ€“250k RWF', features: ['1â€“3 pages', 'Mobile-first', 'WhatsApp/call buttons', 'Contact form', 'Basic SEO', 'Deployment'] },
+      { name: 'Business', price: '300kâ€“500k RWF', features: ['5â€“8 pages', 'Custom design', 'Gallery & testimonials', 'Google Maps', 'Analytics'], popular: true },
+      { name: 'Professional', price: '600kâ€“900k RWF', features: ['8â€“15 pages', 'CMS & blog', 'Advanced SEO', 'Multilingual', 'Custom UI'] },
+      { name: 'Corporate', price: '1Mâ€“1.5M+ RWF', features: ['Custom architecture', 'Advanced CMS', 'Integrations', 'Dashboards'] },
     ],
   },
   {
@@ -56,11 +56,11 @@ const serviceCategories = [
       'WhatsApp ordering',
       'Mobile Money payment integration',
     ],
-    exampleOffer: 'Everything you need to sell online — from product listings to Mobile Money checkout.',
+    exampleOffer: 'Everything you need to sell online â€” from product listings to Mobile Money checkout.',
     pricing: [
       { name: 'Starter Store', price: '700k RWF', features: ['Product catalog', 'Cart & checkout', 'WhatsApp ordering', 'Admin management', 'Mobile-first'] },
       { name: 'Business Store', price: '1.2M RWF', features: ['MoMo/Airtel integration', 'Customer accounts', 'Inventory', 'Discounts & coupons', 'Notifications'], popular: true },
-      { name: 'Advanced Store', price: '2M–3.5M RWF', features: ['Multiple payments', 'Delivery management', 'Loyalty & segmentation', 'PWA', 'Advanced dashboard'] },
+      { name: 'Advanced Store', price: '2Mâ€“3.5M RWF', features: ['Multiple payments', 'Delivery management', 'Loyalty & segmentation', 'PWA', 'Advanced dashboard'] },
     ],
   },
   {
@@ -82,9 +82,9 @@ const serviceCategories = [
     ],
     exampleOffer: 'A digital system that replaces your Excel books and manual processes.',
     pricing: [
-      { name: 'Basic System', price: '800k–1.2M RWF', features: ['Admin & staff login', 'Dashboard', 'Customers & products', 'Basic inventory', 'Sales & reports'] },
-      { name: 'Business System', price: '1.5M–2.5M RWF', features: ['Inventory & suppliers', 'Roles & permissions', 'PDF invoices & receipts', 'Analytics', 'Notifications'], popular: true },
-      { name: 'Advanced ERP', price: '3M–7M+ RWF', features: ['POS, accounting, HR, CRM', 'Multi-branch', 'Multi-user roles', 'APIs', 'PWA & payments'] },
+      { name: 'Basic System', price: '800kâ€“1.2M RWF', features: ['Admin & staff login', 'Dashboard', 'Customers & products', 'Basic inventory', 'Sales & reports'] },
+      { name: 'Business System', price: '1.5Mâ€“2.5M RWF', features: ['Inventory & suppliers', 'Roles & permissions', 'PDF invoices & receipts', 'Analytics', 'Notifications'], popular: true },
+      { name: 'Advanced ERP', price: '3Mâ€“7M+ RWF', features: ['POS, accounting, HR, CRM', 'Multi-branch', 'Multi-user roles', 'APIs', 'PWA & payments'] },
     ],
   },
   {
@@ -104,11 +104,11 @@ const serviceCategories = [
       'Automated receipts',
       'Payment dashboards',
     ],
-    exampleOffer: 'Automated payment systems — from Mobile Money to full payment dashboards.',
+    exampleOffer: 'Automated payment systems â€” from Mobile Money to full payment dashboards.',
     pricing: [
-      { name: 'Basic', price: '150k–250k RWF', features: ['One payment provider', 'Payment initiation', 'Webhook/callback', 'Success/failure handling'] },
-      { name: 'Multi-Payment', price: '300k–500k RWF', features: ['MTN MoMo + Airtel', 'Transaction records', 'Payment dashboard', 'Receipts'], popular: true },
-      { name: 'Advanced', price: '600k–1.2M+ RWF', features: ['Multiple providers', 'Auto reconciliation', 'Refunds & ledger', 'Reporting', 'Admin controls'] },
+      { name: 'Basic', price: '150kâ€“250k RWF', features: ['One payment provider', 'Payment initiation', 'Webhook/callback', 'Success/failure handling'] },
+      { name: 'Multi-Payment', price: '300kâ€“500k RWF', features: ['MTN MoMo + Airtel', 'Transaction records', 'Payment dashboard', 'Receipts'], popular: true },
+      { name: 'Advanced', price: '600kâ€“1.2M+ RWF', features: ['Multiple providers', 'Auto reconciliation', 'Refunds & ledger', 'Reporting', 'Admin controls'] },
     ],
   },
   {
@@ -128,11 +128,11 @@ const serviceCategories = [
       'Appointment booking',
       'Lead collection & follow-ups',
     ],
-    exampleOffer: 'Customer sends "Hello" → system asks what they need → shows products → collects order → sends payment instructions.',
+    exampleOffer: 'Customer sends "Hello" â†’ system asks what they need â†’ shows products â†’ collects order â†’ sends payment instructions.',
     pricing: [
-      { name: 'Starter', price: '200k–350k RWF', features: ['Click-to-chat', 'Product catalog', 'Predefined messages', 'Lead collection'] },
-      { name: 'Automation', price: '500k–900k RWF', features: ['Automated responses', 'Product discovery', 'Order collection', 'Customer database'], popular: true },
-      { name: 'Sales System', price: '1M–2M+ RWF', features: ['AI assistant', 'Order processing', 'Payment links', 'Sales analytics', 'CRM integration'] },
+      { name: 'Starter', price: '200kâ€“350k RWF', features: ['Click-to-chat', 'Product catalog', 'Predefined messages', 'Lead collection'] },
+      { name: 'Automation', price: '500kâ€“900k RWF', features: ['Automated responses', 'Product discovery', 'Order collection', 'Customer database'], popular: true },
+      { name: 'Sales System', price: '1Mâ€“2M+ RWF', features: ['AI assistant', 'Order processing', 'Payment links', 'Sales analytics', 'CRM integration'] },
     ],
   },
   {
@@ -152,18 +152,18 @@ const serviceCategories = [
       'APIs & backend architecture',
       'Authentication & databases',
     ],
-    exampleOffer: '"We manage 500 customers using Excel and WhatsApp." — I build you a proper system.',
+    exampleOffer: '"We manage 500 customers using Excel and WhatsApp." â€” I build you a proper system.',
     pricing: [
-      { name: 'Small API', price: '250k–500k RWF', features: ['Auth & CRUD', 'Database', 'REST API', 'Basic documentation'] },
-      { name: 'Business API', price: '600k–1.2M RWF', features: ['Roles & permissions', 'Integrations', 'Webhooks', 'Full documentation'], popular: true },
-      { name: 'Advanced Backend', price: '1.5M–4M+ RWF', features: ['Complex business logic', 'Multiple integrations', 'Queues & analytics', 'Scalable architecture'] },
+      { name: 'Small API', price: '250kâ€“500k RWF', features: ['Auth & CRUD', 'Database', 'REST API', 'Basic documentation'] },
+      { name: 'Business API', price: '600kâ€“1.2M RWF', features: ['Roles & permissions', 'Integrations', 'Webhooks', 'Full documentation'], popular: true },
+      { name: 'Advanced Backend', price: '1.5Mâ€“4M+ RWF', features: ['Complex business logic', 'Multiple integrations', 'Queues & analytics', 'Scalable architecture'] },
     ],
   },
   {
     id: 'automation-ai',
     icon: Cpu,
     title: 'Automation & AI Integration',
-    tagline: 'Automate repetitive tasks — work less, scale smarter',
+    tagline: 'Automate repetitive tasks â€” work less, scale smarter',
     color: 'from-violet-600 to-purple-600',
     lightColor: 'bg-violet-50',
     who: 'Any business with repetitive manual tasks',
@@ -179,9 +179,9 @@ const serviceCategories = [
     ],
     exampleOffer: 'Automatically answer common customer questions 24/7 without manually responding to every message.',
     pricing: [
-      { name: 'AI Starter', price: '250k–500k RWF', features: ['FAQ assistant', 'Document summarization', 'Content generation', 'Simple chatbot'] },
-      { name: 'Business Automation', price: '600k–1.2M RWF', features: ['AI assistant', 'Workflow automation', 'Database & notifications', 'Admin dashboard'], popular: true },
-      { name: 'AI Platform', price: '1.5M–4M+ RWF', features: ['AI agent', 'Knowledge base', 'CRM & WhatsApp', 'Analytics', 'API integrations'] },
+      { name: 'AI Starter', price: '250kâ€“500k RWF', features: ['FAQ assistant', 'Document summarization', 'Content generation', 'Simple chatbot'] },
+      { name: 'Business Automation', price: '600kâ€“1.2M RWF', features: ['AI assistant', 'Workflow automation', 'Database & notifications', 'Admin dashboard'], popular: true },
+      { name: 'AI Platform', price: '1.5Mâ€“4M+ RWF', features: ['AI agent', 'Knowledge base', 'CRM & WhatsApp', 'Analytics', 'API integrations'] },
     ],
   },
   {
@@ -202,11 +202,11 @@ const serviceCategories = [
       'Hosting & domain management',
       'Monitoring',
     ],
-    exampleOffer: 'Basic, Business, and Premium maintenance plans — from simple backups to priority support with dev hours.',
+    exampleOffer: 'Basic, Business, and Premium maintenance plans â€” from simple backups to priority support with dev hours.',
     pricing: [
       { name: 'Basic', price: '30k/month', features: ['Backups', 'Minor updates', 'Security checks', 'Basic support'] },
       { name: 'Business', price: '75k/month', features: ['Content updates', 'Performance monitoring', 'Bug fixes', 'Analytics reports'], popular: true },
-      { name: 'Premium', price: '150k–300k/month', features: ['Priority support', 'Security monitoring', 'Dev hours', 'Analytics & management'] },
+      { name: 'Premium', price: '150kâ€“300k/month', features: ['Priority support', 'Security monitoring', 'Dev hours', 'Analytics & management'] },
     ],
   },
   {
@@ -228,17 +228,17 @@ const serviceCategories = [
     ],
     exampleOffer: 'Clean, modern interfaces designed for how your users actually work.',
     pricing: [
-      { name: 'UI Audit', price: '100k–250k RWF', features: ['UX analysis', 'Improvement recommendations', 'Wireframe suggestions'] },
-      { name: 'Landing Page', price: '100k–250k RWF', features: ['Full landing page design', 'Mobile responsive', 'Figma file'] },
-      { name: 'Full Website UI', price: '300k–700k RWF', features: ['Complete UI design', 'Design system', 'Multiple pages'], popular: true },
-      { name: 'SaaS Dashboard', price: '500k–1.5M+ RWF', features: ['Dashboard design', 'Role-based views', 'Component library'] },
+      { name: 'UI Audit', price: '100kâ€“250k RWF', features: ['UX analysis', 'Improvement recommendations', 'Wireframe suggestions'] },
+      { name: 'Landing Page', price: '100kâ€“250k RWF', features: ['Full landing page design', 'Mobile responsive', 'Figma file'] },
+      { name: 'Full Website UI', price: '300kâ€“700k RWF', features: ['Complete UI design', 'Design system', 'Multiple pages'], popular: true },
+      { name: 'SaaS Dashboard', price: '500kâ€“1.5M+ RWF', features: ['Dashboard design', 'Role-based views', 'Component library'] },
     ],
   },
   {
     id: 'website-improvement',
     icon: SearchIcon,
     title: 'Existing Website Improvement',
-    tagline: "Fix what's broken — don't always rebuild from scratch",
+    tagline: "Fix what's broken â€” don't always rebuild from scratch",
     color: 'from-cyan-600 to-blue-600',
     lightColor: 'bg-cyan-50',
     who: 'Businesses with existing websites that underperform',
@@ -250,10 +250,10 @@ const serviceCategories = [
       'Full website redesign',
       'Performance improvements',
     ],
-    exampleOffer: 'Many businesses already have websites that are terrible. I fix them — no need to rebuild from zero.',
+    exampleOffer: 'Many businesses already have websites that are terrible. I fix them â€” no need to rebuild from zero.',
     pricing: [
-      { name: 'Quick Fix', price: '100k–250k RWF', features: ['Bug fixes', 'Speed optimization', 'Broken links', 'Basic improvements'] },
-      { name: 'Redesign', price: '300k–700k RWF', features: ['Full redesign', 'Modern UI', 'Mobile-first', 'SEO optimization'], popular: true },
+      { name: 'Quick Fix', price: '100kâ€“250k RWF', features: ['Bug fixes', 'Speed optimization', 'Broken links', 'Basic improvements'] },
+      { name: 'Redesign', price: '300kâ€“700k RWF', features: ['Full redesign', 'Modern UI', 'Mobile-first', 'SEO optimization'], popular: true },
     ],
   },
   {
@@ -272,18 +272,18 @@ const serviceCategories = [
       'Page speed optimization',
       'Local landing pages',
     ],
-    exampleOffer: 'Improve your technical and local search visibility — no empty promises.',
+    exampleOffer: 'Improve your technical and local search visibility â€” no empty promises.',
     pricing: [
-      { name: 'Starter SEO', price: '100k–200k RWF', features: ['Metadata', 'Sitemap', 'Indexing', 'Search Console setup'] },
-      { name: 'Local Business', price: '250k–500k RWF', features: ['Google Business Profile', 'Local SEO', 'Keyword research', 'Location pages'], popular: true },
-      { name: 'Growth SEO', price: '500k–1M+/month', features: ['Ongoing content', 'Keyword tracking', 'Backlinks', 'Monthly reporting'] },
+      { name: 'Starter SEO', price: '100kâ€“200k RWF', features: ['Metadata', 'Sitemap', 'Indexing', 'Search Console setup'] },
+      { name: 'Local Business', price: '250kâ€“500k RWF', features: ['Google Business Profile', 'Local SEO', 'Keyword research', 'Location pages'], popular: true },
+      { name: 'Growth SEO', price: '500kâ€“1M+/month', features: ['Ongoing content', 'Keyword tracking', 'Backlinks', 'Monthly reporting'] },
     ],
   },
   {
     id: 'digitization-consulting',
     icon: Building2,
     title: 'Business Digitization Consulting',
-    tagline: 'From notebooks + Excel + WhatsApp → proper digital systems',
+    tagline: 'From notebooks + Excel + WhatsApp â†’ proper digital systems',
     color: 'from-indigo-600 to-blue-600',
     lightColor: 'bg-indigo-50',
     who: 'Businesses still using manual processes',
@@ -295,11 +295,11 @@ const serviceCategories = [
       'Staff training',
       'Ongoing support',
     ],
-    exampleOffer: 'You tell me your current process → I identify problems → propose digital solution → implement → train → support.',
+    exampleOffer: 'You tell me your current process â†’ I identify problems â†’ propose digital solution â†’ implement â†’ train â†’ support.',
     pricing: [
-      { name: 'Digital Assessment', price: '50k–150k RWF', features: ['Workflow analysis', 'Problem identification', 'Recommendations report'] },
-      { name: 'Process Digitization', price: '300k–1M RWF', features: ['Process mapping', 'System design', 'Workflow automation', 'Staff training'], popular: true },
-      { name: 'Full Transformation', price: '1.5M–5M+ RWF', features: ['Complete digitization', 'Custom systems', 'Integration', 'Ongoing support'] },
+      { name: 'Digital Assessment', price: '50kâ€“150k RWF', features: ['Workflow analysis', 'Problem identification', 'Recommendations report'] },
+      { name: 'Process Digitization', price: '300kâ€“1M RWF', features: ['Process mapping', 'System design', 'Workflow automation', 'Staff training'], popular: true },
+      { name: 'Full Transformation', price: '1.5Mâ€“5M+ RWF', features: ['Complete digitization', 'Custom systems', 'Integration', 'Ongoing support'] },
     ],
   },
   {
@@ -320,11 +320,11 @@ const serviceCategories = [
       'Webhooks',
       'Backend architecture',
     ],
-    exampleOffer: 'Solid backends — APIs, auth, databases, and integrations for your apps and platforms.',
+    exampleOffer: 'Solid backends â€” APIs, auth, databases, and integrations for your apps and platforms.',
     pricing: [
-      { name: 'Small API', price: '250k–500k RWF', features: ['Auth & CRUD', 'Database', 'REST API', 'Basic docs'] },
-      { name: 'Business API', price: '600k–1.2M RWF', features: ['Roles', 'Integrations', 'Webhooks', 'Full documentation'], popular: true },
-      { name: 'Advanced Backend', price: '1.5M–4M+ RWF', features: ['Complex logic', 'Multiple integrations', 'Scalable architecture'] },
+      { name: 'Small API', price: '250kâ€“500k RWF', features: ['Auth & CRUD', 'Database', 'REST API', 'Basic docs'] },
+      { name: 'Business API', price: '600kâ€“1.2M RWF', features: ['Roles', 'Integrations', 'Webhooks', 'Full documentation'], popular: true },
+      { name: 'Advanced Backend', price: '1.5Mâ€“4M+ RWF', features: ['Complex logic', 'Multiple integrations', 'Scalable architecture'] },
     ],
   },
   {
@@ -344,16 +344,16 @@ const serviceCategories = [
     ],
     exampleOffer: 'Clean database design, migration, and optimization for your applications.',
     pricing: [
-      { name: 'Design & Setup', price: '150k–300k RWF', features: ['Schema design', 'Tables & relations', 'Indexes', 'Initial setup'] },
-      { name: 'Migration', price: '200k–500k RWF', features: ['Data migration', 'Validation', 'Backup & rollback'], popular: true },
-      { name: 'Optimization', price: '250k–600k RWF', features: ['Query optimization', 'Performance tuning', 'Monitoring setup'] },
+      { name: 'Design & Setup', price: '150kâ€“300k RWF', features: ['Schema design', 'Tables & relations', 'Indexes', 'Initial setup'] },
+      { name: 'Migration', price: '200kâ€“500k RWF', features: ['Data migration', 'Validation', 'Backup & rollback'], popular: true },
+      { name: 'Optimization', price: '250kâ€“600k RWF', features: ['Query optimization', 'Performance tuning', 'Monitoring setup'] },
     ],
   },
   {
     id: 'hosting-deployment',
     icon: Layers,
     title: 'Hosting & Deployment',
-    tagline: 'From development to production — fully deployed and live',
+    tagline: 'From development to production â€” fully deployed and live',
     color: 'from-orange-500 to-red-500',
     lightColor: 'bg-orange-50',
     who: 'Anyone needing help getting their app live',
@@ -366,10 +366,10 @@ const serviceCategories = [
       'Monitoring',
       'Cloud setup',
     ],
-    exampleOffer: 'From development to production — fully deployed, secured, and monitored.',
+    exampleOffer: 'From development to production â€” fully deployed, secured, and monitored.',
     pricing: [
-      { name: 'Deployment', price: '50k–150k RWF', features: ['Domain & DNS', 'SSL', 'Deployment', 'Environment config'] },
-      { name: 'Managed Hosting', price: '50k–150k/month', features: ['Traffic management', 'Storage', 'Backups', 'Monitoring'], popular: true },
+      { name: 'Deployment', price: '50kâ€“150k RWF', features: ['Domain & DNS', 'SSL', 'Deployment', 'Environment config'] },
+      { name: 'Managed Hosting', price: '50kâ€“150k/month', features: ['Traffic management', 'Storage', 'Backups', 'Monitoring'], popular: true },
     ],
   },
 ]
@@ -445,7 +445,7 @@ export default function BusinessPage() {
   const [portfolioOpen, setPortfolioOpen] = useState(false)
 
   return (
-    <div className="min-h-screen -mx-6 -mt-20 -mb-8">
+    <div className="min-h-screen -mx-6 -mt-28 -mb-8">
       {/* Hero */}
       <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -467,7 +467,7 @@ export default function BusinessPage() {
             </h1>
             <p className="text-lg sm:text-xl text-gray-300 mb-6 max-w-2xl">
               From e-commerce stores to business management systems, I turn your ideas
-              into production-ready software — with Mobile Money, real-time dashboards,
+              into production-ready software â€” with Mobile Money, real-time dashboards,
               and AI built in.
             </p>
             <p className="text-yellow-400 font-semibold mb-10 text-lg">
@@ -520,7 +520,7 @@ export default function BusinessPage() {
         <div className="text-center mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">What I Build & Pricing</h2>
           <p className="text-lg text-gray-500 max-w-2xl mx-auto">
-            Transparent pricing for every service — see what you get before you commit
+            Transparent pricing for every service â€” see what you get before you commit
           </p>
         </div>
 
@@ -724,7 +724,7 @@ export default function BusinessPage() {
               <Clock className="w-8 h-8 text-yellow-600" />
             </div>
             <h3 className="text-lg font-bold text-gray-900 mb-2">Fast Delivery</h3>
-            <p className="text-sm text-gray-500">Most projects delivered in 2–4 weeks. Rush jobs available.</p>
+            <p className="text-sm text-gray-500">Most projects delivered in 2â€“4 weeks. Rush jobs available.</p>
           </div>
           <div className="text-center p-8">
             <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -743,7 +743,7 @@ export default function BusinessPage() {
             Ready to build something great?
           </h2>
           <p className="text-lg text-gray-800 mb-2 max-w-xl mx-auto">
-            Tell me about your project. Free consultation — no commitment.
+            Tell me about your project. Free consultation â€” no commitment.
           </p>
           <p className="text-gray-800 mb-8 font-semibold">
             Projects start from 250,000 RWF
