@@ -1,17 +1,52 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { 
+import {
   Star, Play, Pause, ExternalLink, Image as ImageIcon, Mic, 
   TrendingUp, Users, CheckCircle, Plus, X,
   MessageSquare, Building2, Briefcase, Globe,
   ChevronLeft, ChevronRight, Quote, Trophy, Target,
   Zap, Crown, ThumbsUp, Share2, Bell, Filter,
   Search, ChevronDown, Sparkles, Award, Rocket,
-  Heart
+  Heart, ShoppingCart, Smartphone, CreditCard, Cpu, Wrench,
+  BarChart3, Layers, ArrowRight, Images
 } from 'lucide-react';
 import TestimonialSubmissionForm from '../components/testimonials/TestimonialSubmissionForm';
+import ProjectLightbox from '../components/projects/ProjectLightbox';
 import Loader from '../components/common/Loader';
+
+// Service filters mirror the services offered on /business so visitors can
+// check "have you done this for someone?" using the same language.
+const SERVICE_FILTERS = [
+  { id: 'all', label: 'All Services', icon: Layers },
+  { id: 'websites', label: 'Websites', icon: Globe, gradient: 'from-blue-600 to-indigo-600', match: /website|web ?app|portfolio|landing page|blog|cms|seo/i },
+  { id: 'ecommerce', label: 'E-commerce', icon: ShoppingCart, gradient: 'from-emerald-600 to-teal-600', match: /e-?commerce|shop|store|marketplace|multi-?vendor|vendor|cart|checkout|order management|catalog/i },
+  { id: 'systems', label: 'Management Systems', icon: BarChart3, gradient: 'from-purple-600 to-pink-600', match: /management system|clinic|patient|appointment|pos\b|inventory|school|restaurant|ngo|erp|record|admin system/i },
+  { id: 'mobile', label: 'Mobile Apps', icon: Smartphone, gradient: 'from-cyan-500 to-blue-600', match: /mobile|android|ios\b|react native|flutter|app\b/i },
+  { id: 'payments', label: 'Payments', icon: CreditCard, gradient: 'from-amber-500 to-orange-600', match: /payment|momo|mobile money|airtel|stripe|paypal|billing|invoice/i },
+  { id: 'whatsapp', label: 'WhatsApp', icon: MessageSquare, gradient: 'from-green-500 to-green-600', match: /whatsapp|wa\.me|whats app/i },
+  { id: 'saas', label: 'SaaS & Dashboards', icon: Rocket, gradient: 'from-rose-600 to-red-600', match: /saas|dashboard|platform|multi-?tenant|\bapi\b|crm|subscription/i },
+  { id: 'ai', label: 'AI & Automation', icon: Cpu, gradient: 'from-violet-600 to-purple-600', match: /\bai\b|automation|chatbot|assistant|machine learning|llm|automated/i },
+  { id: 'maintenance', label: 'Maintenance', icon: Wrench, gradient: 'from-slate-600 to-gray-700', match: /maintenance|support|hosting|bug fix|security|backup|optimi[sz]ation/i },
+];
+
+// The submission form stores a coarse project_type; map it onto the services above.
+const TYPE_TO_SERVICES = {
+  website: ['websites'],
+  web_app: ['websites', 'saas'],
+  mobile_app: ['mobile'],
+  trading_bot: ['systems', 'websites'],
+  other: [],
+};
+
+const haystack = (...parts) => parts.filter(Boolean).join(' ').toLowerCase();
+
+const servicesFor = (...parts) => {
+  const text = haystack(...parts);
+  return SERVICE_FILTERS.filter(s => s.match && s.match.test(text)).map(s => s.id);
+};
+
+const serviceMatches = (ids, service) => service === 'all' || ids.includes(service);
 
 export default function TestimonialsPage() {
   const [searchParams] = useSearchParams();
@@ -20,17 +55,22 @@ export default function TestimonialsPage() {
   const [showSubmissionForm, setShowSubmissionForm] = useState(false);
   const [playingAudio, setPlayingAudio] = useState(null);
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
-  const [filter, setFilter] = useState('all');
   const [featuredIndex, setFeaturedIndex] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [recentSubmissions, setRecentSubmissions] = useState([]);
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [source, setSource] = useState('all'); // 'all' | 'reviews' | 'projects'
+  const [service, setService] = useState('all');
+  const [projects, setProjects] = useState([]);
+  const [projectImages, setProjectImages] = useState({});
+  const [galleryProject, setGalleryProject] = useState(null);
 
   useEffect(() => {
     loadTestimonials();
     loadRecentActivity();
-  }, [filter]);
+    loadClientProjects();
+  }, []);
 
   // Auto-rotate featured testimonials
   useEffect(() => {
@@ -54,18 +94,14 @@ export default function TestimonialsPage() {
 
   const loadTestimonials = async () => {
     try {
-      let query = supabase
+      // Loaded unfiltered so the service filters below can match on
+      // title/description text as well as project_type.
+      const { data, error } = await supabase
         .from('testimonials')
         .select('*')
         .eq('status', 'approved')
         .order('is_featured', { ascending: false })
         .order('submitted_at', { ascending: false });
-
-      if (filter !== 'all') {
-        query = query.eq('project_type', filter);
-      }
-
-      const { data, error } = await query;
 
       if (error) throw error;
       setTestimonials(data || []);
@@ -75,6 +111,30 @@ export default function TestimonialsPage() {
       setLoading(false);
     }
   };
+
+  // Real client work from the projects table doubles as visual proof.
+  const loadClientProjects = async () => {
+    try {
+      const [{ data: projectRows }, { data: imageRows }] = await Promise.all([
+        supabase.from('projects').select('*').order('display_order'),
+        supabase.from('project_images').select('project_id, image_url').order('sort_order'),
+      ]);
+
+      setProjects(projectRows || []);
+
+      const grouped = {};
+      (imageRows || []).forEach(img => {
+        if (!grouped[img.project_id]) grouped[img.project_id] = [];
+        grouped[img.project_id].push(img.image_url);
+      });
+      setProjectImages(grouped);
+    } catch (error) {
+      console.error('Error loading client projects:', error);
+    }
+  };
+
+  const imagesForProject = (project) =>
+    [...new Set([project.image_url, ...(projectImages[project.id] || [])].filter(Boolean))];
 
   const loadRecentActivity = async () => {
     const { data } = await supabase
@@ -107,13 +167,10 @@ export default function TestimonialsPage() {
     return growth.toFixed(1);
   };
 
-  const projectTypes = [
-    { id: 'all', label: 'All Projects', icon: Briefcase, count: testimonials.length },
-    { id: 'website', label: 'Websites', icon: Globe, count: testimonials.filter(t => t.project_type === 'website').length },
-    { id: 'web_app', label: 'Web Apps', icon: Rocket, count: testimonials.filter(t => t.project_type === 'web_app').length },
-    { id: 'mobile_app', label: 'Mobile Apps', icon: Globe, count: testimonials.filter(t => t.project_type === 'mobile_app').length },
-    { id: 'trading_bot', label: 'Trading Bots', icon: TrendingUp, count: testimonials.filter(t => t.project_type === 'trading_bot').length },
-    { id: 'other', label: 'Other', icon: Briefcase, count: testimonials.filter(t => t.project_type === 'other').length },
+  const sourceOptions = [
+    { id: 'all', label: 'Everything', icon: Layers },
+    { id: 'reviews', label: 'Client reviews', icon: MessageSquare },
+    { id: 'projects', label: 'Client projects', icon: Briefcase },
   ];
 
   // Quick Actions
@@ -131,12 +188,48 @@ export default function TestimonialsPage() {
   const voiceCount = testimonials.filter(t => t.voice_message_en || t.voice_message_rw).length;
   const featuredCount = testimonials.filter(t => t.is_featured).length;
 
-  // Filter testimonials based on search
-  const filteredTestimonials = testimonials.filter(t => 
-    t.client_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.project_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.testimonial_text.toLowerCase().includes(searchQuery.toLowerCase())
+  // Service tags for a review: derived from its text plus its stored project_type.
+  const reviewServices = (t) => [
+    ...new Set([
+      ...servicesFor(t.project_title, t.project_description, t.testimonial_text),
+      ...(TYPE_TO_SERVICES[t.project_type] || []),
+    ]),
+  ];
+
+  const projectServices = (p) => servicesFor(p.title, p.description, p.category, (p.tech_stack || []).join(' '));
+
+  // Search across both sources
+  const matchesSearch = (...parts) => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return true;
+    return haystack(...parts).includes(q);
+  };
+
+  const allReviews = testimonials.filter(t =>
+    serviceMatches(reviewServices(t), service) &&
+    matchesSearch(t.client_name, t.client_company, t.project_title, t.testimonial_text, t.project_type)
   );
+
+  const allProjects = projects.filter(p =>
+    serviceMatches(projectServices(p), service) &&
+    matchesSearch(p.title, p.description, p.category, p.client_name, (p.tech_stack || []).join(' '))
+  );
+
+  const filteredTestimonials = allReviews;
+  const filteredProjects = allProjects;
+
+  const showReviews = source === 'all' || source === 'reviews';
+  const showProjects = source === 'all' || source === 'projects';
+
+  const serviceCounts = SERVICE_FILTERS.reduce((acc, s) => {
+    if (s.id === 'all') return acc;
+    acc[s.id] =
+      (showReviews ? allReviews.filter(t => reviewServices(t).includes(s.id)).length : 0) +
+      (showProjects ? allProjects.filter(p => projectServices(p).includes(s.id)).length : 0);
+    return acc;
+  }, {});
+
+  const totalResults = filteredTestimonials.length + filteredProjects.length;
 
   // Featured testimonials for carousel
   const featuredTestimonials = testimonials.filter(t => t.is_featured);
@@ -215,29 +308,64 @@ export default function TestimonialsPage() {
           {/* LEFT SIDEBAR - Sticky Navigation */}
           <div className="hidden lg:block lg:col-span-2">
             <div className="sticky top-28 space-y-4">
-              {/* Project Type Filter */}
+              {/* Show what you're looking at */}
               <div className="bg-white rounded-2xl p-4 border border-gray-200">
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <Filter className="w-3 h-3" /> Categories
+                  <Filter className="w-3 h-3" /> Show
                 </h3>
                 <div className="space-y-1">
-                  {projectTypes.map((type) => {
-                    const Icon = type.icon;
+                  {sourceOptions.map((option) => {
+                    const Icon = option.icon;
+                    const count = option.id === 'all'
+                      ? testimonials.length + projects.length
+                      : option.id === 'reviews'
+                        ? testimonials.length
+                        : projects.length;
                     return (
                       <button
-                        key={type.id}
-                        onClick={() => setFilter(type.id)}
+                        key={option.id}
+                        onClick={() => setSource(option.id)}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors duration-200 ${
-                          filter === type.id
+                          source === option.id
                             ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
                             : 'hover:bg-gray-100 text-gray-600'
                         }`}
                       >
                         <span className="flex items-center gap-2">
                           <Icon className="w-4 h-4" />
-                          {type.label}
+                          {option.label}
                         </span>
-                        <span className="text-xs bg-gray-200 px-2 py-0.5 rounded-full">{type.count}</span>
+                        <span className="text-xs bg-gray-200 px-2 py-0.5 rounded-full">{count}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Service Filters - same services as /business */}
+              <div className="bg-white rounded-2xl p-4 border border-gray-200">
+                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <Briefcase className="w-3 h-3" /> Services
+                </h3>
+                <div className="space-y-1">
+                  {SERVICE_FILTERS.map((svc) => {
+                    const Icon = svc.icon;
+                    const count = svc.id === 'all' ? totalResults : (serviceCounts[svc.id] || 0);
+                    return (
+                      <button
+                        key={svc.id}
+                        onClick={() => setService(svc.id)}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors duration-200 ${
+                          service === svc.id
+                            ? 'bg-yellow-100 text-yellow-700 border border-yellow-200'
+                            : 'hover:bg-gray-100 text-gray-600'
+                        }`}
+                      >
+                        <span className="flex items-center gap-2 min-w-0">
+                          <Icon className="w-4 h-4 shrink-0" />
+                          <span className="truncate">{svc.label}</span>
+                        </span>
+                        <span className="text-xs bg-gray-200 px-2 py-0.5 rounded-full shrink-0">{count}</span>
                       </button>
                     );
                   })}
@@ -409,7 +537,7 @@ export default function TestimonialsPage() {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search testimonials by client, project, or keyword..."
+                      placeholder="Search reviews, clients, projects or keywords..."
                       className="w-full bg-gray-100 border border-gray-200 rounded-xl pl-11 pr-4 py-3 focus:outline-none focus:border-yellow-500 text-gray-900 placeholder:text-gray-500"
                     />
                   </div>
@@ -421,26 +549,56 @@ export default function TestimonialsPage() {
                     <span className="hidden sm:inline">Filters</span>
                   </button>
                 </div>
-                
+
+{/* Source toggle always visible - the two kinds of proof */}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {sourceOptions.map((option) => {
+                    const Icon = option.icon;
+                    return (
+                      <button
+                        key={option.id}
+                        onClick={() => setSource(option.id)}
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2 ${
+                          source === option.id
+                            ? 'bg-yellow-600 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        }`}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {option.label}
+                      </button>
+                    );
+                  })}
+                  <button
+                    onClick={() => setShowSubmissionForm(true)}
+                    className="ml-auto px-3 py-1.5 rounded-lg text-sm font-semibold bg-gray-900 text-yellow-400 hover:bg-gray-800 transition-colors duration-200 flex items-center gap-2"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Add review
+                  </button>
+                </div>
+
                 {/* Expandable Filters */}
                 {showFilters && (
                   <div className="mt-4 pt-4 border-t border-gray-200">
-                    <p className="text-sm text-gray-600 mb-3">Filter by project type:</p>
+                    <p className="text-sm text-gray-600 mb-3">Filter by service:</p>
                     <div className="flex flex-wrap gap-2">
-                      {projectTypes.map((type) => {
-                        const Icon = type.icon;
+                      {SERVICE_FILTERS.map((svc) => {
+                        const Icon = svc.icon;
+                        const count = svc.id === 'all' ? totalResults : (serviceCounts[svc.id] || 0);
                         return (
                           <button
-                            key={type.id}
-                            onClick={() => setFilter(type.id)}
+                            key={svc.id}
+                            onClick={() => setService(svc.id)}
                             className={`px-3 py-1.5 rounded-lg text-sm transition-colors duration-200 flex items-center gap-2 ${
-                              filter === type.id
+                              service === svc.id
                                 ? 'bg-yellow-600 text-white'
                                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                             }`}
                           >
                             <Icon className="w-4 h-4" />
-                            {type.label}
+                            {svc.label}
+                            <span className={`text-xs ${service === svc.id ? 'text-yellow-100' : 'text-gray-500'}`}>{count}</span>
                           </button>
                         );
                       })}
@@ -453,21 +611,126 @@ export default function TestimonialsPage() {
             {/* Results Count */}
             <div className="flex items-center justify-between">
               <p className="text-gray-600">
-                Showing <span className="text-gray-900 font-semibold">{filteredTestimonials.length}</span> of {testimonials.length} testimonials
+                Showing <span className="text-gray-900 font-semibold">{totalResults}</span> results
+                {showReviews && <> Â· {filteredTestimonials.length} reviews</>}
+                {showProjects && <> Â· {filteredProjects.length} client projects</>}
               </p>
-              {filter !== 'all' && (
+              {(service !== 'all' || source !== 'all' || searchQuery) && (
                 <button 
-                  onClick={() => setFilter('all')}
+                  onClick={() => { setService('all'); setSource('all'); setSearchQuery(''); }}
                   className="text-sm text-yellow-600 hover:text-yellow-700 transition-colors duration-200"
                 >
-                  Clear filter
+                  Clear filters
                 </button>
               )}
             </div>
 
+            {/* CLIENT PROJECTS - real work as visual proof */}
+            {showProjects && filteredProjects.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    <Briefcase className="w-5 h-5 text-yellow-600" />
+                    <h2 className="text-xl font-bold text-gray-800">Client projects</h2>
+                    <span className="text-xs text-gray-500">real systems, real screenshots</span>
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-5">
+                  {filteredProjects.map((project) => {
+                    const shots = imagesForProject(project);
+                    const cover = shots[0];
+                    const svc = SERVICE_FILTERS.find(s => s.id === service && s.id !== 'all') || SERVICE_FILTERS.find(s => projectServices(project).includes(s.id));
+                    return (
+                      <div
+                        key={project.id}
+                        className="group flex flex-col bg-gray-900 rounded-2xl overflow-hidden border border-gray-700 hover:border-yellow-500/50 hover:shadow-2xl shadow-xl transition-all duration-300"
+                      >
+                        <div className="relative h-44 bg-slate-900 overflow-hidden">
+                          {cover ? (
+                            <img src={cover} alt={project.title} loading="lazy" className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105" />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
+                              <Images className="w-8 h-8 text-yellow-500" />
+                            </div>
+                          )}
+                          <span className="absolute top-2 left-2 px-2 py-1 rounded-full bg-black/70 text-yellow-300 text-[11px] font-semibold backdrop-blur-sm flex items-center gap-1">
+                            <CheckCircle className="w-3 h-3" /> Real client work
+                          </span>
+                          {shots.length > 1 && (
+                            <span className="absolute bottom-2 right-2 bg-black/70 text-white text-xs font-medium px-2 py-1 rounded backdrop-blur-sm">
+                              {shots.length} screenshots
+                            </span>
+                          )}
+                        </div>
+
+                        <div className={`bg-gradient-to-br ${svc?.gradient || 'from-yellow-500 to-yellow-600'} px-5 py-3`}>
+                          <p className="text-[11px] font-semibold uppercase tracking-wider text-white/85">{svc?.label || 'Client project'}</p>
+                          <h3 className="text-lg font-bold text-white">{project.title}</h3>
+                        </div>
+
+                        <div className="p-5 flex-1 flex flex-col">
+                          {project.client_name && (
+                            <p className="text-xs text-gray-400 mb-2 flex items-center gap-1.5">
+                              <Building2 className="w-3.5 h-3.5 text-yellow-500" /> {project.client_name}
+                            </p>
+                          )}
+                          <p className="text-gray-300 text-sm leading-relaxed line-clamp-3 mb-4">{project.description}</p>
+
+                          {project.tech_stack?.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-4">
+                              {project.tech_stack.slice(0, 3).map((tech, i) => (
+                                <span key={i} className="bg-gray-700 text-gray-300 px-2.5 py-1 rounded-full text-xs font-medium">{tech}</span>
+                              ))}
+                            </div>
+                          )}
+
+                          <div className="mt-auto flex gap-2">
+                            {shots.length > 0 ? (
+                              <button
+                                onClick={() => setGalleryProject(project)}
+                                className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-yellow-600 hover:bg-yellow-500 text-gray-900 text-sm font-bold transition-colors duration-200"
+                              >
+                                View screenshots <ArrowRight className="w-4 h-4" />
+                              </button>
+                            ) : (
+                              <a
+                                href="/contact"
+                                className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-yellow-600 hover:bg-yellow-500 text-gray-900 text-sm font-bold transition-colors duration-200"
+                              >
+                                Request similar <ArrowRight className="w-4 h-4" />
+                              </a>
+                            )}
+                            {project.live_demo_url && (
+                              <a
+                                href={project.live_demo_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center justify-center px-3 py-2.5 rounded-lg border border-gray-700 text-gray-300 hover:border-yellow-500 hover:text-yellow-500 transition-colors duration-200"
+                              >
+                                <ExternalLink className="w-4 h-4" />
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* REVIEWS */}
+            {showReviews && filteredTestimonials.length > 0 && (
+              <div className="flex items-center gap-2">
+                <MessageSquare className="w-5 h-5 text-yellow-600" />
+                <h2 className="text-xl font-bold text-gray-800">Client reviews</h2>
+              </div>
+            )}
+
             {/* Testimonials Feed */}
             <div className="space-y-4">
-              {filteredTestimonials.map((testimonial, index) => (
+              {showReviews && filteredTestimonials.map((testimonial) => (
                 <div
                   key={testimonial.id}
                   onMouseEnter={() => setHoveredCard(testimonial.id)}
@@ -601,16 +864,16 @@ export default function TestimonialsPage() {
             </div>
 
             {/* Empty State */}
-            {filteredTestimonials.length === 0 && (
+            {totalResults === 0 && (
               <div className="text-center py-16">
                 <div className="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Search className="w-8 h-8 text-gray-500" />
                 </div>
-                <h3 className="text-xl font-bold mb-2 text-gray-800">No testimonials found</h3>
-                <p className="text-gray-600">Try adjusting your search or filter criteria</p>
+                <h3 className="text-xl font-bold mb-2 text-gray-800">Nothing matches yet</h3>
+                <p className="text-gray-600">Try another service, or clear the filters to see everything</p>
                 <button 
-                  onClick={() => {setSearchQuery(''); setFilter('all');}}
-                  className="mt-4 px-6 py-2 bg-yellow-600 hover:bg-yellow-700 rounded-lg transition-colors duration-200"
+                  onClick={() => { setSearchQuery(''); setService('all'); setSource('all'); }}
+                  className="mt-4 px-6 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors duration-200"
                 >
                   Clear Filters
                 </button>
@@ -750,6 +1013,15 @@ export default function TestimonialsPage() {
             </p>
           </div>
         </div>
+      )}
+    {/* Client project screenshots - reuses the projects gallery viewer */}
+      {galleryProject && (
+        <ProjectLightbox
+          key={galleryProject.id}
+          project={galleryProject}
+          images={imagesForProject(galleryProject)}
+          onClose={() => setGalleryProject(null)}
+        />
       )}
     </div>
   );
