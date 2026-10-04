@@ -8,11 +8,10 @@ import {
   TrendingUp, Code, Briefcase, Edit, Star, Clock, Shield, CreditCard,
   ChevronRight, CheckCircle, Award, Users, Zap, Globe, Search,
   User, AlertCircle, Upload, Copy, Check,
-  DollarSign, ChevronLeft, Sparkles,
+  DollarSign, ChevronLeft, Sparkles, Flame, ArrowRight,
   XCircle, MessageCircle, FileText, Mail
 } from 'lucide-react';
 import Loader from '../components/common/Loader';
-import TrainingAnnouncement from '../components/common/TrainingAnnouncement';
 
 const ServicePage = () => {
   const navigate = useNavigate();
@@ -393,6 +392,27 @@ const ServicePage = () => {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+
+  // Scarcity notice for the current mentorship batch. It lives here rather than
+  // in the site-wide announcement bar so the bar itself can stay one slim line.
+  const renderBatchNotice = () => (
+    <div className="bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-500 text-gray-900">
+      <div className="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
+        <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-extrabold">
+          <Flame className="h-4 w-4 shrink-0 animate-pulse" />
+          Limited spots available for this mentorship batch
+        </span>
+        <button
+          type="button"
+          onClick={() => setActiveTab('apply')}
+          className="group inline-flex items-center gap-1 rounded-full bg-gray-900 px-3 py-1 text-[11px] sm:text-xs font-bold text-white transition-transform duration-200 hover:scale-105 active:scale-95"
+        >
+          Apply now
+          <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+        </button>
       </div>
     </div>
   );
@@ -1421,10 +1441,8 @@ const ServicePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <div className="max-w-7xl mx-auto px-4 pt-5">
-        <TrainingAnnouncement />
-      </div>
       {renderHero()}
+      {renderBatchNotice()}
       {renderTabs()}
       
       <div className="container mx-auto px-4 py-8">
