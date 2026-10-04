@@ -117,7 +117,7 @@ export default function Header() {
                 </span>
               </Link>
 
-              <nav className='hidden min-[1300px]:flex flex-1 items-center justify-center gap-0.5 min-w-0'>
+              <nav className='hidden min-[1180px]:flex flex-1 items-center justify-center gap-0.5 min-w-0'>
                 {navLinks.map((link) => {
                   const isActive = location.pathname === link.path
                   return (
@@ -137,7 +137,7 @@ export default function Header() {
                 })}
               </nav>
 
-              <div className='ml-auto min-[1300px]:ml-0 flex shrink-0 items-center gap-1.5 sm:gap-2'>
+              <div className='ml-auto min-[1180px]:ml-0 flex shrink-0 items-center gap-1.5 sm:gap-2'>
                 <ThemeToggle />
                 <LanguageSwitcher />
 
@@ -161,7 +161,7 @@ export default function Header() {
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                   aria-label='Toggle navigation menu'
                   aria-expanded={mobileMenuOpen}
-                  className='min-[1300px]:hidden shrink-0 -mr-1 p-1 text-gray-600 hover:text-gray-900 transition-colors duration-200'
+                  className='min-[1180px]:hidden shrink-0 -mr-1 p-1 text-gray-600 hover:text-gray-900 transition-colors duration-200'
                 >
                   {mobileMenuOpen ? <X className='w-5 h-5 sm:w-6 sm:h-6' /> : <Menu className='w-5 h-5 sm:w-6 sm:h-6' />}
                 </button>
@@ -202,7 +202,7 @@ export default function Header() {
       </header>
 
       {mobileMenuOpen && (
-        <div className='min-[1300px]:hidden fixed top-24 left-0 right-0 bottom-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 overflow-y-auto'>
+        <div className='min-[1180px]:hidden fixed top-24 left-0 right-0 bottom-0 z-40 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 overflow-y-auto'>
           <nav className='max-w-3xl mx-auto px-6 py-6'>
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path

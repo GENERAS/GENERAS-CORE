@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, NavLink } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { 
   Star, Play, Pause, ExternalLink, Image as ImageIcon, Mic,
@@ -87,6 +87,20 @@ const fetchRecentActivity = async () => {
 
 const fetchEverything = () =>
   Promise.all([fetchTestimonials(), fetchRecentActivity(), fetchClientProjects()]);
+
+// Always-visible in-page navigation. The global header only shows its links on
+// large screens, so this rail keeps every key page one tap away on phones too,
+// without hiding anything behind the menu icon.
+const PAGE_LINKS = [
+  { to: '/', label: 'Home' },
+  { to: '/business', label: 'Services' },
+  { to: '/projects', label: 'Projects' },
+  { to: '/trading', label: 'Trading' },
+  { to: '/community', label: 'Community' },
+  { to: '/service', label: 'Mentorship' },
+  { to: '/testimonials', label: 'Testimonials' },
+  { to: '/contact', label: 'Contact' },
+];
 
 const timeAgo = (iso) => {
   if (!iso) return '';
@@ -266,6 +280,50 @@ export default function TestimonialsPage() {
 
   return (
     <div className="min-h-screen bg-gray-100 pb-16">
+      {/* ============ PAGE NAVIGATION RAIL ============ */}
+      {/* Anchored below the 96px fixed header, so the logo and the header
+          action icons stay clickable while this nav is pinned. */}
+      <nav
+        aria-label="Section navigation"
+        className="sticky top-24 z-40 bg-white border-b border-gray-200 shadow-sm"
+      >
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex items-center gap-3 h-14">
+            <span className="hidden sm:flex items-center gap-2 shrink-0 pr-3 border-r border-gray-200 text-sm font-bold text-gray-900 whitespace-nowrap">
+              <Trophy className="w-4 h-4 text-yellow-600" />
+              Success Stories
+            </span>
+
+            <div className="flex-1 min-w-0 flex items-center gap-1 overflow-x-auto [scrollbar-width:none]">
+              {PAGE_LINKS.map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  end={link.to === '/'}
+                  className={({ isActive }) =>
+                    `relative whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-semibold transition-colors duration-200 ${
+                      isActive
+                        ? 'text-[#714B67] bg-[#714B67]/10'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setShowSubmissionForm(true)}
+              className="hidden sm:inline-flex shrink-0 items-center gap-1.5 px-3.5 py-2 rounded-lg bg-yellow-600 hover:bg-yellow-500 text-gray-900 text-sm font-bold transition-colors duration-200"
+            >
+              <Plus className="w-4 h-4" />
+              Share Your Story
+            </button>
+          </div>
+        </div>
+      </nav>
+
       {/* ============ HERO ============ */}
       <section className="bg-gray-900 text-white">
         <div className="max-w-6xl mx-auto px-4 pt-10 pb-16">
