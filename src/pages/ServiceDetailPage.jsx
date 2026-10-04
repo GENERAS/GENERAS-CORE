@@ -321,7 +321,7 @@ const ServiceDetailPage = () => {
                 {content.testimonials.map((testimonial, idx) => (
                   <div key={idx} className="bg-gray-50 rounded-xl p-4">
                     <p className="text-gray-700 italic mb-3">"{testimonial.text}"</p>
-                    <p className="text-sm text-gray-500 font-medium">â€” {testimonial.author}</p>
+                    <p className="text-sm text-gray-500 font-medium">— {testimonial.author}</p>
                   </div>
                 ))}
               </div>

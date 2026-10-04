@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { Link } from 'react-router-dom'
 import Loader from '../components/common/Loader'
 import SocialProof from '../components/common/SocialProof'
+import TrainingAnnouncement from '../components/common/TrainingAnnouncement'
 import JobraPortfolioModal from '../components/common/JobraPortfolioModal'
 
 // Inline SVG icons
@@ -154,6 +155,10 @@ export default function HomePage() {
   return (
     <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="mb-6">
+          <TrainingAnnouncement />
+        </div>
+
         {/* Mobile Quick Navigation - Only visible on mobile */}
         <div className="lg:hidden mb-6">
           <div className="bg-white rounded-2xl p-4 border border-gray-200">
@@ -250,7 +255,7 @@ export default function HomePage() {
                       <>
                         <img
                           src={heroImages[heroImageIndex]}
-                          alt={`Generas Kagiraneza â€” photo ${heroImageIndex + 1} of ${heroImages.length}`}
+                          alt={`Generas Kagiraneza — photo ${heroImageIndex + 1} of ${heroImages.length}`}
                           loading={heroImageIndex === 0 ? 'eager' : 'lazy'}
                           fetchPriority={heroImageIndex === 0 ? 'high' : 'auto'}
                           decoding="async"
@@ -289,7 +294,7 @@ export default function HomePage() {
                   {/* Small Badge */}
                   <div className="inline-flex items-center gap-2 bg-yellow-500/20 border border-yellow-500/30 rounded-full px-4 py-2 mb-5 self-start">
                     <span className="text-xs font-semibold text-yellow-400 uppercase tracking-wider">
-                      SOFTWARE â€¢ AI â€¢ DIGITAL SYSTEMS
+                      Custom Software · AI & Automation · Business Systems
                     </span>
                   </div>
 

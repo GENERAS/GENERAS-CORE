@@ -368,7 +368,7 @@ export default function TradingPage() {
                 <div>
                   <h2 className="text-lg font-bold text-gray-800">Recent Trades</h2>
                   <p className="text-xs text-gray-600">
-                    {stats.winningTrades} wins / {stats.losingTrades} losses â€¢ Click to view comments
+                    {stats.winningTrades} wins / {stats.losingTrades} losses • Click to view comments
                   </p>
                 </div>
                 {trades.length > 5 && (

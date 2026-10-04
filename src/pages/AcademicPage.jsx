@@ -115,7 +115,7 @@ export default function AcademicPage() {
       planned: 'bg-gray-200 text-gray-700'
     }
     const labels = {
-      completed: 'âœ“ Completed',
+      completed: '✓ Completed',
       building: 'ðŸš§ In Progress',
       planned: 'ðŸ“… Planned'
     }
@@ -324,7 +324,7 @@ export default function AcademicPage() {
                           <div className="flex items-center gap-2 text-gray-600 mt-1">
                             <FaSchool className="text-[yellow-600]" />
                             <span>{level.school_name}</span>
-                            <span>â€¢</span>
+                            <span>•</span>
                             <FaCalendar className="text-yellow-600" />
                             <span>{level.start_year} - {level.end_year}</span>
                           </div>
@@ -436,7 +436,7 @@ export default function AcademicPage() {
                                 className="text-yellow-600 text-sm flex items-center gap-1 hover:text-yellow-700 transition-colors duration-200"
                                 onClick={(e) => e.stopPropagation()}
                               >
-                                View Certificate â†’
+                                View Certificate →
                               </a>
                             )}
                           </div>
@@ -515,10 +515,10 @@ export default function AcademicPage() {
               <div>
                 <h3 className="text-2xl font-bold flex items-center gap-2 text-gray-800">
                   {selectedLevel.level_name}
-                  {selectedLevel.status === 'completed' && <span className="text-yellow-600 text-lg">âœ“</span>}
+                  {selectedLevel.status === 'completed' && <span className="text-yellow-600 text-lg">✓</span>}
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  {selectedLevel.school_name} â€¢ {selectedLevel.start_year} - {selectedLevel.end_year}
+                  {selectedLevel.school_name} • {selectedLevel.start_year} - {selectedLevel.end_year}
                 </p>
               </div>
               <button 
@@ -680,7 +680,7 @@ export default function AcademicPage() {
                                 {report.is_featured && (
                                   <div className="absolute top-2 right-2">
                                     <span className="text-xs bg-yellow-500 text-white px-2 py-1 rounded font-bold">
-                                      â­ Featured
+                                      ⭐ Featured
                                     </span>
                                   </div>
                                 )}
@@ -752,7 +752,7 @@ export default function AcademicPage() {
               <h3 className="text-xl font-bold text-gray-900">{viewingFile.title}</h3>
               <p className="text-gray-600">
                 {getReportTypeLabel(viewingFile.report_type)}
-                {viewingFile.academic_year && ` â€¢ ${viewingFile.academic_year}`}
+                {viewingFile.academic_year && ` • ${viewingFile.academic_year}`}
               </p>
               {viewingFile.description && (
                 <p className="text-gray-500 mt-2 max-w-xl mx-auto">{viewingFile.description}</p>

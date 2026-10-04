@@ -12,6 +12,7 @@ import {
   XCircle, MessageCircle, FileText, Mail
 } from 'lucide-react';
 import Loader from '../components/common/Loader';
+import TrainingAnnouncement from '../components/common/TrainingAnnouncement';
 
 const ServicePage = () => {
   const navigate = useNavigate();
@@ -1130,7 +1131,7 @@ const ServicePage = () => {
               onClick={() => setActiveTab('browse')}
               className="mt-4 text-blue-600 hover:underline font-medium"
             >
-              Apply for Mentorship â†’
+              Apply for Mentorship →
             </button>
           </div>
         ) : trackTab === 'projects' && inquiries.length === 0 ? (
@@ -1141,7 +1142,7 @@ const ServicePage = () => {
               onClick={() => navigate('/hire-me')}
               className="mt-4 text-blue-600 hover:underline font-medium"
             >
-              Hire for a Project â†’
+              Hire for a Project →
             </button>
           </div>
         ) : (
@@ -1296,7 +1297,7 @@ const ServicePage = () => {
                             onClick={() => handleServiceSelect(services.find(s => s.id === app.service_id))}
                             className="mt-2 text-sm text-blue-600 font-semibold hover:underline"
                           >
-                            Complete Payment â†’
+                            Complete Payment →
                           </button>
                         </div>
                       </div>
@@ -1420,6 +1421,9 @@ const ServicePage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="max-w-7xl mx-auto px-4 pt-5">
+        <TrainingAnnouncement />
+      </div>
       {renderHero()}
       {renderTabs()}
       

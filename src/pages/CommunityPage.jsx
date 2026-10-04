@@ -636,7 +636,7 @@ export default function CommunityPage() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-800">{s.name}</p>
-                        <p className="text-xs text-yellow-600">{s.cups || s.amount || 0} â˜•</p>
+                        <p className="text-xs text-yellow-600">{s.cups || s.amount || 0} ☕</p>
                       </div>
                     </div>
                   ))}
@@ -749,7 +749,7 @@ export default function CommunityPage() {
                         </div>
                         <div className="flex-1">
                           <p className="text-sm font-medium">{s.name}</p>
-                          <p className="text-xs text-yellow-400">{s.cups || s.amount || 0} â˜•</p>
+                          <p className="text-xs text-yellow-400">{s.cups || s.amount || 0} ☕</p>
                         </div>
                       </div>
                     ))}
@@ -963,7 +963,7 @@ export default function CommunityPage() {
                 onClick={() => handleShare('telegram')}
                 className="p-4 bg-yellow-900/30 border border-yellow-600/30 rounded-xl hover:bg-yellow-900/50 transition flex flex-col items-center gap-2"
               >
-                <span className="text-2xl">âœˆï¸</span>
+                <span className="text-2xl">✈ï¸</span>
                 <span className="text-xs text-yellow-400">Telegram</span>
               </button>
             </div>
