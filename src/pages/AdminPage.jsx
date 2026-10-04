@@ -7,7 +7,7 @@ import { getAnalyticsSummary } from '../utils/analytics'
 import {
   FaChartLine, FaGraduationCap, FaBrain, FaCode, FaCoffee, FaNewspaper,
   FaVideo, FaImages, FaCrown, FaUsers, FaComments, FaCog, FaAward,
-  FaUser, FaBriefcase, FaStar, FaFileAlt, FaRobot, FaEnvelope,
+  FaUser, FaBriefcase, FaStar, FaFileAlt, FaRobot, FaEnvelope, FaHandshake,
   FaHome, FaBars, FaTimes, FaSignOutAlt, FaChevronLeft
 } from 'react-icons/fa'
 import AdminDashboard from '../components/admin/AdminDashboard'
@@ -29,6 +29,7 @@ import ProjectInquiriesManager from '../components/admin/ProjectInquiriesManager
 import TestimonialsManager from '../components/admin/TestimonialsManager'
 import AiLeadsManager from '../components/admin/AiLeadsManager'
 import ContactMessagesManager from '../components/admin/ContactMessagesManager'
+import CollaborationManager from '../components/admin/CollaborationManager'
 import AnalyticsAdmin from '../components/admin/AnalyticsAdmin'
 import NotificationCenter from '../components/admin/NotificationCenter'
 import SettingsManager from '../components/admin/SettingsManager'
@@ -75,6 +76,7 @@ const navSections = [
       { id: 'inquiries', label: 'Inquiries', icon: FaBriefcase },
       { id: 'ai-leads', label: 'AI Leads', icon: FaRobot },
       { id: 'contact-messages', label: 'Messages', icon: FaEnvelope },
+      { id: 'collaborations', label: 'Collaborations', icon: FaHandshake },
       { id: 'comments', label: 'Comments', icon: FaComments },
       { id: 'followers', label: 'Followers', icon: FaUsers },
     ]
@@ -106,6 +108,7 @@ export default function AdminPage() {
       { id: 'ai-leads', q: () => supabase.from('ai_leads').select('*', { count: 'exact', head: true }).eq('lead_label', 'new') },
       { id: 'inquiries', q: () => supabase.from('project_inquiries').select('*', { count: 'exact', head: true }).eq('status', 'new') },
       { id: 'contact-messages', q: () => supabase.from('contact_submissions').select('*', { count: 'exact', head: true }).eq('is_read', false) },
+      { id: 'collaborations', q: () => supabase.from('collaboration_requests').select('*', { count: 'exact', head: true }).eq('status', 'new') },
       { id: 'testimonials', q: () => supabase.from('testimonials').select('*', { count: 'exact', head: true }).eq('status', 'pending') },
       { id: 'supporters', q: () => supabase.from('coffee_supporters').select('*', { count: 'exact', head: true }).neq('payment_status', 'verified') },
     ]
@@ -126,7 +129,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     loadBadges()
-    const badgeTables = ['comments', 'ai_leads', 'project_inquiries', 'contact_submissions', 'testimonials', 'coffee_supporters', 'mentorship_applications']
+    const badgeTables = ['comments', 'ai_leads', 'project_inquiries', 'contact_submissions', 'collaboration_requests', 'testimonials', 'coffee_supporters', 'mentorship_applications']
     const badgeChannel = badgeTables.reduce(
       (channel, table) =>
         channel.on('postgres_changes', { event: '*', schema: 'public', table }, () => loadBadges()),
@@ -360,6 +363,7 @@ export default function AdminPage() {
           {activeTab === 'inquiries' && <ProjectInquiriesManager />}
           {activeTab === 'ai-leads' && <AiLeadsManager />}
           {activeTab === 'contact-messages' && <ContactMessagesManager />}
+          {activeTab === 'collaborations' && <CollaborationManager />}
           {activeTab === 'analytics' && <AnalyticsAdmin />}
           {activeTab === 'testimonials' && <TestimonialsManager />}
         </main>

@@ -109,9 +109,9 @@ export default function ContactForm() {
         <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <IconCheckCircle />
         </div>
-        <h3 className="text-2xl font-bold mb-2 text-gray-800">Help is on the Way!</h3>
+        <h3 className="text-2xl font-bold mb-2 text-gray-800">Message sent</h3>
         <p className="text-gray-600 mb-4">
-          I've got your message! Whether it's a tech problem, trading confusion, or business challenge — I'll get you an answer within 24-48 hours.
+          I've got your message. Whether it's a tech problem, trading question, or business challenge — I'll get you an answer within 24-48 hours.
         </p>
         <p className="text-sm text-gray-500">
           {submittedEmail ? `Message received from ${submittedEmail}.` : 'Message received.'} I'll respond within 24-48 hours.
@@ -133,8 +133,8 @@ export default function ContactForm() {
           <IconMessageSquare />
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Need Help?</h2>
-          <p className="text-gray-600 text-sm">Stuck on something? Tell me your problem — I'll solve it.</p>
+          <h2 className="text-2xl font-bold text-gray-800">Send a Message</h2>
+          <p className="text-gray-600 text-sm">Questions, support or business enquiries — I reply within 24-48 hours.</p>
         </div>
       </div>
 
@@ -224,7 +224,7 @@ export default function ContactForm() {
           ) : (
             <>
               <IconSend />
-              Get Help Now
+              Send Message
             </>
           )}
         </button>

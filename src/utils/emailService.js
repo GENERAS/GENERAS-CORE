@@ -409,6 +409,114 @@ export const sendAdminContactNotification = async (contactData) => {
   return await sendEmail(ADMIN_EMAIL, template.subject, template.html);
 };
 
+const collabTypeLabel = (value) =>
+  ({
+    new_project: 'Project that needs building',
+    idea: 'Idea or prototype to validate',
+    partnership: 'Partnership or joint venture',
+    freelance: 'Freelance or contract work',
+    internship: 'Internship or junior developer role',
+    open_source: 'Open source contribution',
+    mentorship: 'Mentorship or coaching',
+    other: 'Something else',
+  })[value] || value;
+
+// Confirmation email for the person who sent a collaboration proposal
+export const sendCollaborationRequestConfirmation = async (collab) => {
+  const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #3B2436; color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .header h1 { margin: 0; font-size: 22px; }
+          .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+          .title { font-size: 16px; font-weight: bold; color: #3B2436; margin-bottom: 4px; }
+          .meta { color: #6b7280; font-size: 14px; }
+          .footer { text-align: center; padding: 20px; font-size: 12px; color: #6b7280; }
+          .button { display: inline-block; background: #eab308; color: #1f2937; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Proposal received</h1>
+          </div>
+          <div class="content">
+            <p>Hi <strong>${collab.full_name}</strong>,</p>
+            <p>Thanks for sending this over. Your proposal landed straight in my dashboard and I read every one personally.</p>
+
+            <p class="title">${collab.project_title}</p>
+            <p class="meta">${collabTypeLabel(collab.collaboration_type)}${collab.budget_range ? ` · ${collab.budget_range}` : ''}${collab.timeline ? ` · ${collab.timeline}` : ''}</p>
+
+            <h3>What happens next</h3>
+            <ol>
+              <li>I review the proposal and check whether there is a realistic path to a first version.</li>
+              <li>If there is a fit, you get a reply with questions or a call, usually within 48 hours.</li>
+              <li>We then agree a short written scope: what v1 includes, who owns what, and how we work together.</li>
+            </ol>
+
+            <p>While you wait, have a look at what I have already built:</p>
+            <p><a href="${APP_URL}/projects" class="button">See my projects</a></p>
+
+            <p>Best regards,<br><strong>GENERAS CORE</strong></p>
+            <p style="font-size:12px;color:#6b7280">Need to add something? Just reply to this email: ${ADMIN_EMAIL}</p>
+          </div>
+          <div class="footer">Generas Core - Software, AI and business systems.</div>
+        </div>
+      </body>
+      </html>`;
+  return await sendEmail(collab.email, `Proposal received: ${collab.project_title}`, html);
+};
+
+// Admin notification when a new collaboration proposal arrives
+export const sendAdminCollaborationNotification = async (collab) => {
+  const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #3B2436; color: white; padding: 20px; text-align: center; }
+          .content { background: #f9fafb; padding: 20px; }
+          .info-box { background: #e5e7eb; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>New collaboration proposal</h1>
+          </div>
+          <div class="content">
+            <h2>${collab.full_name}${collab.company ? ` - ${collab.company}` : ''}</h2>
+            <div class="info-box">
+              <p><strong>Type:</strong> ${collabTypeLabel(collab.collaboration_type)}</p>
+              <p><strong>Project:</strong> ${collab.project_title}</p>
+              <p><strong>Budget:</strong> ${collab.budget_range || 'Not stated'}</p>
+              <p><strong>Timeline:</strong> ${collab.timeline || 'Not stated'}</p>
+              <p><strong>Tech:</strong> ${collab.tech_stack || 'Not stated'}</p>
+              <p><strong>Email:</strong> ${collab.email}</p>
+              <p><strong>Phone:</strong> ${collab.phone || 'Not given'}</p>
+              ${collab.links ? `<p><strong>Links:</strong> ${collab.links}</p>` : ''}
+            </div>
+            <p><strong>The proposal:</strong></p>
+            <p>${collab.project_summary}</p>
+            ${collab.what_they_bring ? `<p><strong>What they bring:</strong></p><p>${collab.what_they_bring}</p>` : ''}
+            <p><a href="${APP_URL}/admin" style="display:inline-block;background:#eab308;color:#1f2937;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:bold">Open in the dashboard</a></p>
+          </div>
+        </div>
+      </body>
+      </html>`;
+  return await sendEmail(
+    ADMIN_EMAIL,
+    `NEW COLLABORATION: ${collab.project_title} (${collab.full_name})`,
+    html
+  );
+};
+
 export default {
   sendEmail,
   sendApplicationReceivedEmail,
@@ -418,5 +526,7 @@ export default {
   sendProjectInquiryEmail,
   sendAdminProjectInquiryEmail,
   sendContactFormConfirmation,
-  sendAdminContactNotification
+  sendAdminContactNotification,
+  sendCollaborationRequestConfirmation,
+  sendAdminCollaborationNotification
 };

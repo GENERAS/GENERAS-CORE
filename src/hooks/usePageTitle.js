@@ -10,6 +10,7 @@ const titles = {
   '/blog': 'Blog — Generas Core',
   '/service': 'Mentorship — Generas Core',
   '/hire-me': 'Hire Me — Generas Core',
+  '/collaborate': 'Start a Project — Collaborate With Generas Core',
   '/testimonials': 'Testimonials — Generas Core',
   '/admin-login': 'Admin Login — Generas Core',
   '/admin': 'Admin Panel — Generas Core',

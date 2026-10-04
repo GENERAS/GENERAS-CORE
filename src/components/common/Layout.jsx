@@ -5,12 +5,14 @@ import Footer from './Footer'
 import WhatsAppButton from './WhatsAppButton'
 
 function SimpleCTA() {
+  // Was "Need help?" pointing at /hire-me. It now has its own destination:
+  // the collaboration proposal form, for people who have a project or idea.
   return (
     <Link
-      to="/hire-me"
-      className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:border-gray-400 rounded-lg transition-colors duration-200 font-medium"
+      to="/collaborate"
+      className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:border-yellow-500 rounded-lg transition-colors duration-200 font-medium"
     >
-      Need help?
+      Start a Project
     </Link>
   )
 }
