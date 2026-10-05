@@ -12,6 +12,45 @@ import {
   XCircle, MessageCircle, FileText, Mail
 } from 'lucide-react';
 import Loader from '../components/common/Loader';
+import ServiceQuoteForm from '../components/service/ServiceQuoteForm';
+import { SERVICE_NEEDS } from '../components/service/serviceNeeds';
+
+// Problem-first entry card. Lives at module scope so React does not recreate it
+// on every render (which would reset its internal state).
+function NeedCard({ need, selected, recommendedTitle, onSelect }) {
+  const Icon = need.icon;
+  const recommendation = need.custom ? 'Custom build, quoted individually' : recommendedTitle;
+
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={selected}
+      className={`group text-left w-full rounded-2xl p-5 transition-all duration-300 ${
+        selected
+          ? 'bg-yellow-500/15 ring-2 ring-yellow-400 shadow-lg'
+          : 'bg-white/5 hover:bg-white/10 ring-1 ring-white/10 hover:ring-yellow-400/40'
+      }`}
+    >
+      <div className="flex items-start gap-3">
+        <span className={`inline-flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-br ${need.accent} text-white shrink-0 group-hover:scale-105 transition-transform`}>
+          <Icon className="w-5 h-5" />
+        </span>
+        <div className="min-w-0">
+          <h3 className="font-bold text-white leading-snug">{need.headline}</h3>
+          <p className="text-sm text-gray-300 mt-1">{need.detail}</p>
+        </div>
+      </div>
+
+      <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between gap-2">
+        <span className="text-xs font-semibold text-yellow-300 truncate">
+          {selected ? 'Selected' : recommendation ? `Best fit: ${recommendation}` : recommendation}
+        </span>
+        <ArrowRight className={`w-4 h-4 shrink-0 transition-transform group-hover:translate-x-0.5 ${selected ? 'text-yellow-300' : 'text-gray-400'}`} />
+      </div>
+    </button>
+  );
+}
 
 const ServicePage = () => {
   const navigate = useNavigate();
@@ -28,6 +67,10 @@ const ServicePage = () => {
   const [testimonials, setTestimonials] = useState([]);
   const [loadingServices, setLoadingServices] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  // Needs-first entry: which problem they picked, and the quote modal state
+  const [selectedNeed, setSelectedNeed] = useState(null);
+  const [quoteOpen, setQuoteOpen] = useState(false);
+  const [quoteService, setQuoteService] = useState(null);
 
   // Apply state
   const [selectedService, setSelectedService] = useState(null);
@@ -296,7 +339,7 @@ const ServicePage = () => {
     if (paymentStatus === 'awaiting_verification') return <Clock className="w-5 h-5 text-yellow-500" />;
     if (status === 'completed') return <CheckCircle className="w-5 h-5 text-yellow-500" />;
     if (status === 'rejected') return <XCircle className="w-5 h-5 text-yellow-500" />;
-    return <Clock className="w-5 h-5 text-buue00" />;
+    return <Clock className="w-5 h-5 text-blue-600" />;
   };
 
   const getStatusText = (app) => {
@@ -352,6 +395,46 @@ const ServicePage = () => {
     ? services 
     : services.filter(s => s.category === selectedCategory);
 
+  // Needs-first helpers
+  const recommendedSlug = selectedNeed?.recommendedSlug || null;
+
+  const serviceTitleForNeed = (need) => {
+    if (!need?.recommendedSlug) return null;
+    return services.find(s => s.slug === need.recommendedSlug)?.title || null;
+  };
+
+  const handleNeedSelect = (need) => {
+    // Clicking the same need again clears it, so the page never traps anyone.
+    if (selectedNeed?.key === need.key) {
+      setSelectedNeed(null);
+      setSelectedCategory('all');
+      return;
+    }
+    setSelectedNeed(need);
+
+    if (need.custom) {
+      setSelectedCategory('all');
+      setQuoteService(null);
+      setQuoteOpen(true);
+      return;
+    }
+
+    setSelectedCategory(need.categories.length === 1 ? need.categories[0] : 'all');
+    // Let the grid paint before scrolling to it.
+    window.requestAnimationFrame(() => {
+      document.getElementById('service-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
+
+  const openQuote = (service, need = selectedNeed) => {
+    const target =
+      service ||
+      (need?.recommendedSlug ? services.find(s => s.slug === need.recommendedSlug) || null : null) ||
+      null;
+    setQuoteService(target);
+    setQuoteOpen(true);
+  };
+
   const categories = [
     { id: 'all', name: 'All Services', icon: <Zap className="w-4 h-4" /> },
     { id: 'trading', name: 'Trading', icon: <TrendingUp className="w-4 h-4" /> },
@@ -403,16 +486,23 @@ const ServicePage = () => {
       <div className="max-w-7xl mx-auto px-4 py-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-center">
         <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-extrabold">
           <Flame className="h-4 w-4 shrink-0 animate-pulse" />
-          Limited spots available for this mentorship batch
+          Cohort mentorship: limited seats in this batch
         </span>
         <button
           type="button"
-          onClick={() => setActiveTab('apply')}
+          onClick={() => {
+            const seat = services.find(s => s.category === 'trading') || services[0] || null;
+            if (seat) handleServiceSelect(seat);
+            else setActiveTab('browse');
+          }}
           className="group inline-flex items-center gap-1 rounded-full bg-gray-900 px-3 py-1 text-[11px] sm:text-xs font-bold text-white transition-transform duration-200 hover:scale-105 active:scale-95"
         >
-          Apply now
+          Take a seat
           <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
         </button>
+        <span className="hidden sm:inline text-xs font-semibold text-gray-800/80">
+          · Not ready to pay? <span className="underline">Ask for a quote instead</span>
+        </span>
       </div>
     </div>
   );
@@ -422,9 +512,9 @@ const ServicePage = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-center gap-1 md:gap-4">
           {[
-            { id: 'browse', label: 'Browse Services', icon: Sparkles },
-            { id: 'apply', label: 'Get Help', icon: Edit },
-            { id: 'track', label: 'Track Application', icon: Search },
+            { id: 'browse', label: 'What you need', short: 'Needs', icon: Sparkles },
+            { id: 'apply', label: 'Mentorship seats', short: 'Seats', icon: Edit },
+            { id: 'track', label: 'Track', short: 'Track', icon: Search },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -437,7 +527,7 @@ const ServicePage = () => {
             >
               <tab.icon className="w-5 h-5" />
               <span className="hidden md:inline">{tab.label}</span>
-              <span className="md:hidden">{tab.label.split(' ')[0] === 'Get' ? 'Help' : tab.label.split(' ')[0]}</span>
+              <span className="md:hidden">{tab.short}</span>
             </button>
           ))}
         </div>
@@ -452,6 +542,86 @@ const ServicePage = () => {
 
     return (
       <div className="space-y-12">
+        {/* Needs finder: lead with the problem, not the product */}
+        <section className="relative overflow-hidden bg-gradient-to-br from-gray-900 via-[#3B2436] to-[#5C3B54] text-white">
+          <div className="absolute -top-20 -right-10 w-72 h-72 bg-yellow-500/10 rounded-full blur-3xl" />
+          <div className="absolute -bottom-24 -left-16 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl" />
+
+          <div className="relative z-10 container mx-auto px-4 py-14">
+            <div className="max-w-2xl">
+              <span className="inline-flex items-center gap-2 rounded-full bg-yellow-500/15 ring-1 ring-yellow-400/30 px-3 py-1 text-xs font-bold uppercase tracking-wider text-yellow-300">
+                <Sparkles className="w-4 h-4" />
+                Start here
+              </span>
+              <h2 className="mt-4 text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight">
+                What is actually not working for you right now?
+              </h2>
+              <p className="mt-3 text-gray-300 text-base">
+                Pick the line that sounds like your week. I will show you the shortest way out, what it costs,
+                and then write you a proper quote. No long form before you see a price.
+              </p>
+            </div>
+
+            <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {SERVICE_NEEDS.map(need => (
+                <NeedCard
+                  key={need.key}
+                  need={need}
+                  selected={selectedNeed?.key === need.key}
+                  recommendedTitle={serviceTitleForNeed(need)}
+                  onSelect={() => handleNeedSelect(need)}
+                />
+              ))}
+            </div>
+
+            <p className="mt-6 text-sm text-gray-400">
+              Not sure which one fits?{' '}
+              <button
+                type="button"
+                onClick={() => openQuote(null, null)}
+                className="text-yellow-300 font-semibold underline underline-offset-4 hover:text-yellow-200"
+              >
+                Just describe it and ask for a quote
+              </button>
+              .
+            </p>
+          </div>
+        </section>
+
+        {/* Context bar for the chosen need */}
+        {selectedNeed && (
+          <section className="container mx-auto px-4 -mt-4 relative z-10">
+            <div className="bg-white border-2 border-yellow-400 rounded-2xl shadow-lg p-5 sm:p-6">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="text-xs font-bold uppercase tracking-wider text-yellow-700">
+                    Recommended because you said
+                  </p>
+                  <p className="text-lg font-bold text-gray-900 mt-0.5">{selectedNeed.headline}</p>
+                  <p className="text-gray-600 mt-1">{selectedNeed.outcome}</p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => openQuote(null)}
+                    className="px-5 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold transition inline-flex items-center gap-2"
+                  >
+                    Get a quote
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setSelectedNeed(null); setSelectedCategory('all'); }}
+                    className="px-4 py-2.5 border border-gray-300 hover:border-gray-400 rounded-lg font-semibold text-gray-700 transition"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* Category Filter */}
         <section className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-3">
@@ -473,19 +643,34 @@ const ServicePage = () => {
         </section>
 
         {/* Services Grid */}
-        <section className="container mx-auto px-4">
+        <section id="service-results" className="container mx-auto px-4 scroll-mt-32">
           {filteredServices.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">No services found for this category.</p>
+              <p className="text-gray-500 text-lg">No services in this category yet.</p>
+              <button
+                type="button"
+                onClick={() => { setSelectedCategory('all'); setSelectedNeed(null); }}
+                className="mt-4 px-5 py-2.5 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg font-semibold transition"
+              >
+                Show every service
+              </button>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {filteredServices.map((service) => (
+              {filteredServices.map((service) => {
+                const recommended = recommendedSlug === service.slug;
+                return (
                 <div
                   key={service.id}
-                  className="group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
+                  className={`group bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 ${recommended ? 'ring-2 ring-yellow-400' : ''}`}
                 >
                   <div className={`bg-gradient-to-r ${getCategoryColor(service.category)} p-6 text-white`}>
+                    {recommended && (
+                      <p className="inline-flex items-center gap-1.5 mb-3 px-2.5 py-1 rounded-full bg-yellow-400 text-gray-900 text-xs font-extrabold">
+                        <Sparkles className="w-3.5 h-3.5" />
+                        Best fit for what you said
+                      </p>
+                    )}
                     <div className="flex justify-between items-start">
                       <div className="flex items-center gap-3">
                         <div className="bg-white/20 rounded-xl p-2 backdrop-blur-sm">
@@ -504,7 +689,7 @@ const ServicePage = () => {
                         {service.price_hourly && (
                           <>
                             <div className="text-2xl font-bold">${service.price_hourly} <span className="text-sm font-normal text-white/60">({usdToRwf(service.price_hourly).toLocaleString()} RWF)</span></div>
-                            <div className="text-sm text-white/80">/hour</div>
+                            <div className="text-sm text-white/80">from /hour</div>
                           </>
                         )}
                       </div>
@@ -517,7 +702,7 @@ const ServicePage = () => {
                     <div className="mb-6">
                       <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                         <CheckCircle className="w-5 h-5 text-yellow-500" />
-                        What's Included
+                        What you walk away with
                       </h3>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {service.features?.slice(0, 4).map((feature, idx) => (
@@ -538,29 +723,37 @@ const ServicePage = () => {
 
                     <div className="flex flex-col sm:flex-row gap-3">
                       <button
-                        onClick={() => handleServiceSelect(service)}
-                        className="flex-1 text-center bg-gradient-to-r from-buue00 to-yellow-600 text-white py-3 rounded-xl font-semibold hover:from-blb-ue hover:to-yellow-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                        type="button"
+                        onClick={() => openQuote(service)}
+                        className="flex-1 inline-flex items-center justify-center gap-2 bg-yellow-600 hover:bg-yellow-700 text-white py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
                       >
-                        Apply Now
+                        Get a quote
+                        <ArrowRight className="w-4 h-4" />
                       </button>
                       <button
+                        type="button"
                         onClick={() => navigate(`/services/${service.slug}`)}
-                        className="flex-1 text-center border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:border-buue00 hover:text-blb-ue transition-all duration-300"
+                        className="flex-1 text-center border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:border-yellow-500 hover:text-yellow-700 transition-all duration-300"
                       >
-                        Learn More
+                        Learn more
                         <ChevronRight className="w-4 h-4 inline ml-1" />
                       </button>
                     </div>
+                    <p className="mt-3 text-xs text-gray-500 flex items-center gap-1.5">
+                      <DollarSign className="w-3.5 h-3.5" />
+                      Quote first, decide later. Nothing is charged on this page.
+                    </p>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </section>
 
         {/* Testimonials */}
         {testimonials.length > 0 && (
-          <section className="bg-gradient-to-r from-buue0 to-yellow-50 py-16">
+          <section className="bg-gradient-to-r from-blue-50 to-yellow-50 py-16">
             <div className="container mx-auto px-4">
               <div className="text-center mb-12">
                 <h2 className="text-3xl font-bold text-gray-800 mb-4">What Students Say</h2>
@@ -578,8 +771,8 @@ const ServicePage = () => {
                     </div>
                     <p className="text-gray-600 mb-4">"{testimonial.content}"</p>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-buue00 rounded-full flex items-center justify-center">
-                        <User className="w-5 h-5 text-buue00" />
+                      <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                        <User className="w-5 h-5 text-blue-600" />
                       </div>
                       <div>
                         <p className="font-semibold text-gray-800">{testimonial.author_name}</p>
@@ -594,7 +787,7 @@ const ServicePage = () => {
         )}
 
         {/* Trust Indicators */}
-        <section className="bg-gradient-to-r from-buue0 to-yellow-50 py-16">
+        <section className="bg-gradient-to-r from-blue-50 to-yellow-50 py-16">
           <div className="container mx-auto px-4">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-gray-800 mb-4">Why Choose Me?</h2>
@@ -604,8 +797,8 @@ const ServicePage = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="text-center">
-                <div className="w-16 h-16 bg-buue00 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-8 h-8 text-buue00" />
+                <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Shield className="w-8 h-8 text-blue-600" />
                 </div>
                 <h3 className="font-semibold text-gray-800 mb-2">Satisfaction Guaranteed</h3>
                 <p className="text-sm text-gray-600">Full refund if not satisfied after first session</p>
@@ -683,7 +876,7 @@ const ServicePage = () => {
                   });
                   setActiveTab('track');
                 }}
-                className="flex-1 px-6 py-3 bg-buue00 text-white rounded-lg hover:bg-blb-ue font-semibold"
+                className="flex-1 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold"
               >
                 Track Your Application
               </button>
@@ -693,7 +886,7 @@ const ServicePage = () => {
                   setApplyStep(1);
                   setActiveTab('browse');
                 }}
-                className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-buue00 hover:text-blb-ue font-semibold"
+                className="flex-1 px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-blue-600 hover:text-blue-700 font-semibold"
               >
                 Browse More Services
               </button>
@@ -706,14 +899,33 @@ const ServicePage = () => {
     return (
       <div className="max-w-3xl mx-auto">
         {!selectedService ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600 text-lg mb-4">Please select a service first to apply</p>
-            <button
-              onClick={() => setActiveTab('browse')}
-              className="px-6 py-3 bg-buue00 text-white rounded-lg hover:bg-blb-ue font-semibold"
-            >
-              Browse Services
-            </button>
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-10 text-center">
+            <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Edit className="w-7 h-7 text-blue-600" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">Which mentorship do you want a seat in?</h2>
+            <p className="text-gray-600 mb-6 max-w-md mx-auto">
+              Seats are limited per batch and payment secures your place. If you are not ready to pay yet,
+              ask for a quote instead and decide after you see the scope.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => {
+                  const seat = services.find(s => s.category === 'trading') || services[0] || null;
+                  if (seat) handleServiceSelect(seat);
+                  else setActiveTab('browse');
+                }}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-semibold transition"
+              >
+                Take a trading mentorship seat
+              </button>
+              <button
+                onClick={() => { setActiveTab('browse'); openQuote(null, null); }}
+                className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:border-yellow-500 hover:text-yellow-700 font-semibold transition"
+              >
+                Ask for a quote instead
+              </button>
+            </div>
           </div>
         ) : (
           <>
@@ -724,7 +936,7 @@ const ServicePage = () => {
                   <div
                     key={s}
                     className={`flex-1 text-center text-sm ${
-                      applyStep >= s ? 'text-buue00' : 'text-gray-400'
+                      applyStep >= s ? 'text-blue-600' : 'text-gray-400'
                     }`}
                   >
                     Step {s}
@@ -733,7 +945,7 @@ const ServicePage = () => {
               </div>
               <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-buue00 to-yellow-600 transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-blue-600 to-yellow-600 transition-all duration-300"
                   style={{ width: `${(applyStep / 3) * 100}%` }}
                 ></div>
               </div>
@@ -778,7 +990,7 @@ const ServicePage = () => {
                         name="full_name"
                         value={formData.full_name}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buue00"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600"
                         placeholder="John Doe"
                         required
                       />
@@ -793,7 +1005,7 @@ const ServicePage = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buue00"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600"
                         placeholder="john@example.com"
                         required
                       />
@@ -808,7 +1020,7 @@ const ServicePage = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buue00"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600"
                         placeholder="0794 144 738"
                         required
                       />
@@ -822,7 +1034,7 @@ const ServicePage = () => {
                         name="country"
                         value={formData.country}
                         onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buue00"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600"
                       >
                         <option value="Rwanda">Rwanda</option>
                         <option value="Uganda">Uganda</option>
@@ -855,7 +1067,7 @@ const ServicePage = () => {
                             onClick={() => setFormData(prev => ({ ...prev, skill_level: level }))}
                             className={`py-3 px-3 rounded-lg border font-medium capitalize transition-all ${
                               formData.skill_level === level
-                                ? 'bg-buue00 text-white border-blb-ue'
+                                ? 'bg-blue-600 text-white border-blue-700'
                                 : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                             }`}
                           >
@@ -877,7 +1089,7 @@ const ServicePage = () => {
                             onClick={() => setFormData(prev => ({ ...prev, weekly_hours: hours }))}
                             className={`py-3 px-3 rounded-lg border font-medium transition-all ${
                               formData.weekly_hours === hours
-                                ? 'bg-buue00 text-white border-blb-ue'
+                                ? 'bg-blue-600 text-white border-blue-700'
                                 : 'border-gray-300 text-gray-700 hover:bg-gray-50'
                             }`}
                           >
@@ -896,7 +1108,7 @@ const ServicePage = () => {
                         value={formData.goals}
                         onChange={handleInputChange}
                         rows="4"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-buue00"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600"
                         placeholder="What do you want to achieve through this mentorship?"
                         required
                       />
@@ -911,7 +1123,7 @@ const ServicePage = () => {
                         value={formData.current_challenges}
                         onChange={handleInputChange}
                         rows="3"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blul00"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100"
                         placeholder="What challenges are you currently facing?"
                       />
                     </div>
@@ -922,7 +1134,7 @@ const ServicePage = () => {
                 {applyStep === 3 && (
                   <div className="space-y-6">
                     <h2 className="text-xl font-bold text-gray-800 mb-4">Payment</h2>
-                    <div className="bg-blul0 rounded-xl p-6">
+                    <div className="bg-blue-50 rounded-xl p-6">
                       <h3 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
                         <DollarSign className="w-5 h-5" />
                         Payment Instructions
@@ -972,7 +1184,7 @@ const ServicePage = () => {
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Upload Payment Screenshot *
                       </label>
-                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blul00 transition-colors">
+                      <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-blue-100 transition-colors">
                         <input
                           type="file"
                           accept="image/*"
@@ -1015,7 +1227,7 @@ const ServicePage = () => {
                   {applyStep < 3 ? (
                     <button
                       onClick={() => setApplyStep(applyStep + 1)}
-                      className="ml-auto px-8 py-2 bg-blul00 text-white rounded-lg hover:bg-blblue font-medium"
+                      className="ml-auto px-8 py-2 bg-blue-100 text-white rounded-lg hover:bg-blue-700 font-medium"
                     >
                       Continue
                       <ChevronRight className="w-4 h-4 inline ml-1" />
@@ -1043,7 +1255,7 @@ const ServicePage = () => {
       return (
         <div className="max-w-md mx-auto">
           <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-            <div className="w-20 h-20 bg-blul00 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <Search className="w-10 h-10 text-blue-600" />
             </div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">Track Your Application</h1>
@@ -1058,14 +1270,14 @@ const ServicePage = () => {
                 value={searchEmail}
                 onChange={(e) => setSearchEmail(e.target.value)}
                 placeholder="TRK-XXXXX-XXXXX-XXXXX"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blul00"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-100"
                 onKeyPress={(e) => e.key === 'Enter' && searchApplications()}
               />
 
               <button
                 onClick={searchApplications}
                 disabled={loadingTrack}
-                className="w-full bg-gradient-to-r from-blul00 to-yellow-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50"
+                className="w-full bg-gradient-to-r from-blue-100 to-yellow-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all disabled:opacity-50"
               >
                 {loadingTrack ? 'Searching...' : 'Track My Application'}
               </button>
@@ -1077,19 +1289,19 @@ const ServicePage = () => {
 
             <div className="mt-6 pt-6 border-t">
               <p className="text-sm text-gray-500">
-                Don't have an application yet?
+                Looking for a quote instead of a mentorship seat?
                 <button
-                  onClick={() => setActiveTab('browse')}
+                  onClick={() => { setActiveTab('browse'); openQuote(null, null); }}
                   className="text-blue-600 ml-1 hover:underline font-medium"
                 >
-                  Apply for Mentorship
+                  Request a quote
                 </button>
-                {' '}or{' '}
+                {' · '}
                 <button
-                  onClick={() => navigate('/hire-me')}
+                  onClick={() => setActiveTab('apply')}
                   className="text-blue-600 hover:underline font-medium"
                 >
-                  Hire for a Project
+                  Mentorship seats
                 </button>
               </p>
             </div>
@@ -1119,7 +1331,7 @@ const ServicePage = () => {
             onClick={() => setTrackTab('mentorship')}
             className={`px-6 py-3 font-medium transition-all ${
               trackTab === 'mentorship'
-                ? 'text-blue-600 border-b-2 border-blblue'
+                ? 'text-blue-600 border-b-2 border-blue-700'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -1130,7 +1342,7 @@ const ServicePage = () => {
             onClick={() => setTrackTab('projects')}
             className={`px-6 py-3 font-medium transition-all ${
               trackTab === 'projects'
-                ? 'text-blue-600 border-b-2 border-blblue'
+                ? 'text-blue-600 border-b-2 border-blue-700'
                 : 'text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -1141,28 +1353,28 @@ const ServicePage = () => {
 
         {loadingTrack ? (
           <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blul00"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-100"></div>
           </div>
         ) : trackTab === 'mentorship' && applications.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm p-12 text-center">
             <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
             <p className="text-gray-500">No mentorship applications found for this email</p>
             <button
-              onClick={() => setActiveTab('browse')}
+              onClick={() => setActiveTab('apply')}
               className="mt-4 text-blue-600 hover:underline font-medium"
             >
-              Apply for Mentorship →
+              Apply for a mentorship seat →
             </button>
           </div>
         ) : trackTab === 'projects' && inquiries.length === 0 ? (
           <div className="bg-white rounded-xl shadow-sm p-12 text-center">
             <Briefcase className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500">No project inquiries found for this email</p>
+            <p className="text-gray-500">No quotes or project requests found for this email</p>
             <button
-              onClick={() => navigate('/hire-me')}
+              onClick={() => { setActiveTab('browse'); openQuote(null, null); }}
               className="mt-4 text-blue-600 hover:underline font-medium"
             >
-              Hire for a Project →
+              Request a quote →
             </button>
           </div>
         ) : (
@@ -1174,7 +1386,7 @@ const ServicePage = () => {
               return (
                 <div key={app.id} className="bg-white rounded-xl shadow-md overflow-hidden">
                   {/* Header */}
-                  <div className="bg-gradient-to-r from-blul00 to-yellow-600 p-4 text-white">
+                  <div className="bg-gradient-to-r from-blue-100 to-yellow-600 p-4 text-white">
                     <div className="flex justify-between items-start flex-wrap gap-2">
                       <div>
                         <h2 className="text-xl font-semibold">{app.service_title || 'Mentorship Application'}</h2>
@@ -1264,7 +1476,7 @@ const ServicePage = () => {
 
                     {/* Goals & Challenges */}
                     {app.goals && (
-                      <div className="bg-blul0 rounded-lg p-3 mb-4">
+                      <div className="bg-blue-50 rounded-lg p-3 mb-4">
                         <p className="text-sm text-gray-900">
                           <strong className="text-blue-600">Your Goals:</strong> {app.goals}
                         </p>
@@ -1306,7 +1518,7 @@ const ServicePage = () => {
                     )}
 
                     {app.payment_status === 'pending_payment' && (
-                      <div className="bg-blul0 rounded-lg p-3 flex items-start gap-3">
+                      <div className="bg-blue-50 rounded-lg p-3 flex items-start gap-3">
                         <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                         <div>
                           <p className="font-semibold text-blue-600">Complete Your Payment</p>
@@ -1389,7 +1601,7 @@ const ServicePage = () => {
                       <p className="text-sm font-medium text-gray-700 mb-2">Requirements:</p>
                       <div className="flex flex-wrap gap-1">
                         {inquiry.requirements.map((req, i) => (
-                          <span key={i} className="bg-blul00 text-blblue px-2 py-0.5 rounded-full text-xs">
+                          <span key={i} className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs">
                             {req}
                           </span>
                         ))}
@@ -1450,6 +1662,16 @@ const ServicePage = () => {
         {activeTab === 'apply' && renderApply()}
         {activeTab === 'track' && renderTrack()}
       </div>
+
+      {quoteOpen && (
+        <ServiceQuoteForm
+          open
+          onClose={() => setQuoteOpen(false)}
+          service={quoteService}
+          need={selectedNeed}
+          services={services}
+        />
+      )}
     </div>
   );
 };

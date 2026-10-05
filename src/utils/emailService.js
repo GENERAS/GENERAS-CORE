@@ -517,6 +517,96 @@ export const sendAdminCollaborationNotification = async (collab) => {
   );
 };
 
+// Quote request emails (services page "Get a quote" form)
+export const sendServiceQuoteConfirmation = async (quote) => {
+  const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #3B2436; color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+          .header h1 { margin: 0; font-size: 22px; }
+          .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+          .title { font-size: 16px; font-weight: bold; color: #3B2436; margin-bottom: 4px; }
+          .meta { color: #6b7280; font-size: 14px; }
+          .footer { text-align: center; padding: 20px; font-size: 12px; color: #6b7280; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>Your quote request is in</h1>
+          </div>
+          <div class="content">
+            <p>Hi <strong>${quote.full_name}</strong>,</p>
+            <p>Thanks for reaching out. Nothing has been charged. I read every request myself and you will get a written quote with scope, price and timeline, usually within 24-48 hours.</p>
+
+            <p class="title">${quote.service_title || 'Custom build'}</p>
+            <p class="meta">${quote.budget_band ? `Budget: ${quote.budget_band} · ` : ''}${quote.deadline ? `Timing: ${quote.deadline}` : 'Timing: flexible'}</p>
+
+            <h3>What happens next</h3>
+            <ol>
+              <li>I review what you described and check it is something I can deliver well.</li>
+              <li>You get a written quote by email: what is included, what it costs, how long it takes.</li>
+              <li>You decide. No deposit is taken until you say yes.</li>
+            </ol>
+
+            <p style="font-size:12px;color:#6b7280">Quote reference: <strong>${quote.quote_id}</strong></p>
+            <p>Best regards,<br><strong>GENERAS CORE</strong></p>
+            <p style="font-size:12px;color:#6b7280">Need it sooner? WhatsApp +250 794 144 738</p>
+          </div>
+          <div class="footer">Generas Core - Software, AI and business systems.</div>
+        </div>
+      </body>
+      </html>`;
+  return await sendEmail(quote.email, `Quote request received (${quote.quote_id})`, html);
+};
+
+export const sendAdminServiceQuoteNotification = async (quote) => {
+  const html = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+          .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+          .header { background: #3B2436; color: white; padding: 20px; text-align: center; }
+          .content { background: #f9fafb; padding: 20px; }
+          .info-box { background: #e5e7eb; padding: 15px; border-radius: 5px; margin: 15px 0; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>New quote request</h1>
+          </div>
+          <div class="content">
+            <h2>${quote.service_title || 'Custom build'} - ${quote.full_name}</h2>
+            <div class="info-box">
+              <p><strong>Reference:</strong> ${quote.quote_id}</p>
+              <p><strong>Budget:</strong> ${quote.budget_band || 'Not stated'}</p>
+              <p><strong>Deadline:</strong> ${quote.deadline || 'Not stated'}</p>
+              <p><strong>Email:</strong> ${quote.email}</p>
+              <p><strong>Phone:</strong> ${quote.phone || 'Not given'}</p>
+              ${quote.company ? `<p><strong>Business:</strong> ${quote.company}</p>` : ''}
+            </div>
+            <p><strong>What they want:</strong></p>
+            <p>${quote.project_summary}</p>
+            ${quote.current_problem ? `<p><strong>What is failing today:</strong></p><p>${quote.current_problem}</p>` : ''}
+            <p><a href="${APP_URL}/admin" style="display:inline-block;background:#eab308;color:#1f2937;padding:12px 24px;text-decoration:none;border-radius:6px;font-weight:bold">Quote it in the dashboard</a></p>
+          </div>
+        </div>
+      </body>
+      </html>`;
+  return await sendEmail(
+    ADMIN_EMAIL,
+    `NEW QUOTE REQUEST: ${quote.service_title || 'Custom build'} (${quote.full_name})`,
+    html
+  );
+};
+
 export default {
   sendEmail,
   sendApplicationReceivedEmail,
@@ -528,5 +618,7 @@ export default {
   sendContactFormConfirmation,
   sendAdminContactNotification,
   sendCollaborationRequestConfirmation,
-  sendAdminCollaborationNotification
+  sendAdminCollaborationNotification,
+  sendServiceQuoteConfirmation,
+  sendAdminServiceQuoteNotification
 };
