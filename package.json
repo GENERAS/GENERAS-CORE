@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"vite\" \"node --env-file .env server.js\"",
+    "dev": "concurrently -k -n web,api \"npm:dev:client\" \"npm:dev:server\"",
     "dev:client": "vite",
     "dev:server": "node --env-file .env server.js",
+    "dev:bg": "start /b npm run dev",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"

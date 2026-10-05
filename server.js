@@ -463,8 +463,19 @@ app.get('/api/analytics', async (req, res) => {
   } catch (error) { res.status(500).json({ error: 'Internal server error' }) }
 })
 
-const PORT = process.env.API_PORT || 3001
-app.listen(PORT, () => {
+const PORT = Number(process.env.API_PORT) || 3001
+const server = app.listen(PORT, () => {
   console.log(`AI Strategist API running on http://localhost:${PORT}`)
   console.log(`Knowledge base loaded (${loadKnowledgeBase().length} chars)`)
+})
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n  FATAL: port ${PORT} is already in use by another process.`)
+    console.error(`  Find it:  Get-NetTCPConnection -State Listen -LocalPort ${PORT} | Format-Table -AutoSize`)
+    console.error(`  Stop it:  Stop-Process -Id <OwningProcess> -Force\n`)
+  } else {
+    console.error(`\n  FATAL: API server failed to start - ${err.message}\n`)
+  }
+  process.exit(1)
 })
