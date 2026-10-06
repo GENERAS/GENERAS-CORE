@@ -74,11 +74,11 @@ const navSections = [
     title: 'Engagement',
     items: [
       { id: 'mentorship', label: 'Mentorship', icon: FaUser },
-      { id: 'inquiries', label: 'Inquiries', icon: FaBriefcase },
+      { id: 'inquiries', label: 'Hire Requests', icon: FaBriefcase },
       { id: 'ai-leads', label: 'AI Leads', icon: FaRobot },
       { id: 'contact-messages', label: 'Messages', icon: FaEnvelope },
       { id: 'collaborations', label: 'Collaborations', icon: FaHandshake },
-      { id: 'quotes', label: 'Quotes & Orders', icon: FaFileInvoice },
+      { id: 'quotes', label: 'Business Quotes', icon: FaFileInvoice },
       { id: 'comments', label: 'Comments', icon: FaComments },
       { id: 'followers', label: 'Followers', icon: FaUsers },
     ]

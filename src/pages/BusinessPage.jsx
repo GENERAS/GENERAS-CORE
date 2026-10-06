@@ -546,7 +546,7 @@ export default function BusinessPage() {
                       </div>
                     </div>
                     <Link
-                      to={`/hire-me?service=${encodeURIComponent(cat.id)}&service_name=${encodeURIComponent(cat.title)}`}
+                      to={`/get-quote?service=${encodeURIComponent(cat.id)}&service_name=${encodeURIComponent(cat.title)}`}
                       className="bg-gradient-to-r from-gray-900 to-gray-800 text-white px-6 py-3 rounded-xl font-semibold hover:from-gray-800 hover:to-gray-700 transition-all duration-300 shadow-sm hover:shadow-md text-center text-sm whitespace-nowrap"
                     >
                       Get Quote
@@ -750,7 +750,7 @@ export default function BusinessPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              to="/hire-me"
+              to="/get-quote"
               className="bg-gray-900 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-800 transition-all duration-300 shadow-lg text-center"
             >
               Get a Free Quote

@@ -25,6 +25,7 @@ const BlogPostPage = lazy(() => import('./pages/BlogPostPage'))
 const BlogPage = lazy(() => import('./pages/BlogPage'))
 const ServiceDetailPage = lazy(() => import('./pages/ServiceDetailPage'))
 const HiringPage = lazy(() => import('./pages/HiringPage'))
+const GetQuotePage = lazy(() => import('./pages/GetQuotePage'))
 const ServicePage = lazy(() => import('./pages/ServicePage'))
 const TestimonialsPage = lazy(() => import('./pages/TestimonialsPage'))
 const ClientDashboard = lazy(() => import('./pages/ClientDashboard'))
@@ -103,6 +104,7 @@ function App() {
           <Route path="/service" element={<Layout><Suspense fallback={<Loader />}><ServicePage /></Suspense></Layout>} />
           <Route path="/services/:slug" element={<Layout><Suspense fallback={<Loader />}><ServiceDetailPage /></Suspense></Layout>} />
           <Route path="/hire-me" element={<Layout><Suspense fallback={<Loader />}><HiringPage /></Suspense></Layout>} />
+          <Route path="/get-quote" element={<Layout><Suspense fallback={<Loader />}><GetQuotePage /></Suspense></Layout>} />
           <Route path="/testimonials" element={<Layout><Suspense fallback={<Loader />}><TestimonialsPage /></Suspense></Layout>} />
           <Route path="/contact" element={<Layout><Suspense fallback={<Loader />}><ContactPage /></Suspense></Layout>} />
       <Route path="/collaborate" element={<Layout><Suspense fallback={<Loader />}><CollaboratePage /></Suspense></Layout>} />
