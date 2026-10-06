@@ -1,4 +1,4 @@
-// src/pages/ServicePage.jsx
+﻿// src/pages/ServicePage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
@@ -106,15 +106,7 @@ const ServicePage = () => {
   const [searched, setSearched] = useState(false);
 
   // Initialize
-  useEffect(() => {
-    fetchServicesAndTestimonials();
-    if (urlServiceSlug) {
-      setActiveTab('apply');
-      fetchServiceForApply(urlServiceSlug);
-    }
-  }, []);
 
-  // Fetch services and testimonials
   const fetchServicesAndTestimonials = async () => {
     try {
       const { data: servicesData } = await supabase
@@ -135,7 +127,6 @@ const ServicePage = () => {
     }
   };
 
-  // Fetch specific service for apply form
   const fetchServiceForApply = async (slug) => {
     try {
       let query = supabase.from('mentorship_services').select('*');
@@ -152,6 +143,7 @@ const ServicePage = () => {
       console.error('Error fetching service:', error);
     }
   };
+
 
   const generateReferenceCode = (service) => {
     if (service) {
@@ -501,7 +493,7 @@ const ServicePage = () => {
           <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
         </button>
         <span className="hidden sm:inline text-xs font-semibold text-gray-800/80">
-          · Not ready to pay? <span className="underline">Ask for a quote instead</span>
+          Â· Not ready to pay? <span className="underline">Ask for a quote instead</span>
         </span>
       </div>
     </div>
@@ -1296,7 +1288,7 @@ const ServicePage = () => {
                 >
                   Request a quote
                 </button>
-                {' · '}
+                {' Â· '}
                 <button
                   onClick={() => setActiveTab('apply')}
                   className="text-blue-600 hover:underline font-medium"
@@ -1363,7 +1355,7 @@ const ServicePage = () => {
               onClick={() => setActiveTab('apply')}
               className="mt-4 text-blue-600 hover:underline font-medium"
             >
-              Apply for a mentorship seat →
+              Apply for a mentorship seat â†’
             </button>
           </div>
         ) : trackTab === 'projects' && inquiries.length === 0 ? (
@@ -1374,7 +1366,7 @@ const ServicePage = () => {
               onClick={() => { setActiveTab('browse'); openQuote(null, null); }}
               className="mt-4 text-blue-600 hover:underline font-medium"
             >
-              Request a quote →
+              Request a quote â†’
             </button>
           </div>
         ) : (
@@ -1529,7 +1521,7 @@ const ServicePage = () => {
                             onClick={() => handleServiceSelect(services.find(s => s.id === app.service_id))}
                             className="mt-2 text-sm text-blue-600 font-semibold hover:underline"
                           >
-                            Complete Payment →
+                            Complete Payment â†’
                           </button>
                         </div>
                       </div>

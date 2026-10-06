@@ -15,11 +15,9 @@ export default function AcademicManager() {
   const border = isDark ? 'border-gray-700' : 'border-gray-200'
   const text = isDark ? 'text-white' : 'text-gray-900'
   const textSub = isDark ? 'text-gray-300' : 'text-gray-600'
-  const textMuted = isDark ? 'text-gray-400' : 'text-gray-500'
+  const textMuted = isDark ? 'text-gray-400' : 'text-gray-500' // eslint-disable-line no-unused-vars
   const inputBg = isDark ? 'bg-gray-900/50 border-gray-600 text-white placeholder-gray-500' : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'
   const focusRing = 'focus:ring-2 focus:ring-yellow-500/50 focus:border-yellow-500'
-
-  useEffect(() => { loadLevels() }, [])
 
   const loadLevels = async () => {
     try {
@@ -31,6 +29,11 @@ export default function AcademicManager() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadLevels()
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()

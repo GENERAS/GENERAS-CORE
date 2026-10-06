@@ -91,7 +91,7 @@ function handleProjectRequest() {
       const clean = raw.split('\n').filter(l => !l.includes('[Add Your') && !l.includes('[List') && !l.includes('[Brief')).join('\n').trim()
       if (clean.length > 80) return `${clean}\n\n---\nWant to discuss a custom project? [Book a consultation](https://wa.me/${OWNER_WHATSAPP})`
     }
-  } catch (_) {}
+  } catch { /* ignore */ }
   return "### My Projects\n\nProjects are being updated. Check back soon.\n\n**Have an idea?** Tell me about it and I'll design a system for you."
 }
 
@@ -316,7 +316,7 @@ app.post('/api/chat', async (req, res) => {
           { session_id: sessionId, role: 'user', content: message, mode: 'portfolio' },
           { session_id: sessionId, role: 'assistant', content: projectResponse, mode: 'portfolio' },
         ])
-      } catch (_) {}
+      } catch { /* ignore */ }
 
       return res.json({
         response: projectResponse,
@@ -447,7 +447,7 @@ app.get('/api/leads', async (req, res) => {
     const { data: leads, error } = await supabase.from('ai_leads').select('*').order('created_at', { ascending: false }).limit(50)
     if (error) throw error
     res.json({ leads })
-  } catch (error) { res.status(500).json({ error: 'Internal server error' }) }
+  } catch { res.status(500).json({ error: 'Internal server error' }) }
 })
 
 // ─── GET /api/analytics ──────────────────────────────────────
@@ -460,7 +460,7 @@ app.get('/api/analytics', async (req, res) => {
     const breakdown = { hot: 0, warm: 0, cold: 0 }
     if (leads) leads.forEach(l => { if (breakdown[l.lead_label] !== undefined) breakdown[l.lead_label]++ })
     res.json({ totalLeads: tLeads || 0, totalConversations: tConv || 0, totalBookings: tBook || 0, leadBreakdown: breakdown })
-  } catch (error) { res.status(500).json({ error: 'Internal server error' }) }
+  } catch { res.status(500).json({ error: 'Internal server error' }) }
 })
 
 const PORT = Number(process.env.API_PORT) || 3001

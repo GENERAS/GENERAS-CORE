@@ -21,7 +21,7 @@ function loadKnowledgeBase() {
     try {
       const fp = path.join(KNOWLEDGE_DIR, file)
       if (fs.existsSync(fp)) content += `\n\n=== ${file.replace('.md', '')} ===\n\n${fs.readFileSync(fp, 'utf-8')}`
-    } catch (_) {}
+    } catch { /* ignore notification failures */ }
   }
   knowledgeCache = content
   return content
@@ -54,7 +54,7 @@ function handleProjectRequest() {
       const clean = raw.split('\n').filter(l => !l.includes('[Add Your') && !l.includes('[List') && !l.includes('[Brief')).join('\n').trim()
       if (clean.length > 80) return `${clean}\n\n---\nWant to discuss a custom project? [Book a consultation](https://wa.me/250794144738)`
     }
-  } catch (_) {}
+  } catch { /* ignore notification failures */ }
   return "### My Projects\n\nProjects are being updated. Check back soon.\n\n**Have an idea?** Tell me about it and I'll design a system for you."
 }
 
@@ -94,7 +94,7 @@ async function sendEmailNotification(data) {
       headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ from: process.env.VITE_FROM_EMAIL || 'onboarding@resend.dev', to: process.env.VITE_ADMIN_EMAIL || 'generaskagiraneza@gmail.com', subject: `New Lead: ${data.name || 'Anonymous'}`, html }),
     })
-  } catch (_) {}
+  } catch { /* ignore notification failures */ }
 }
 
 async function sendWhatsAppNotification(data) {
@@ -117,7 +117,7 @@ async function sendWhatsAppNotification(data) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, to: ownerWhatsApp, body: text }),
     })
-  } catch (_) {}
+  } catch { /* ignore notification failures */ }
 }
 
 function buildSystemPrompt(knowledge, mode) {
@@ -253,7 +253,7 @@ export default async function handler(req, res) {
           { session_id: sessionId, role: 'user', content: message, mode: 'portfolio' },
           { session_id: sessionId, role: 'assistant', content: projectResponse, mode: 'portfolio' },
         ])
-      } catch (_) {}
+      } catch { /* ignore notification failures */ }
       return res.json({ response: projectResponse, conversationState: state, leadScore: { budget: 0, intent: 0, clarity: 0, businessValue: 0 }, leadLabel: 'cold', mode: 'portfolio', collectContact: false })
     }
 
@@ -277,7 +277,7 @@ export default async function handler(req, res) {
           name: p.name || '', email: p.email || '', phone: p.phone || '',
           projectType: p.projectType || '', budget: p.budget || '', description: message,
         }
-      } catch (_) {}
+      } catch { /* ignore notification failures */ }
     }
 
     const cleanResponse = responseText.replace(/---\s*\n\{[\s\S]*?\}\s*$/, '').trim()
@@ -287,7 +287,7 @@ export default async function handler(req, res) {
         { session_id: sessionId, role: 'user', content: message, mode },
         { session_id: sessionId, role: 'assistant', content: cleanResponse, mode },
       ])
-    } catch (_) {}
+    } catch { /* ignore notification failures */ }
 
     if (leadData.leadLabel === 'hot' && leadData.collectContact) {
       try {
@@ -303,7 +303,7 @@ export default async function handler(req, res) {
           sendEmailNotification({ ...leadData, description: message })
           sendWhatsAppNotification({ ...leadData, description: message })
         }
-      } catch (_) {}
+      } catch { /* ignore notification failures */ }
     }
 
     const OWNER_WHATSAPP = process.env.OWNER_WHATSAPP || '250794144738'

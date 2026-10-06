@@ -28,7 +28,7 @@ async function sendWhatsAppNotification(data) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, to: ownerWhatsApp, body: text }),
     })
-  } catch (_) {}
+  } catch { /* ignore notification failures */ }
 }
 
 export default async function handler(req, res) {
@@ -71,7 +71,7 @@ export default async function handler(req, res) {
             html: `<h1>New Booking Request</h1><p>Name: ${name}<br>Email: ${email}<br>Phone: ${phone || 'N/A'}<br>Project: ${projectType || 'N/A'}<br>Budget: ${budget || 'N/A'}</p>`,
           }),
         })
-      } catch (_) {}
+      } catch { /* ignore notification failures */ }
     }
 
     // Send WhatsApp notification

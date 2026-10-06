@@ -20,7 +20,7 @@ async function sendEmailNotification(data) {
       headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ from: process.env.VITE_FROM_EMAIL || 'onboarding@resend.dev', to: process.env.VITE_ADMIN_EMAIL || 'generaskagiraneza@gmail.com', subject: `New Lead: ${data.name || 'Anonymous'}`, html }),
     })
-  } catch (_) {}
+  } catch { /* notification is best-effort; never fail the request */ }
 }
 
 async function sendWhatsAppNotification(data) {
@@ -41,7 +41,7 @@ async function sendWhatsAppNotification(data) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ token, to: process.env.OWNER_WHATSAPP || '250794144738', body: text }),
     })
-  } catch (_) {}
+  } catch { /* notification is best-effort; never fail the request */ }
 }
 
 function parseBody(req) {
