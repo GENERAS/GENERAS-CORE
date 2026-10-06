@@ -475,7 +475,7 @@ export default function BusinessPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                to="/hire-me"
+                to="/get-quote"
                 className="bg-yellow-500 text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-yellow-400 transition-all duration-300 shadow-lg hover:shadow-xl text-center"
               >
                 Start Your Project

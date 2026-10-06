@@ -319,7 +319,7 @@ export default function HomePage() {
                       Explore My Work <IconArrowRight />
                     </Link>
                     <Link 
-                      to="/hire-me"
+                      to="/get-quote"
                       className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl font-semibold transition-all duration-300"
                     >
                       Let's Connect
@@ -548,7 +548,7 @@ export default function HomePage() {
                 That is the mission behind Generas Core.
               </p>
               <Link 
-                to="/hire-me"
+                to="/get-quote"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-yellow-500 hover:bg-yellow-400 text-gray-900 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
               >
                 Let's Build Something Meaningful Together <IconArrowRight />
@@ -604,9 +604,9 @@ export default function HomePage() {
                   <Link to="/hire-me" className="block w-full text-center px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl font-semibold transition-colors duration-200">
                     Hire Me
                   </Link>
-                  <Link to="/hire-me" className="block w-full text-center px-4 py-3 border border-gray-300 hover:border-yellow-400 text-gray-700 rounded-xl font-semibold transition-colors duration-200">
-                    Contact
-                  </Link>
+<Link to="/get-quote" className="block w-full text-center px-4 py-3 border border-gray-300 hover:border-yellow-400 text-gray-700 rounded-xl font-semibold transition-colors duration-200">
+            Contact
+          </Link>
                 </div>
               </div>
 
