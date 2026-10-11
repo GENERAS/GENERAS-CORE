@@ -45,17 +45,20 @@ const IconLoader = () => (
   </svg>
 )
 
-export default function ContactForm() {
+export default function ContactForm({ divisionOptions = [], defaultDivision = '' }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    message: ''
+    message: '',
+    division: defaultDivision,
   });
   const [submittedEmail, setSubmittedEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+
+  const showDivision = divisionOptions.length > 0;
 
   const handleChange = (e) => {
     setFormData({
@@ -72,14 +75,32 @@ export default function ContactForm() {
 
     try {
       // Save to Supabase so admin can see it
-      const { error: dbError } = await supabase
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone || null,
+        message: formData.message,
+      };
+      if (formData.division) payload.division = formData.division;
+
+      let { error: dbError } = await supabase
         .from('contact_submissions')
-        .insert({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || null,
-          message: formData.message,
-        });
+        .insert(payload);
+
+      // The `division` column may not exist yet in older databases. If so,
+      // retry without it so the enquiry is never lost.
+      if (dbError && payload.division) {
+        const fallback = {
+          name: payload.name,
+          email: payload.email,
+          phone: payload.phone,
+          message: payload.message,
+        };
+        const retry = await supabase
+          .from('contact_submissions')
+          .insert(fallback);
+        dbError = retry.error;
+      }
 
       if (dbError) {
         console.error('DB insert error:', dbError);
@@ -94,7 +115,7 @@ export default function ContactForm() {
 
       setSubmittedEmail(formData.email);
       setSubmitted(true);
-      setFormData({ name: '', email: '', phone: '', message: '' });
+      setFormData({ name: '', email: '', phone: '', message: '', division: defaultDivision });
     } catch (err) {
       setError('An error occurred. Please try again.');
       console.error('Contact form error:', err);
@@ -192,6 +213,28 @@ export default function ContactForm() {
             placeholder="+250 7XX XXX XXX"
           />
         </div>
+
+        {showDivision && (
+          <div>
+            <label htmlFor="contact-division" className="block text-sm font-medium text-gray-700 mb-2">
+              Which division is this about?
+            </label>
+            <select
+              id="contact-division"
+              name="division"
+              value={formData.division}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-600 focus:border-transparent outline-none transition"
+            >
+              <option value="">General enquiry</option>
+              {divisionOptions.map((division) => (
+                <option key={division.slug} value={division.slug}>
+                  {division.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">

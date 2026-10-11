@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import JobraPortfolioModal from '../components/common/JobraPortfolioModal'
+import { DIVISION_BY_SLUG } from '../data/coreBrand'
 import {
   Globe, ShoppingCart, BarChart3, CreditCard, Rocket,
   CheckCircle, ChevronRight, ArrowRight, Shield, Clock,
@@ -443,9 +444,10 @@ export default function BusinessPage() {
   const [expandedCategory, setExpandedCategory] = useState(null)
   const [showAddOns, setShowAddOns] = useState(false)
   const [portfolioOpen, setPortfolioOpen] = useState(false)
+  const fullPackage = DIVISION_BY_SLUG['generas-digital']?.packages?.[0]
 
   return (
-    <div className="min-h-screen -mx-6 -mt-28 -mb-8">
+    <div className="pricing-page min-h-screen -mx-6 -mt-28 -mb-8">
       {/* Hero */}
       <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -514,6 +516,47 @@ export default function BusinessPage() {
           </div>
         </div>
       </section>
+
+      {/* FULL DIGITAL PACKAGE */}
+      {fullPackage && (
+        <section className="border-b border-gray-100 bg-white">
+          <div className="max-w-7xl mx-auto px-6 py-16">
+            <div className="grid grid-cols-1 items-center gap-8 rounded-3xl bg-gradient-to-br from-gray-900 to-gray-800 p-8 text-white lg:grid-cols-2 lg:p-12">
+              <div>
+                <span className="inline-flex items-center rounded-full border border-yellow-500/30 bg-yellow-500/15 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-yellow-400">
+                  GENERAS DIGITAL · Full package
+                </span>
+                <h2 className="mt-4 text-3xl font-bold sm:text-4xl">{fullPackage.name}</h2>
+                <p className="mt-4 leading-relaxed text-gray-300">{fullPackage.description}</p>
+                <p className="mt-6 text-3xl font-bold text-yellow-400">{fullPackage.price}</p>
+                <p className="mt-1 text-sm text-gray-400">{fullPackage.note}</p>
+                <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                  <Link
+                    to={`/get-quote?service_name=${encodeURIComponent(fullPackage.name)}`}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-yellow-500 px-6 py-3 font-bold text-gray-900 transition-colors hover:bg-yellow-400"
+                  >
+                    Get this package <ArrowRight className="w-5 h-5" />
+                  </Link>
+                  <Link
+                    to="/core/businesses/generas-digital"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/5 px-6 py-3 font-semibold text-white transition-colors hover:bg-white/10"
+                  >
+                    See what's included
+                  </Link>
+                </div>
+              </div>
+              <ul className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                {fullPackage.includes.map((item) => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-gray-200">
+                    <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-yellow-400" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 15 Service Categories with Pricing */}
       <section className="max-w-7xl mx-auto px-6 py-20">

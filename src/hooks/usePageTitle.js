@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 const titles = {
   '/': 'Generas Core — Digital Systems Builder',
-  '/business': 'Services — Web Development & Digital Growth | Generas Core',
+  '/business': 'Pricings — Web Development & Digital Growth | Generas Core',
   '/academic': 'Academic Journey — Generas Core',
   '/projects': 'Project Portfolio — Generas Core',
   '/trading': 'Trading Dashboard — Generas Core',
@@ -17,6 +17,11 @@ const titles = {
   '/admin': 'Admin Panel — Generas Core',
   '/login': 'Login — Generas Core',
   '/register': 'Register — Generas Core',
+  '/core': 'GENERAS CORE — Building Beyond Digital',
+  '/core/about': 'About — GENERAS CORE',
+  '/core/businesses': 'Our Businesses — GENERAS CORE',
+  '/core/projects': 'Projects — GENERAS CORE',
+  '/core/contact': 'Contact — GENERAS CORE',
 }
 
 const defaultTitle = 'Generas Core — Digital Systems Builder'

@@ -93,7 +93,7 @@ const fetchEverything = () =>
 // without hiding anything behind the menu icon.
 const PAGE_LINKS = [
   { to: '/', label: 'Home' },
-  { to: '/business', label: 'Services' },
+  { to: '/business', label: 'Pricings' },
   { to: '/projects', label: 'Projects' },
   { to: '/trading', label: 'Trading' },
   { to: '/community', label: 'Community' },

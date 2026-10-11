@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useTheme } from '../../context/ThemeContext';
+import { DIVISION_BY_SLUG } from '../../data/coreBrand';
 import { 
   MessageSquare, Mail, Phone, Search, 
-  RefreshCw, Clock, Trash2, CheckCircle
+  RefreshCw, Clock, Trash2, CheckCircle, Building2
 } from 'lucide-react';
 
 const ContactMessagesManager = () => {
@@ -87,7 +88,8 @@ const ContactMessagesManager = () => {
         msg.name?.toLowerCase().includes(term) ||
         msg.email?.toLowerCase().includes(term) ||
         msg.phone?.includes(term) ||
-        msg.message?.toLowerCase().includes(term)
+        msg.message?.toLowerCase().includes(term) ||
+        msg.division?.toLowerCase().includes(term)
       );
     }
     return true;
@@ -184,6 +186,12 @@ const ContactMessagesManager = () => {
                       {!msg.is_read && (
                         <span className={`px-2 py-1 rounded-full text-xs font-medium ${isDark ? 'bg-yellow-500/20 text-yellow-300' : 'bg-yellow-100 text-yellow-800'}`}>
                           Unread
+                        </span>
+                      )}
+                      {msg.division && (
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${isDark ? 'bg-indigo-500/20 text-indigo-300' : 'bg-indigo-100 text-indigo-700'}`}>
+                          <Building2 className="w-3 h-3" />
+                          {DIVISION_BY_SLUG[msg.division]?.name || msg.division}
                         </span>
                       )}
                     </div>

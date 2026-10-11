@@ -22,7 +22,7 @@ function MobileBottomNav() {
   
   const navItems = [
     { path: '/', label: 'Home' },
-    { path: '/business', label: 'Services' },
+    { path: '/business', label: 'Pricings' },
     { path: '/projects', label: 'Projects' },
     { path: '/community', label: 'Community' },
     { path: '/blog', label: 'Blog' },
@@ -66,6 +66,12 @@ export default function Layout({ children }) {
       <main className="flex-1 max-w-7xl mx-auto px-6 py-12 w-full relative pt-28 md:pb-8 pb-20">
         {!isHomePage && (
           <div className="flex justify-end items-center gap-4 mb-8">
+            <Link
+              to="/core/about"
+              className="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-lg text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:border-yellow-500 rounded-lg transition-colors duration-200 font-medium"
+            >
+              About Company
+            </Link>
             <SimpleCTA />
             <Link
               to="/hire-me"

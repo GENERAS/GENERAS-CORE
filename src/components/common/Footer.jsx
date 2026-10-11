@@ -51,6 +51,12 @@ export default function Footer() {
             <p className="text-gray-500 text-sm leading-relaxed">
               Building digital systems that solve real problems — from web applications and AI solutions to educational platforms.
             </p>
+            <Link
+              to="/core/about"
+              className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-500 text-gray-900 font-semibold text-sm hover:bg-yellow-400 transition-colors duration-200"
+            >
+              About Company
+            </Link>
           </div>
 
           {/* Explore */}
@@ -58,7 +64,7 @@ export default function Footer() {
             <h3 className="text-sm font-semibold text-gray-300 mb-5 uppercase tracking-wider">Explore</h3>
             <ul className="space-y-3">
               <li><Link to="/" className="text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm">Home</Link></li>
-              <li><Link to="/business" className="text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm">Business Services</Link></li>
+              <li><Link to="/business" className="text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm">Pricings</Link></li>
               <li><Link to="/academic" className="text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm">Academic Journey</Link></li>
               <li><Link to="/projects" className="text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm">Project Portfolio</Link></li>
               <li><Link to="/trading" className="text-gray-400 hover:text-yellow-500 transition-colors duration-200 text-sm">Trading Dashboard</Link></li>

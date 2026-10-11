@@ -33,6 +33,15 @@ const ContactPage = lazy(() => import('./pages/ContactPage'))
 const CollaboratePage = lazy(() => import('./pages/CollaboratePage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
+// GENERAS CORE parent-brand portal
+const CoreLayout = lazy(() => import('./components/core/CoreLayout'))
+const CoreHomePage = lazy(() => import('./pages/core/CoreHomePage'))
+const CoreAboutPage = lazy(() => import('./pages/core/CoreAboutPage'))
+const CoreBusinessesPage = lazy(() => import('./pages/core/CoreBusinessesPage'))
+const CoreDivisionPage = lazy(() => import('./pages/core/CoreDivisionPage'))
+const CoreProjectsPage = lazy(() => import('./pages/core/CoreProjectsPage'))
+const CoreContactPage = lazy(() => import('./pages/core/CoreContactPage'))
+
 function PageTitle() {
   const { pathname } = useLocation()
   usePageTitle(pathname)
@@ -113,6 +122,16 @@ function App() {
           {/* REDIRECTS */}
           <Route path="/mentorship" element={<Navigate to="/service" replace />} />
           <Route path="/services" element={<Navigate to="/service" replace />} />
+
+          {/* GENERAS CORE PARENT BRAND */}
+          <Route path="/core" element={<Suspense fallback={<Loader />}><CoreLayout /></Suspense>}>
+            <Route index element={<CoreHomePage />} />
+            <Route path="about" element={<CoreAboutPage />} />
+            <Route path="businesses" element={<CoreBusinessesPage />} />
+            <Route path="businesses/:slug" element={<CoreDivisionPage />} />
+            <Route path="projects" element={<CoreProjectsPage />} />
+            <Route path="contact" element={<CoreContactPage />} />
+          </Route>
 
           {/* AUTH */}
           <Route path="/admin-login" element={<AdminLoginPage />} />

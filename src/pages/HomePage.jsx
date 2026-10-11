@@ -312,9 +312,15 @@ export default function HomePage() {
 
                   {/* CTA Buttons */}
                   <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
+                    <Link
+                      to="/core/about"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-yellow-500 hover:bg-yellow-400 text-gray-900 rounded-xl font-bold transition-all duration-300 transform hover:scale-105 ring-2 ring-yellow-400/40"
+                    >
+                      About Company <IconArrowRight />
+                    </Link>
                     <Link 
                       to="/projects"
-                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-yellow-500 hover:bg-yellow-400 text-gray-900 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105"
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white border border-white/20 rounded-xl font-semibold transition-all duration-300"
                     >
                       Explore My Work <IconArrowRight />
                     </Link>

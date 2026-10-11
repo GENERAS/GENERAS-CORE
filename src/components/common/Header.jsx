@@ -85,7 +85,7 @@ export default function Header() {
     { path: '/community', label: t('nav.community') },
     { path: '/testimonials', label: t('nav.testimonials') },
     { path: '/service', label: t('nav.mentorship') },
-    { path: '/business', label: 'Services' },
+    { path: '/business', label: 'Pricings' },
     { path: '/contact', label: 'Contact' },
   ]
 
