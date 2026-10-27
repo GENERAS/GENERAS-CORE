@@ -9,68 +9,85 @@
     <!-- SEO Meta Tags -->
     <meta name="author" content="Generas Kagiraneza" />
     <meta name="theme-color" content="#1e293b" />
-    <meta
-      name="description"
-      content="Generas Kagiraneza is a software developer and programmer building practical digital solutions, repositories, and projects on GitHub."
-    />
-    <meta
-      name="keywords"
-      content="Generas Kagiraneza, Software Developer Rwanda, Programmer Rwanda, Web Developer Rwanda, GitHub portfolio, Digital solutions Rwanda"
-    />
+    <meta name="description" content="Generas Kagiraneza is a software developer and programmer building practical digital solutions, websites, automation systems, and business-focused technology in Kigali, Rwanda." />
+    <meta name="keywords" content="Generas Kagiraneza, Generas Core, Software Developer Rwanda, Web Developer Rwanda, Website Design Rwanda, SEO Rwanda, AI Systems Builder Rwanda, Business Websites Rwanda, Kigali Rwanda" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Generas Kagiraneza" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://generascore.vercel.app" />
     <meta property="og:site_name" content="Generas Kagiraneza" />
     <meta property="og:title" content="Generas Kagiraneza | Software Developer and Programmer" />
-    <meta
-      property="og:description"
-      content="Generas Kagiraneza is a software developer and programmer building practical digital solutions, repositories, and projects on GitHub."
-    />
+    <meta property="og:description" content="Generas Kagiraneza is a software developer and programmer building practical digital solutions, websites, automation systems, and business-focused technology in Kigali, Rwanda." />
     <meta property="og:image" content="/logo.png" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://generascore.vercel.app" />
     <meta property="twitter:title" content="Generas Kagiraneza | Software Developer and Programmer" />
-    <meta
-      property="twitter:description"
-      content="Generas Kagiraneza is a software developer and programmer building practical digital solutions, repositories, and projects on GitHub."
-    />
+    <meta property="twitter:description" content="Generas Kagiraneza is a software developer and programmer building practical digital solutions, websites, automation systems, and business-focused technology in Kigali, Rwanda." />
     <meta property="twitter:image" content="/logo.png" />
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://generascore.vercel.app" />
 
-    <!-- Structured data for person identity -->
+    <!-- Structured data -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Person",
         "name": "Generas Kagiraneza",
+        "alternateName": "Generas Core",
         "jobTitle": "Software Developer and Programmer",
         "url": "https://generascore.vercel.app",
         "sameAs": [
           "https://github.com/GENERAS"
-        ]
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Kigali",
+          "addressCountry": "RW"
+        },
+        "email": "generaskagiraneza@gmail.com",
+        "telephone": "+250794144738"
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Generas Core",
+        "url": "https://generascore.vercel.app",
+        "logo": "https://generascore.vercel.app/logo.png",
+        "email": "generaskagiraneza@gmail.com",
+        "telephone": "+250794144738",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Kigali",
+          "addressCountry": "RW"
+        },
+        "founder": {
+          "@type": "Person",
+          "name": "Generas Kagiraneza"
+        }
       }
     </script>
 
     <link rel="manifest" href="/manifest.json" />
-
-    <!-- Resource hints for faster loading -->
     <link rel="preconnect" href="https://ctqqcsqakogvjfuymael.supabase.co" />
     <link rel="dns-prefetch" href="https://ctqqcsqakogvjfuymael.supabase.co" />
 
     <title>Generas Kagiraneza | Software Developer and Programmer</title>
 
-    <!-- Inline critical CSS for fastest render -->
     <style>
-      /* Prevent FOUC */
       html { background-color: #0f172a; }
       body { margin: 0; font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #fff; }
       #root { min-height: 100vh; }
-      /* Loading state */
       .loading { display: flex; align-items: center; justify-content: center; height: 100vh; }
       .spinner { width: 40px; height: 40px; border: 3px solid rgba(255,255,255,0.1); border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
       @keyframes spin { to { transform: rotate(360deg); } }
@@ -78,7 +95,6 @@
   </head>
   <body>
     <div id="root">
-      <!-- Fallback loading state -->
       <div class="loading">
         <div class="spinner"></div>
       </div>
